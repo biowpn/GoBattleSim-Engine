@@ -26,26 +26,29 @@ add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/Timeline.cpp
 )
 
+
+enable_testing()
+
 add_executable(test_Timeline
     ${PROJECT_SOURCE_DIR}/test/unit_test/test_Timeline.cpp
 )
-
 target_link_libraries(test_Timeline
     GoBattleSim
 )
+add_test(Timeline test_Timeline)
 
 add_executable(test_Raid_Battle
     ${PROJECT_SOURCE_DIR}/test/unit_test/test_Raid_Battle.cpp
 )
-
 target_link_libraries(test_Raid_Battle
     GoBattleSim
 )
+add_test(Raid_Battle test_Raid_Battle)
 
 add_executable(test_PvP_Battle
     ${PROJECT_SOURCE_DIR}/test/unit_test/test_PvP_Battle.cpp
 )
-
 target_link_libraries(test_PvP_Battle
     GoBattleSim
 )
+add_test(PvP_Battle test_PvP_Battle)
