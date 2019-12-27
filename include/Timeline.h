@@ -4,7 +4,8 @@
 
 #include <ostream>
 
-enum EventType {
+enum EventType
+{
 	etype_None,
 	etype_Announce,
 	etype_Free,
@@ -14,16 +15,14 @@ enum EventType {
 	etype_Enter
 };
 
-
-
 class TimelineEvent
 {
 public:
-	TimelineEvent(EventType=etype_None, int=0, int=0, int=0);
-	
-	inline bool operator<(const TimelineEvent&) const;
-	
-	friend std::ostream& operator<<(std::ostream&, const TimelineEvent&);
+	TimelineEvent(EventType = etype_None, int = 0, int = 0, int = 0);
+
+	inline bool operator<(const TimelineEvent &) const;
+
+	friend std::ostream &operator<<(std::ostream &, const TimelineEvent &);
 
 	EventType type;
 	int time;
@@ -31,24 +30,21 @@ public:
 	int value;
 };
 
-
-
 class Timeline
 {
 public:
 	Timeline();
 	~Timeline();
 
-	void put(const TimelineEvent&);
+	void put(const TimelineEvent &);
 	TimelineEvent get();
 	bool is_empty();
 	void erase();
-	
 
 protected:
 	void reallocate();
 
-	TimelineEvent* m_array;
+	TimelineEvent *m_array;
 	int m_size;
 	int m_max_size;
 };

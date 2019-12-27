@@ -6,33 +6,25 @@
 
 #include "SimplePvPBattle.h"
 
-
-double get_battle_score(const PvPPokemon*, const PvPPokemon*, int, int);
-
+double get_battle_score(const PvPPokemon *, const PvPPokemon *, int, int);
 
 class BattleMatrix
 {
 public:
-	BattleMatrix(const PvPPokemon**, int, const PvPPokemon**, int, bool=false);
+	BattleMatrix(const PvPPokemon **, int, const PvPPokemon **, int, bool = false);
 	~BattleMatrix();
-	
-	void run();
-	void get(double**);
 
-	
+	void run();
+	void get(double **);
+
 protected:
-	PvPPokemon** m_row_pkm;
+	PvPPokemon **m_row_pkm;
 	int m_row_size;
-	PvPPokemon** m_col_pkm;
+	PvPPokemon **m_col_pkm;
 	int m_col_size;
-	
+
 	bool m_enum_shields;
-	double** m_matrix;
-	
+	double **m_matrix;
 };
 
-
-
 #endif
-
-

@@ -1,27 +1,21 @@
 
 #include "Timeline.h"
 
-
 TimelineEvent::TimelineEvent(EventType t_type, int t_time, int t_player, int t_value)
-: type(t_type), time(t_time), player(t_player), value(t_value)
+	: type(t_type), time(t_time), player(t_player), value(t_value)
 {
-	
 }
 
-
-bool TimelineEvent::operator<(const TimelineEvent& rhs) const
+bool TimelineEvent::operator<(const TimelineEvent &rhs) const
 {
 	return time < rhs.time || (time == rhs.time && player < rhs.player);
 }
 
-
-std::ostream& operator<<(std::ostream& os, const TimelineEvent& event)
+std::ostream &operator<<(std::ostream &os, const TimelineEvent &event)
 {
 	os << event.type << ' ' << event.time << ' ' << event.player << ' ' << event.value;
 	return os;
 }
-
-
 
 Timeline::Timeline()
 {
@@ -31,7 +25,6 @@ Timeline::Timeline()
 	reallocate();
 }
 
-
 Timeline::~Timeline()
 {
 	delete[] m_array;
@@ -40,8 +33,7 @@ Timeline::~Timeline()
 	m_max_size = 0;
 }
 
-
-void Timeline::put(const TimelineEvent& event)
+void Timeline::put(const TimelineEvent &event)
 {
 	if (m_size >= m_max_size)
 	{
@@ -59,7 +51,6 @@ void Timeline::put(const TimelineEvent& event)
 	m_array[i_child] = event;
 	++m_size;
 }
-
 
 TimelineEvent Timeline::get()
 {
@@ -88,22 +79,19 @@ TimelineEvent Timeline::get()
 	return first;
 }
 
-
 bool Timeline::is_empty()
 {
 	return m_size == 0;
 }
-
 
 void Timeline::erase()
 {
 	m_size = 0;
 }
 
-
 void Timeline::reallocate()
 {
-	TimelineEvent* array_new = new TimelineEvent[m_max_size];
+	TimelineEvent *array_new = new TimelineEvent[m_max_size];
 	if (m_array)
 	{
 		for (int i = 0; i < m_size; ++i)
@@ -114,9 +102,3 @@ void Timeline::reallocate()
 	}
 	m_array = array_new;
 }
-
-
-
-
-
-

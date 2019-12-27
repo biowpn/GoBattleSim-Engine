@@ -7,21 +7,20 @@ Player::Player()
 {
 	id = instance_count++;
 	team = 0;
-	
+
 	m_parties = nullptr;
 	m_parties_count = 0;
 	m_parties_count_max = 0;
 	m_party_head = 0;
 }
 
-
-Player::Player(const Player& other)
+Player::Player(const Player &other)
 {
 	id = other.id;
 	team = other.team;
 	strategy = other.strategy;
 	m_party_head = other.m_party_head;
-	
+
 	m_parties = nullptr;
 	m_parties_count = 0;
 	m_parties_count_max = 0;
@@ -31,25 +30,22 @@ Player::Player(const Player& other)
 	}
 }
 
-
 Player::~Player()
 {
 	erase_parties();
 }
 
-
-Party* Player::get_party(int t_index)
+Party *Player::get_party(int t_index)
 {
 	return m_parties[t_index];
 }
 
-
-void Player::add(Party* t_party)
+void Player::add(Party *t_party)
 {
 	if (m_parties_count >= m_parties_count_max)
 	{
 		m_parties_count_max += 2;
-		Party** parties_temp = new Party*[m_parties_count_max];
+		Party **parties_temp = new Party *[m_parties_count_max];
 		for (int i = 0; i < m_parties_count_max; ++i)
 		{
 			parties_temp[i] = i < m_parties_count ? m_parties[i] : nullptr;
@@ -62,8 +58,6 @@ void Player::add(Party* t_party)
 	}
 	m_parties[m_parties_count++] = new Party(*t_party);
 }
-
-
 
 void Player::erase_parties()
 {
@@ -80,18 +74,14 @@ void Player::erase_parties()
 	m_parties_count_max = 0;
 }
 
-
-
-
-bool Player::has_attr(const char* t_name)
+bool Player::has_attr(const char *t_name)
 {
 	return search_int_member(t_name);
 }
 
-
-int Player::get_attr(const char* t_name)
+int Player::get_attr(const char *t_name)
 {
-	int* int_member_ptr = search_int_member(t_name);
+	int *int_member_ptr = search_int_member(t_name);
 	if (int_member_ptr)
 	{
 		return *int_member_ptr;
@@ -99,10 +89,9 @@ int Player::get_attr(const char* t_name)
 	return 0;
 }
 
-
-void Player::set_attr(const char* t_name, int t_value)
+void Player::set_attr(const char *t_name, int t_value)
 {
-	int* int_member_ptr = search_int_member(t_name);
+	int *int_member_ptr = search_int_member(t_name);
 	if (int_member_ptr)
 	{
 		*int_member_ptr = t_value;
@@ -110,8 +99,7 @@ void Player::set_attr(const char* t_name, int t_value)
 	}
 }
 
-
-int* Player::search_int_member(const char* t_name)
+int *Player::search_int_member(const char *t_name)
 {
 	if (strcmp(t_name, "id") == 0)
 		return &id;
@@ -123,16 +111,13 @@ int* Player::search_int_member(const char* t_name)
 		return nullptr;
 }
 
-
-
-void Player::update(Pokemon* t_pokemon)
+void Player::update(Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_parties_count; ++i)
 	{
 		m_parties[i]->update(t_pokemon);
 	}
 }
-
 
 void Player::set_attack_multiplier(double t_attack_multiplier)
 {
@@ -145,7 +130,6 @@ void Player::set_attack_multiplier(double t_attack_multiplier)
 	}
 }
 
-
 void Player::set_clone_multiplier(int t_clone_multiplier)
 {
 	for (int i = 0; i < m_parties_count; ++i)
@@ -157,7 +141,6 @@ void Player::set_clone_multiplier(int t_clone_multiplier)
 	}
 }
 
-
 void Player::set_strategy(int t_strategy_index)
 {
 	if (0 <= t_strategy_index && t_strategy_index < NUM_STRATEGIES)
@@ -166,13 +149,10 @@ void Player::set_strategy(int t_strategy_index)
 	}
 }
 
-
-void Player::set_strategy(const Strategy& t_strategy)
+void Player::set_strategy(const Strategy &t_strategy)
 {
 	strategy = t_strategy;
 }
-
-
 
 int Player::get_pokemon_count() const
 {
@@ -184,8 +164,7 @@ int Player::get_pokemon_count() const
 	return count;
 }
 
-
-void Player::get_all_pokemon(Pokemon** t_array) const
+void Player::get_all_pokemon(Pokemon **t_array) const
 {
 	for (int i = 0; i < m_parties_count; ++i)
 	{
@@ -195,12 +174,10 @@ void Player::get_all_pokemon(Pokemon** t_array) const
 	}
 }
 
-
-Party* Player::get_head_party()
+Party *Player::get_head_party()
 {
 	return m_parties[m_party_head];
 }
-
 
 void Player::init()
 {
@@ -211,7 +188,6 @@ void Player::init()
 	m_party_head = 0;
 }
 
-
 void Player::heal()
 {
 	for (int i = 0; i < m_parties_count; ++i)
@@ -221,32 +197,27 @@ void Player::heal()
 	m_party_head = 0;
 }
 
-
-Pokemon* Player::get_head()
+Pokemon *Player::get_head()
 {
 	return m_parties[m_party_head]->get_head();
 }
 
-
-bool Player::set_head(Pokemon* t_pokemon)
+bool Player::set_head(Pokemon *t_pokemon)
 {
 	return m_parties[m_party_head]->set_head(t_pokemon);
 }
 
-
 bool Player::choose_next_pokemon()
 {
-	Party* cur_party = m_parties[m_party_head];
+	Party *cur_party = m_parties[m_party_head];
 	return cur_party->set_head_to_next();
 }
 
-
 bool Player::revive_current_party()
 {
-	Party* cur_party = m_parties[m_party_head];
+	Party *cur_party = m_parties[m_party_head];
 	return cur_party->revive();
 }
-
 
 bool Player::choose_next_party()
 {
@@ -261,7 +232,6 @@ bool Player::choose_next_party()
 	}
 }
 
-
 int Player::get_tdo() const
 {
 	int tdo = 0;
@@ -274,7 +244,6 @@ int Player::get_tdo() const
 	}
 	return tdo;
 }
-
 
 int Player::get_max_hp() const
 {
@@ -289,7 +258,6 @@ int Player::get_max_hp() const
 	return max_hp;
 }
 
-
 int Player::get_num_deaths() const
 {
 	int num_deaths = 0;
@@ -302,9 +270,3 @@ int Player::get_num_deaths() const
 	}
 	return num_deaths;
 }
-
-
-
-
-
-

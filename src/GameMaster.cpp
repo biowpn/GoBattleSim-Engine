@@ -2,11 +2,11 @@
 #include "GameMaster.h"
 
 int GameMaster::num_types = 0;
-double** GameMaster::type_effectiveness = nullptr;
-int* GameMaster::type_boosted_weathers = nullptr;
+double **GameMaster::type_effectiveness = nullptr;
+int *GameMaster::type_boosted_weathers = nullptr;
 int GameMaster::min_stage = -4;
 int GameMaster::max_stage = 4;
-double* GameMaster::stage_multipliers = nullptr;
+double *GameMaster::stage_multipliers = nullptr;
 
 int GameMaster::max_energy = 100;
 int GameMaster::dodge_duration = 500;
@@ -23,13 +23,11 @@ double GameMaster::pvp_charged_attack_bonus_multiplier = 1.3;
 double GameMaster::dodge_damage_reduction_percent = 0.75;
 double GameMaster::energy_delta_per_health_lost = 0.5;
 
-
 // A dummay game master instance. When the program exits, its destructor is called,
 // so we can delete dynamic arrays static members
 // const GameMaster _game_master_dummy = GameMaster();
 
 // But why bother? Program will free all its memory when exit anyway
-
 
 GameMaster::~GameMaster()
 {
@@ -54,7 +52,6 @@ GameMaster::~GameMaster()
 	}
 }
 
-
 void GameMaster::set_num_types(int t_num_types)
 {
 	if (type_effectiveness)
@@ -68,7 +65,7 @@ void GameMaster::set_num_types(int t_num_types)
 		num_types = 0;
 	}
 	num_types = t_num_types;
-	type_effectiveness = new double*[num_types];
+	type_effectiveness = new double *[num_types];
 	for (int i = 0; i < num_types; ++i)
 	{
 		type_effectiveness[i] = new double[num_types];
@@ -89,7 +86,6 @@ void GameMaster::set_num_types(int t_num_types)
 	}
 }
 
-
 void GameMaster::set_effectiveness(int t_type_i, int t_type_j, double t_multiplier)
 {
 	if (0 <= t_type_i && t_type_i < num_types && 0 <= t_type_j && t_type_j < num_types)
@@ -97,7 +93,6 @@ void GameMaster::set_effectiveness(int t_type_i, int t_type_j, double t_multipli
 	else
 		throw 1;
 }
-
 
 double GameMaster::get_effectiveness(int t_type_i, int t_type_j)
 {
@@ -111,7 +106,6 @@ double GameMaster::get_effectiveness(int t_type_i, int t_type_j)
 	}
 }
 
-
 void GameMaster::set_type_boosted_weather(int t_type, int type_boosted_weather)
 {
 	if (0 <= t_type && t_type < num_types)
@@ -120,7 +114,6 @@ void GameMaster::set_type_boosted_weather(int t_type, int type_boosted_weather)
 		throw 1;
 }
 
-
 int GameMaster::get_type_boosted_weather(int t_type)
 {
 	if (0 <= t_type && t_type < num_types)
@@ -128,7 +121,6 @@ int GameMaster::get_type_boosted_weather(int t_type)
 	else
 		throw 1;
 }
-
 
 void GameMaster::set_stage_bounds(int t_min_stage, int t_max_stage)
 {
@@ -145,7 +137,6 @@ void GameMaster::set_stage_bounds(int t_min_stage, int t_max_stage)
 	stage_multipliers = new double[max_stage - min_stage + 1];
 }
 
-
 void GameMaster::set_stage_multiplier(int t_stage, double t_multiplier)
 {
 	if (min_stage <= t_stage && t_stage <= max_stage)
@@ -156,17 +147,14 @@ void GameMaster::set_stage_multiplier(int t_stage, double t_multiplier)
 	{
 		throw 1;
 	}
-	
 }
-
 
 double GameMaster::get_stage_multiplier(int t_stage)
 {
 	return stage_multipliers ? stage_multipliers[t_stage - min_stage] : 1;
 }
 
-	
-void GameMaster::set_parameter(char* t_name, double t_value)
+void GameMaster::set_parameter(char *t_name, double t_value)
 {
 	if (strcmp(t_name, "max_energy") == 0)
 		max_energy = t_value;
@@ -201,6 +189,3 @@ void GameMaster::set_parameter(char* t_name, double t_value)
 	else if (strcmp(t_name, "energy_delta_per_health_lost") == 0)
 		energy_delta_per_health_lost = t_value;
 }
-
-
-

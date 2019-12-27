@@ -1,19 +1,16 @@
 
 #include "PvPStrategy.h"
 
-
 PvPStrategy::PvPStrategy(PvPEventResponder t_on_free, PvPEventResponder t_on_attack, PvPEventResponder t_on_switch)
-:on_free(t_on_free), on_attack(t_on_attack), on_switch(t_on_switch)
+	: on_free(t_on_free), on_attack(t_on_attack), on_switch(t_on_switch)
 {
-	
 }
-
 
 /*
 	PvP Basic Strategy
 	Use default cmove as soon as possible
 */
-void pvp_basic_on_free(const PvPStrategyInput& si, Action* r_action)
+void pvp_basic_on_free(const PvPStrategyInput &si, Action *r_action)
 {
 	if (si.subject_energy + si.subject->cmove->energy >= 0)
 	{
@@ -25,12 +22,11 @@ void pvp_basic_on_free(const PvPStrategyInput& si, Action* r_action)
 	}
 }
 
-
 /*
 	PvP Advance Strategy
 	See docs
 */
-void pvp_advance_on_free(const PvPStrategyInput& si, Action* r_action)
+void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 {
 	int my_fmove_damage = calc_damage_pvp_cmove(si.subject, si.subject->fmove, si.enemy);
 	if (my_fmove_damage >= si.enemy_hp)
@@ -38,7 +34,7 @@ void pvp_advance_on_free(const PvPStrategyInput& si, Action* r_action)
 		r_action->type = atype_Fast;
 		return;
 	}
-	
+
 	// Find the better move and the cheaper move.
 	int better_move_idx = 0, cheaper_move_idx = 0;
 	double higher_dpe = 0;
@@ -46,7 +42,7 @@ void pvp_advance_on_free(const PvPStrategyInput& si, Action* r_action)
 	bool cheaper_move_ko = false;
 	for (int i = 0; i < si.subject->cmoves_count; ++i)
 	{
-		Move* move = si.subject->cmoves[i];
+		Move *move = si.subject->cmoves[i];
 		int damage = calc_damage_pvp_cmove(si.subject, move, si.enemy);
 		double dpe = (double)damage / (-move->energy);
 		if (dpe > higher_dpe)
@@ -61,7 +57,7 @@ void pvp_advance_on_free(const PvPStrategyInput& si, Action* r_action)
 			cheaper_move_ko = damage >= si.enemy_hp;
 		}
 	}
-	
+
 	if (si.subject_energy + si.subject->cmoves[better_move_idx]->energy >= 0)
 	{
 		if (si.enemy_shields > 0)
@@ -92,5 +88,3 @@ void pvp_advance_on_free(const PvPStrategyInput& si, Action* r_action)
 		r_action->type = atype_Fast;
 	}
 }
-
-

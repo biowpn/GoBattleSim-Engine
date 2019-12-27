@@ -1,7 +1,6 @@
 
 #include "Party.h"
 
-
 Party::Party()
 {
 	m_pokemon = nullptr;
@@ -12,13 +11,12 @@ Party::Party()
 	m_revive_policy_init = 0;
 }
 
-
-Party::Party(const Party& other)
+Party::Party(const Party &other)
 {
 	m_pokemon_head = other.m_pokemon_head;
 	m_revive_policy = other.m_revive_policy;
 	m_revive_policy_init = other.m_revive_policy_init;
-	
+
 	m_pokemon = nullptr;
 	m_pokemon_count = 0;
 	m_pokemon_count_max = 0;
@@ -28,19 +26,17 @@ Party::Party(const Party& other)
 	}
 }
 
-
 Party::~Party()
 {
 	erase_pokemon();
 }
 
-
-void Party::add(Pokemon* t_pokemon)
+void Party::add(Pokemon *t_pokemon)
 {
 	if (m_pokemon_count >= m_pokemon_count_max)
 	{
 		m_pokemon_count_max += 2;
-		Pokemon** pokemon_temp = new Pokemon*[m_pokemon_count_max];
+		Pokemon **pokemon_temp = new Pokemon *[m_pokemon_count_max];
 		for (int i = 0; i < m_pokemon_count; ++i)
 		{
 			pokemon_temp[i] = m_pokemon[i];
@@ -54,8 +50,7 @@ void Party::add(Pokemon* t_pokemon)
 	m_pokemon[m_pokemon_count++] = new Pokemon(*t_pokemon);
 }
 
-
-void Party::update(Pokemon* t_pokemon)
+void Party::update(Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
@@ -66,7 +61,6 @@ void Party::update(Pokemon* t_pokemon)
 		}
 	}
 }
-
 
 void Party::erase_pokemon()
 {
@@ -83,16 +77,14 @@ void Party::erase_pokemon()
 	m_pokemon_count_max = 0;
 }
 
-
-bool Party::has_attr(const char* t_name)
+bool Party::has_attr(const char *t_name)
 {
 	return search_int_member(t_name);
 }
 
-
-int Party::get_attr(const char* t_name)
+int Party::get_attr(const char *t_name)
 {
-	int* int_member_ptr = search_int_member(t_name);
+	int *int_member_ptr = search_int_member(t_name);
 	if (int_member_ptr)
 	{
 		return *int_member_ptr;
@@ -100,18 +92,16 @@ int Party::get_attr(const char* t_name)
 	return 0;
 }
 
-
-void Party::set_attr(const char* t_name, int t_value)
+void Party::set_attr(const char *t_name, int t_value)
 {
-	int* int_member_ptr = search_int_member(t_name);
+	int *int_member_ptr = search_int_member(t_name);
 	if (int_member_ptr)
 	{
 		*int_member_ptr = t_value;
 	}
 }
 
-
-int* Party::search_int_member(const char* t_name)
+int *Party::search_int_member(const char *t_name)
 {
 	if (strcmp(t_name, "revive_policy") == 0)
 		return &m_revive_policy_init;
@@ -121,29 +111,23 @@ int* Party::search_int_member(const char* t_name)
 		return nullptr;
 }
 
-
-
-int Party::get_pokemon_count()  const
+int Party::get_pokemon_count() const
 {
 	return m_pokemon_count;
 }
 
-
-Pokemon* Party::get_pokemon(int t_index)
+Pokemon *Party::get_pokemon(int t_index)
 {
 	return m_pokemon[t_index];
 }
 
-
-void Party::get_all_pokemon(Pokemon** t_array)
+void Party::get_all_pokemon(Pokemon **t_array)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
 		t_array[i] = m_pokemon[i];
 	}
 }
-
-
 
 void Party::init()
 {
@@ -155,7 +139,6 @@ void Party::init()
 	m_revive_policy = m_revive_policy_init;
 }
 
-
 void Party::heal()
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
@@ -165,14 +148,12 @@ void Party::heal()
 	m_pokemon_head = 0;
 }
 
-
-Pokemon* Party::get_head()
+Pokemon *Party::get_head()
 {
 	return m_pokemon[m_pokemon_head];
 }
 
-
-bool Party::set_head(Pokemon* t_pokemon)
+bool Party::set_head(Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
@@ -184,7 +165,6 @@ bool Party::set_head(Pokemon* t_pokemon)
 	}
 	return false;
 }
-
 
 bool Party::set_head(int t_index)
 {
@@ -199,7 +179,6 @@ bool Party::set_head(int t_index)
 	}
 }
 
-
 bool Party::set_head_to_next()
 {
 	for (int i = (m_pokemon_head + 1) % m_pokemon_count; i != m_pokemon_head; i = (i + 1) % m_pokemon_count)
@@ -213,7 +192,6 @@ bool Party::set_head_to_next()
 	return false;
 }
 
-
 bool Party::revive()
 {
 	if (m_revive_policy != 0)
@@ -225,14 +203,5 @@ bool Party::revive()
 	else
 	{
 		return false;
-	}	
+	}
 }
-
-
-
-
-
-
-
-
-

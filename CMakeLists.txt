@@ -1,13 +1,14 @@
+
 cmake_minimum_required (VERSION 3.1)
 project (GoBattleSim)
 
-SET(COMPILE_FLAGS "-Wall -O3")
+SET(CMAKE_CXX_STANDARD 11)
+SET(COMPILE_FLAGS "-Wall")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src
 )
-
 
 add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/Battle.cpp
