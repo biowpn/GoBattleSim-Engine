@@ -7,6 +7,7 @@
 
 namespace GoBattleSim
 {
+constexpr unsigned MAX_NUM_CMOVES = 3;
 
 class Pokemon
 {
@@ -16,9 +17,9 @@ public:
 	~Pokemon();
 
 	// Interface functions
-	Move *get_fmove(int) const;
+	const Move *get_fmove(int) const;
 	void add_fmove(const Move *);
-	Move *get_cmove(int) const;
+	const Move *get_cmove(int) const;
 	void add_cmove(const Move *);
 	void erase_cmoves();
 	bool has_attr(const char *);
@@ -42,20 +43,19 @@ public:
 	double defense;
 	int max_hp;
 
-	Move *fmove;
-	Move *cmove;
-	Move **cmoves;
-	int cmoves_count;
-	int cmoves_count_max;
+	Move fmove;
+	Move *cmove{nullptr};
+	Move cmoves[MAX_NUM_CMOVES];
+	int cmoves_count{0};
 
 	// More members
-	bool active;
-	bool immortal;
-	int hp;
-	int energy;
-	double attack_multiplier;
-	int clone_multiplier;
-	int damage_reduction_expired_time;
+	bool active{false};
+	bool immortal{false};
+	int hp{0};
+	int energy{0};
+	double attack_multiplier{1};
+	int clone_multiplier{1};
+	int damage_reduction_expired_time{0};
 
 	// Statistical members
 	int tdo;

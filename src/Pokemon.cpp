@@ -2,6 +2,7 @@
 #include "Pokemon.h"
 
 #include <string.h>
+#include <stdexcept>
 
 namespace GoBattleSim
 {
@@ -29,17 +30,6 @@ Pokemon::Pokemon(int t_poketype1, int t_poketype2, double t_attack, double t_def
 	: poketype1(t_poketype1), poketype2(t_poketype2), attack(t_attack), defense(t_defense), max_hp(t_max_hp)
 {
 	id = instance_count++;
-	fmove = nullptr;
-	cmove = nullptr;
-	cmoves_count = 0;
-	cmoves_count_max = 0;
-	cmoves = nullptr;
-	attack_multiplier = 1;
-	clone_multiplier = 1;
-	damage_reduction_expired_time = 0;
-	immortal = false;
-	active = false;
-
 	init();
 }
 
@@ -60,49 +50,39 @@ Pokemon::Pokemon(const Pokemon &other)
 	clone_multiplier = other.clone_multiplier;
 	damage_reduction_expired_time = other.damage_reduction_expired_time;
 
-	fmove = nullptr;
-	cmove = nullptr;
+	fmove = other.fmove;
 	cmoves_count = 0;
-	cmoves_count_max = 0;
-	cmoves = nullptr;
-	add_fmove(other.fmove);
+	add_fmove(&other.fmove);
 	for (int i = 0; i < other.cmoves_count; ++i)
 	{
-		add_cmove(other.cmoves[i]);
+		add_cmove(&other.cmoves[i]);
 	}
+	cmove = cmoves + (other.cmove - other.cmoves);
 }
 
 Pokemon::~Pokemon()
 {
-	if (fmove)
-	{
-		delete fmove;
-	}
-	fmove = nullptr;
 	erase_cmoves();
 }
 
-Move *Pokemon::get_fmove(int) const
+const Move *Pokemon::get_fmove(int) const
 {
-	return fmove;
+	return &fmove;
 }
 
 void Pokemon::add_fmove(const Move *t_move)
 {
-	if (t_move == nullptr)
-		return;
-	if (fmove)
+	if (t_move != nullptr)
 	{
-		delete fmove;
+		fmove = *t_move;
 	}
-	fmove = new Move(*t_move);
 }
 
-Move *Pokemon::get_cmove(int t_index) const
+const Move *Pokemon::get_cmove(int t_index) const
 {
 	if (0 <= t_index && t_index < cmoves_count)
 	{
-		return cmoves[t_index];
+		return cmoves + t_index;
 	}
 	else
 	{
@@ -113,43 +93,25 @@ Move *Pokemon::get_cmove(int t_index) const
 void Pokemon::add_cmove(const Move *t_move)
 {
 	if (t_move == nullptr)
+	{
 		return;
-	if (cmoves_count >= cmoves_count_max)
-	{
-		cmoves_count_max += 2;
-		Move **cmoves_temp = new Move *[cmoves_count_max];
-		for (int i = 0; i < cmoves_count; ++i)
-		{
-			cmoves_temp[i] = cmoves[i];
-		}
-		if (cmoves)
-		{
-			delete[] cmoves;
-		}
-		cmoves = cmoves_temp;
 	}
-	cmoves[cmoves_count] = new Move(*t_move);
-	if (!cmove)
+	if (cmoves_count >= MAX_NUM_CMOVES)
 	{
-		cmove = cmoves[cmoves_count];
+		throw std::runtime_error("too many cmoves");
+	}
+	cmoves[cmoves_count] = *t_move;
+	if (cmove == nullptr)
+	{
+		cmove = cmoves + cmoves_count;
 	}
 	++cmoves_count;
 }
 
 void Pokemon::erase_cmoves()
 {
-	if (cmoves && cmoves_count > 0)
-	{
-		for (int i = 0; i < cmoves_count; ++i)
-		{
-			delete cmoves[i];
-		}
-		delete[] cmoves;
-	}
-	cmove = nullptr;
-	cmoves = nullptr;
 	cmoves_count = 0;
-	cmoves_count_max = 0;
+	cmove = nullptr;
 }
 
 bool Pokemon::has_attr(const char *t_name)

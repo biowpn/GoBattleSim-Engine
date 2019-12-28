@@ -24,7 +24,7 @@ int get_projected_energy(const StrategyInput &si)
 	int projected_energy = si.subject->energy;
 	if (si.subject_action.type == atype_Fast)
 	{
-		projected_energy += si.subject->fmove->energy;
+		projected_energy += si.subject->get_fmove(0)->energy;
 	}
 	else if (si.subject_action.type == atype_Charged)
 	{
@@ -40,7 +40,7 @@ void defender_on_clear(const StrategyInput &si, Action *r_action)
 	int projected_energy = get_projected_energy(si);
 	for (int i = 0; i < si.subject->cmoves_count; ++i)
 	{
-		Move *cmove = si.subject->cmoves[i];
+		auto cmove = si.subject->get_cmove(i);
 		if (projected_energy + cmove->energy >= 0 && ((si.random_number >> i) & 1))
 		{
 			r_action->type = atype_Charged;
@@ -68,7 +68,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 	int time_of_damage = -1, time_of_enemy_cooldown = -1;
 	if (si.enemy_action.type == atype_Fast)
 	{
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->fmove->duration;
+		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
 	}
 	else if (si.enemy_action.type == atype_Charged)
 	{
@@ -87,7 +87,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 		r_action->type = atype_Charged;
 		r_action->value = -1;
 	}
-	else if (time_till_damage > si.subject->fmove->duration) // Can squeeze in one fast
+	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
 		r_action->type = atype_Fast;
 	}
@@ -125,7 +125,7 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 		r_action->type = atype_Charged;
 		r_action->value = -1;
 	}
-	else if (time_till_damage > si.subject->fmove->duration) // Can squeeze in one fast
+	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
 		r_action->type = atype_Fast;
 	}
@@ -143,8 +143,8 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 	int time_of_damage = -1, time_of_enemy_cooldown = -1;
 	if (si.enemy_action.type == atype_Fast)
 	{
-		time_of_damage = si.enemy_action.time + si.enemy->fmove->dws;
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->fmove->duration;
+		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
+		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
 	}
 	else if (si.enemy_action.type == atype_Charged)
 	{
@@ -154,8 +154,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 	if (time_of_damage < si.time || time_of_damage < si.subject->damage_reduction_expired_time)
 	{
 		// Predict next time of damage
-		// int min_dws = (si.enemy->fmove->dws < si.enemy->cmove->dws ? si.enemy->fmove->dws : si.enemy->cmove->dws);
-		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->fmove->dws;
+		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->get_fmove(0)->dws;
 		predicted_attack = true;
 	}
 	int time_till_damage = time_of_damage - si.time;
@@ -164,7 +163,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 		r_action->type = atype_Charged;
 		r_action->value = -1;
 	}
-	else if (time_till_damage > si.subject->fmove->duration) // Can squeeze in one fast
+	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
 		r_action->type = atype_Fast;
 	}
@@ -188,7 +187,7 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 	int time_of_damage;
 	if (si.enemy_action.type == atype_Fast)
 	{
-		time_of_damage = si.enemy_action.time + si.enemy->fmove->dws;
+		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
 	}
 	else
 	{
@@ -200,7 +199,7 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 		r_action->type = atype_Charged;
 		r_action->value = -1;
 	}
-	else if (time_till_damage > si.subject->fmove->duration) // Can squeeze in one fast
+	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
 		r_action->type = atype_Fast;
 	}

@@ -420,7 +420,7 @@ void Battle::register_action_fast(int t_player_index, const Action &t_action)
 	PlayerState &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
 	int t_pokemon_index = ps.head_index;
-	Move *move = m_pokemon[t_pokemon_index]->get_fmove(t_action.value);
+	auto move = m_pokemon[t_pokemon_index]->get_fmove(t_action.value);
 	m_timeline.put(TimelineEvent(
 		etype_Fast,
 		time_action_start + move->dws,
@@ -447,7 +447,7 @@ void Battle::register_action_charged(int t_player_index, const Action &t_action)
 	PlayerState &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
 	int t_pokemon_index = ps.head_index;
-	Move *move = m_pokemon[t_pokemon_index]->get_cmove(t_action.value);
+	auto move = m_pokemon[t_pokemon_index]->get_cmove(t_action.value);
 	if (m_pokemon[t_pokemon_index]->energy + move->energy < 0)
 	{
 		ps.time_free = time_action_start + 500;
@@ -596,7 +596,7 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 	{
 		return;
 	}
-	Move *move = subject->get_fmove(t_event.value);
+	auto move = subject->get_fmove(t_event.value);
 	++subject->num_fmoves_used;
 	subject->charge(move->energy);
 	for (int i = 0; i < m_players_count; ++i)
@@ -635,7 +635,7 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 	{
 		return;
 	}
-	Move *move = subject->get_cmove(t_event.value);
+	auto move = subject->get_cmove(t_event.value);
 	++subject->num_cmoves_used;
 	subject->charge(move->energy);
 	for (int i = 0; i < m_players_count; ++i)

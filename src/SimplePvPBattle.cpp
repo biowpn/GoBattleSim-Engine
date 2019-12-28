@@ -153,7 +153,7 @@ void SimplePvPBattle::start()
 
 void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 {
-	const Move *move = m_pokemon[i]->fmove;
+	const Move *move = m_pokemon[i]->get_fmove(0);
 	m_pkms[i].energy += move->energy;
 	if (m_pkms[i].energy > GameMaster::max_energy)
 	{
@@ -172,7 +172,7 @@ void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 {
 	int damage = 0;
-	Move *move = m_pokemon[i]->get_cmove(t_action.value);
+	auto move = m_pokemon[i]->get_cmove(t_action.value);
 	if (m_pkms[i].energy + move->energy < 0)
 	{
 		return;

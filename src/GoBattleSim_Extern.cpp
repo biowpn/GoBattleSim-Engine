@@ -103,7 +103,7 @@ void Pokemon_delete(void *__this__)
 
 void *Pokemon_get_fmove(void *__this__, int t_index)
 {
-	return static_cast<Pokemon *>(__this__)->get_fmove(t_index);
+	return const_cast<Move * >(static_cast<Pokemon *>(__this__)->get_fmove(t_index));
 }
 
 void Pokemon_add_fmove(void *__this__, void *t_move)
@@ -113,7 +113,7 @@ void Pokemon_add_fmove(void *__this__, void *t_move)
 
 void *Pokemon_get_cmove(void *__this__, int t_index)
 {
-	return static_cast<Pokemon *>(__this__)->get_cmove(t_index);
+	return const_cast<Move * >(static_cast<Pokemon *>(__this__)->get_cmove(t_index));
 }
 
 void Pokemon_add_cmove(void *__this__, void *t_move)
