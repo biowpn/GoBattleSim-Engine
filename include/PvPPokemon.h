@@ -4,6 +4,9 @@
 
 #include "Pokemon.h"
 
+namespace GoBattleSim
+{
+
 // Damage calculation for pvp as public functions
 int calc_damage_pvp_fmove(const Pokemon *, const Move *, const Pokemon *);
 
@@ -30,5 +33,7 @@ protected:
 	// Don't use virtual functions to slow things down
 	// int* search_int_member(const char*);
 };
+
+} // namespace GoBattleSim
 
 #endif

@@ -1,10 +1,10 @@
 
 #include "Move.h"
 
-Move::Move(int t_poketype, int t_power, int t_energy, int t_duration, int t_dws, MoveEffect t_effect)
-	: poketype(t_poketype), power(t_power), energy(t_energy), duration(t_duration), dws(t_dws), effect(t_effect)
+#include <string.h>
+
+namespace GoBattleSim
 {
-}
 
 bool Move::has_attr(const char *t_name)
 {
@@ -45,3 +45,5 @@ int *Move::search_int_member(const char *t_name)
 	else
 		return nullptr;
 }
+
+} // namespace GoBattleSim

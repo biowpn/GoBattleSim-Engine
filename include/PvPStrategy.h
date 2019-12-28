@@ -5,6 +5,9 @@
 #include "Strategy.h"
 #include "PvPPokemon.h"
 
+namespace GoBattleSim
+{
+
 typedef struct
 {
 	const Pokemon *subject;
@@ -46,5 +49,7 @@ const PvPStrategy pvp_basic = PvPStrategy(
 
 const PvPStrategy pvp_advance = PvPStrategy(
 	pvp_advance_on_free);
+
+} // namespace GoBattleSim
 
 #endif

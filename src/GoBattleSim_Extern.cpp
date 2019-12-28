@@ -1,8 +1,10 @@
 
+#include "GoBattleSim_Extern.h"
 #include "GoBattleSim.h"
-#include "Battle.h"
-#include "SimplePvPBattle.h"
-#include "BattleMatrix.h"
+
+#include <stdlib.h>
+
+using namespace GoBattleSim;
 
 void Global_set_random_seed(int t_seed)
 {
@@ -56,7 +58,7 @@ void GameMaster_set_parameter(char *t_name, double t_value)
 
 void *Move_new(int t_poketype, int t_power, int t_energy, int t_duration, int t_dws)
 {
-	return new Move(t_poketype, t_power, t_energy, t_duration, t_dws);
+	return new Move{t_poketype, t_power, t_energy, t_duration, t_dws};
 }
 
 void Move_delete(void *__this__)

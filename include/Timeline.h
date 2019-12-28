@@ -2,7 +2,8 @@
 #ifndef _TIMELINE_H
 #define _TIMELINE_H
 
-#include <ostream>
+namespace GoBattleSim
+{
 
 enum EventType
 {
@@ -21,8 +22,6 @@ public:
 	TimelineEvent(EventType = etype_None, int = 0, int = 0, int = 0);
 
 	inline bool operator<(const TimelineEvent &) const;
-
-	friend std::ostream &operator<<(std::ostream &, const TimelineEvent &);
 
 	EventType type;
 	int time;
@@ -48,5 +47,7 @@ protected:
 	int m_size;
 	int m_max_size;
 };
+
+} // namespace GoBattleSim
 
 #endif

@@ -2,7 +2,8 @@
 #ifndef _MOVE_H_
 #define _MOVE_H_
 
-#include <string.h>
+namespace GoBattleSim
+{
 
 struct MoveEffect
 {
@@ -16,9 +17,6 @@ struct MoveEffect
 class Move
 {
 public:
-	Move() = default;
-	Move(int = 0, int = 0, int = 0, int = 0, int = 0, MoveEffect = {});
-
 	// Interface functions
 	bool has_attr(const char *);
 	int get_attr(const char *);
@@ -36,5 +34,7 @@ public:
 protected:
 	int *search_int_member(const char *);
 };
+
+} // namespace GoBattleSim
 
 #endif

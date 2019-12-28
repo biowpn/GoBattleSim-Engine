@@ -5,7 +5,8 @@
 #include "Party.h"
 #include "GameMaster.h"
 
-#include <ostream>
+namespace GoBattleSim
+{
 
 enum ActionType
 {
@@ -27,8 +28,6 @@ public:
 	int value;
 	int time;
 };
-
-std::ostream &operator<<(std::ostream &, const Action &);
 
 typedef struct
 {
@@ -105,5 +104,7 @@ const Strategy BUILT_IN_STRATEGIES[NUM_STRATEGIES] = {
 	STRATEGY_ATTACKER_NO_DODGE,
 	STRATEGY_ATTACKER_DODGE_CHARGED,
 	STRATEGY_ATTACKER_DODGE_ALL};
+
+} // namespace GoBattleSim
 
 #endif

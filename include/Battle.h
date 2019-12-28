@@ -2,13 +2,11 @@
 #ifndef _BATTLE_H_
 #define _BATTLE_H_
 
-#include <stdlib.h>
-#include <math.h>
-
-#include <iostream>
-
 #include "Player.h"
 #include "Timeline.h"
+
+namespace GoBattleSim
+{
 
 struct TimelineEventNode
 {
@@ -115,5 +113,7 @@ protected:
 private:
 	int *search_int_member(const char *);
 };
+
+} // namespace GoBattleSim
 
 #endif

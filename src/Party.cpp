@@ -1,6 +1,11 @@
 
 #include "Party.h"
 
+#include <string.h>
+
+namespace GoBattleSim
+{
+
 Party::Party()
 {
 	m_pokemon = nullptr;
@@ -205,3 +210,5 @@ bool Party::revive()
 		return false;
 	}
 }
+
+} // namespace GoBattleSim

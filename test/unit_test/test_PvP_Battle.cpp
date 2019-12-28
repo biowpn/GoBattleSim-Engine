@@ -6,6 +6,8 @@
 #include "SimplePvPBattle.h"
 #include "BattleMatrix.h"
 
+using namespace GoBattleSim;
+
 int main()
 {
 	std::cout << "\nSimple PvP Battle Test:" << std::endl;
@@ -37,18 +39,18 @@ int main()
 
 	// Set up PvP Moves
 	// (poketype, power, energy, duration (in turns), dws, move effect)
-	Move move_counter = Move(1, 8, 7, 2);
-	Move move_shadow_claw = Move(3, 6, 8, 2);
-	Move move_mud_shot = Move(5, 3, 9, 2);
-	Move move_dragon_breath = Move(0, 4, 3, 1);
-	Move move_bubble = Move(6, 8, 11, 3);
+	Move move_counter = Move{1, 8, 7, 2};
+	Move move_shadow_claw = Move{3, 6, 8, 2};
+	Move move_mud_shot = Move{5, 3, 9, 2};
+	Move move_dragon_breath = Move{0, 4, 3, 1};
+	Move move_bubble = Move{6, 8, 11, 3};
 
-	Move move_power_up_punch = Move(1, 40, -35, 0, 0, {1, 1});
-	Move move_shadow_ball = Move(3, 100, -55);
-	Move move_dragon_claw = Move(0, 50, -35);
-	Move move_ancient_power = Move(4, 70, -45, 0, 0, {0.1, 2, 2});
-	Move move_iron_head = Move(2, 70, -50);
-	Move move_earthquake = Move(5, 120, -65);
+	Move move_power_up_punch = Move{1, 40, -35, 0, 0, {1, 1}};
+	Move move_shadow_ball = Move{3, 100, -55};
+	Move move_dragon_claw = Move{0, 50, -35};
+	Move move_ancient_power = Move{4, 70, -45, 0, 0, {0.1, 2, 2}};
+	Move move_iron_head = Move{2, 70, -50};
+	Move move_earthquake = Move{5, 120, -65};
 
 	// Set up Pokemon
 	// (poketyp1, poketyp2, attack, defense, max_hp)

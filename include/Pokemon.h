@@ -2,10 +2,11 @@
 #ifndef _POKEMON_H_
 #define _POKEMON_H_
 
-#include <string.h>
-
 #include "Move.h"
 #include "GameMaster.h"
+
+namespace GoBattleSim
+{
 
 class Pokemon
 {
@@ -74,5 +75,7 @@ protected:
 
 // Damage calculation as a public function
 int calc_damage(const Pokemon *, const Move *, const Pokemon *, int);
+
+} // namespace GoBattleSim
 
 #endif

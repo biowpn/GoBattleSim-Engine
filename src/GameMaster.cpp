@@ -1,6 +1,11 @@
 
 #include "GameMaster.h"
 
+#include <string.h>
+
+namespace GoBattleSim
+{
+
 int GameMaster::num_types = 0;
 double **GameMaster::type_effectiveness = nullptr;
 int *GameMaster::type_boosted_weathers = nullptr;
@@ -189,3 +194,5 @@ void GameMaster::set_parameter(char *t_name, double t_value)
 	else if (strcmp(t_name, "energy_delta_per_health_lost") == 0)
 		energy_delta_per_health_lost = t_value;
 }
+
+} // namespace GoBattleSim

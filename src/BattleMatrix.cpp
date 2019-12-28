@@ -1,6 +1,11 @@
 
 #include "BattleMatrix.h"
 
+#include <thread>
+
+namespace GoBattleSim
+{
+
 double get_battle_score(const PvPPokemon *t_pkm_0, const PvPPokemon *t_pkm_1, int t_num_shields_0, int t_num_shields_1)
 {
 	SimplePvPBattle battle(t_pkm_0, t_pkm_1);
@@ -134,3 +139,5 @@ void BattleMatrix::get(double **r_matrix)
 		}
 	}
 }
+
+} // namespace GoBattleSim

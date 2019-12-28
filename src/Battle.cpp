@@ -1,6 +1,12 @@
 
 #include "Battle.h"
 
+#include <math.h>
+#include <string.h>
+
+namespace GoBattleSim
+{
+
 Battle::Battle()
 {
 	m_has_log = 0;
@@ -712,3 +718,5 @@ void Battle::erase_log()
 	}
 	m_tenode_last = nullptr;
 }
+
+} // namespace GoBattleSim

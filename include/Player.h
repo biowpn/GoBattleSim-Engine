@@ -2,10 +2,11 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
-#include <string.h>
-
 #include "Party.h"
 #include "Strategy.h"
+
+namespace GoBattleSim
+{
 
 class Player
 {
@@ -62,5 +63,7 @@ private:
 
 	int *search_int_member(const char *);
 };
+
+} // namespace GoBattleSim
 
 #endif

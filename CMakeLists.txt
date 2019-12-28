@@ -14,7 +14,7 @@ add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/Battle.cpp
     ${PROJECT_SOURCE_DIR}/src/BattleMatrix.cpp
     ${PROJECT_SOURCE_DIR}/src/GameMaster.cpp
-    ${PROJECT_SOURCE_DIR}/src/GoBattleSim.cpp
+    ${PROJECT_SOURCE_DIR}/src/GoBattleSim_extern.cpp
     ${PROJECT_SOURCE_DIR}/src/Move.cpp
     ${PROJECT_SOURCE_DIR}/src/Party.cpp
     ${PROJECT_SOURCE_DIR}/src/Player.cpp

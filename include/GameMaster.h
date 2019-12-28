@@ -2,7 +2,8 @@
 #ifndef _GAME_MASTER_H_
 #define _GAME_MASTER_H_
 
-#include <string.h>
+namespace GoBattleSim
+{
 
 class GameMaster
 {
@@ -48,5 +49,7 @@ private:
 
 	static double *stage_multipliers;
 };
+
+} // namespace GoBattleSim
 
 #endif

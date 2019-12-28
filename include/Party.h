@@ -2,9 +2,10 @@
 #ifndef _PARTY_H_
 #define _PARTY_H_
 
-#include <string.h>
-
 #include "Pokemon.h"
+
+namespace GoBattleSim
+{
 
 class Party
 {
@@ -48,5 +49,7 @@ public:
 private:
 	int *search_int_member(const char *);
 };
+
+} // namespace GoBattleSim
 
 #endif

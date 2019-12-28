@@ -1,6 +1,11 @@
 
 #include "Pokemon.h"
 
+#include <string.h>
+
+namespace GoBattleSim
+{
+
 int Pokemon::instance_count = 0;
 
 int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender, int t_weather)
@@ -299,3 +304,5 @@ void Pokemon::attribute_damage(int t_damage, bool t_is_fmove)
 		tdo_fast += t_damage;
 	}
 }
+
+} // namespace GoBattleSim

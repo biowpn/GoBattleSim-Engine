@@ -1,6 +1,9 @@
 
 #include "Timeline.h"
 
+namespace GoBattleSim
+{
+
 TimelineEvent::TimelineEvent(EventType t_type, int t_time, int t_player, int t_value)
 	: type(t_type), time(t_time), player(t_player), value(t_value)
 {
@@ -9,12 +12,6 @@ TimelineEvent::TimelineEvent(EventType t_type, int t_time, int t_player, int t_v
 bool TimelineEvent::operator<(const TimelineEvent &rhs) const
 {
 	return time < rhs.time || (time == rhs.time && player < rhs.player);
-}
-
-std::ostream &operator<<(std::ostream &os, const TimelineEvent &event)
-{
-	os << event.type << ' ' << event.time << ' ' << event.player << ' ' << event.value;
-	return os;
 }
 
 Timeline::Timeline()
@@ -102,3 +99,5 @@ void Timeline::reallocate()
 	}
 	m_array = array_new;
 }
+
+} // namespace GoBattleSim

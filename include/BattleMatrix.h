@@ -2,9 +2,10 @@
 #ifndef _BATTLE_MATRIX_H_
 #define _BATTLE_MATRIX_H_
 
-#include <thread>
-
 #include "SimplePvPBattle.h"
+
+namespace GoBattleSim
+{
 
 double get_battle_score(const PvPPokemon *, const PvPPokemon *, int, int);
 
@@ -26,5 +27,7 @@ protected:
 	bool m_enum_shields;
 	double **m_matrix;
 };
+
+} // namespace GoBattleSim
 
 #endif

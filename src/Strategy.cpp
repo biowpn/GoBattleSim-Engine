@@ -1,6 +1,9 @@
 
 #include "Strategy.h"
 
+namespace GoBattleSim
+{
+
 Action::Action(ActionType t_type, int t_delay, int t_value)
 {
 	type = t_type;
@@ -8,12 +11,6 @@ Action::Action(ActionType t_type, int t_delay, int t_value)
 	value = t_value;
 
 	time = 0;
-}
-
-std::ostream &operator<<(std::ostream &os, const Action &t_action)
-{
-	os << t_action.type << ' ' << t_action.delay << ' ' << t_action.value << ' ' << t_action.time;
-	return os;
 }
 
 Strategy::Strategy(EventResponder t_on_free, EventResponder t_on_clear, EventResponder t_on_attack)
@@ -216,3 +213,5 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 }
 
 // int damage_if_dodged = (1 - GameMaster::dodge_damage_reduction_percent) * calc_damage(si.battle_p, si.enemy, enemy_move, subject);
+
+} // namespace GoBattleSim

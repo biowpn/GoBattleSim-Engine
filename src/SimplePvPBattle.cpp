@@ -1,6 +1,9 @@
 
 #include "SimplePvPBattle.h"
 
+namespace GoBattleSim
+{
+
 SimplePvPBattle::SimplePvPBattle(const PvPPokemon *t_pokemon_0, const PvPPokemon *t_pokemon_1)
 {
 	m_pokemon[0] = t_pokemon_0;
@@ -272,3 +275,5 @@ SimplePvPBattleOutcome SimplePvPBattle::get_outcome()
 			 raw_tdos[1] < 1 ? raw_tdos[1] : 1}};
 	}
 }
+
+} // namespace GoBattleSim

@@ -1,6 +1,9 @@
 
 #include "PvPStrategy.h"
 
+namespace GoBattleSim
+{
+
 PvPStrategy::PvPStrategy(PvPEventResponder t_on_free, PvPEventResponder t_on_attack, PvPEventResponder t_on_switch)
 	: on_free(t_on_free), on_attack(t_on_attack), on_switch(t_on_switch)
 {
@@ -88,3 +91,5 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 		r_action->type = atype_Fast;
 	}
 }
+
+} // namespace GoBattleSim

@@ -4,6 +4,8 @@
 
 #include "Timeline.h"
 
+using namespace GoBattleSim;
+
 int main()
 {
 	{

@@ -5,6 +5,8 @@
 
 #include "Battle.h"
 
+using namespace GoBattleSim;
+
 int main()
 {
 	std::cout << "\nRaid Battle Test:" << std::endl;
@@ -25,14 +27,14 @@ int main()
 
 	// Set up moves
 	// (poketype, power, energy, duration, damage_window_start)
-	Move move_confusion = Move(0, 20, 15, 1600, 600);
-	Move move_zen_headbutt = Move(0, 12, 10, 1100, 850);
-	Move move_extrasensory = Move(0, 12, 12, 1100, 850);
-	Move move_counter = Move(1, 12, 8, 900, 700);
-	Move move_bullet_punch = Move(2, 9, 10, 900, 300);
-	Move move_dynamic_punch = Move(1, 90, -50, 2700, 1200);
-	Move move_psychic = Move(0, 100, -100, 2800, 1300);
-	Move move_sky_attack = Move(3, 80, -50, 2000, 1500);
+	Move move_confusion = Move{0, 20, 15, 1600, 600};
+	Move move_zen_headbutt = Move{0, 12, 10, 1100, 850};
+	Move move_extrasensory = Move{0, 12, 12, 1100, 850};
+	Move move_counter = Move{1, 12, 8, 900, 700};
+	Move move_bullet_punch = Move{2, 9, 10, 900, 300};
+	Move move_dynamic_punch = Move{1, 90, -50, 2700, 1200};
+	Move move_psychic = Move{0, 100, -100, 2800, 1300};
+	Move move_sky_attack = Move{3, 80, -50, 2000, 1500};
 
 	// Set up Pokemon
 	// (poketyp1, poketyp2, attack, defense, max_hp)

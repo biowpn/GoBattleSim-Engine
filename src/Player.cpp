@@ -1,6 +1,11 @@
 
 #include "Player.h"
 
+#include <string.h>
+
+namespace GoBattleSim
+{
+
 int Player::instance_count = 0;
 
 Player::Player()
@@ -270,3 +275,5 @@ int Player::get_num_deaths() const
 	}
 	return num_deaths;
 }
+
+} // namespace GoBattleSim

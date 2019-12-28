@@ -1,6 +1,9 @@
 
 #include "PvPPokemon.h"
 
+namespace GoBattleSim
+{
+
 PvPPokemon::PvPPokemon(int t_poketype1, int t_poketype2, double t_attack, double t_defense, int t_max_hp)
 	: Pokemon(t_poketype1, t_poketype2, t_attack, t_defense, t_max_hp)
 {
@@ -89,3 +92,5 @@ int calc_damage_pvp_cmove(const Pokemon *t_attacker, const Move *t_move, const P
 
 	return 0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1;
 }
+
+} // namespace GoBattleSim

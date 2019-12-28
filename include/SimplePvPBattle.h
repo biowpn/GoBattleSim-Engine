@@ -5,6 +5,9 @@
 #include "PvPPokemon.h"
 #include "PvPStrategy.h"
 
+namespace GoBattleSim
+{
+
 struct SimplePvPBattleOutcome
 {
 	double tdo_percent[2];
@@ -52,5 +55,7 @@ protected:
 	SimplePvPBattle *m_branch[2];
 	double m_branch_weight[2];
 };
+
+} // namespace GoBattleSim
 
 #endif
