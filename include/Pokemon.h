@@ -7,11 +7,13 @@
 
 namespace GoBattleSim
 {
+
 constexpr unsigned MAX_NUM_CMOVES = 3;
 
 class Pokemon
 {
 public:
+	Pokemon() = default;
 	Pokemon(int, int, double, double, int);
 	Pokemon(const Pokemon &);
 	~Pokemon();
@@ -37,11 +39,11 @@ public:
 
 	// Members
 	int id;
-	int poketype1;
-	int poketype2;
-	double attack;
-	double defense;
-	int max_hp;
+	int poketype1{0};
+	int poketype2{0};
+	double attack{0};
+	double defense{0};
+	int max_hp{0};
 
 	Move fmove;
 	Move *cmove{nullptr};

@@ -8,6 +8,8 @@
 namespace GoBattleSim
 {
 
+constexpr unsigned MAX_NUM_PARTIES = 5;
+
 class Player
 {
 public:
@@ -17,7 +19,8 @@ public:
 
 	// Interface functions
 	Party *get_party(int);
-	void add(Party *);
+	const Party *get_party(int) const;
+	void add(const Party *);
 	void erase_parties();
 	void set_attack_multiplier(double);
 	void set_clone_multiplier(int);
@@ -28,17 +31,18 @@ public:
 	int get_attr(const char *);
 	// End of Interface functions
 
-	void update(Pokemon *);
+	void update(const Pokemon *);
 
 	// Batle functions
 	void init();
 	void heal();
 	Party *get_head_party();
 	int get_pokemon_count() const;
-	void get_all_pokemon(Pokemon **) const;
+	// same with Party::get_all_pokemon, get only the addresses
+	Pokemon **get_all_pokemon(Pokemon **out_first);
 
 	Pokemon *get_head();
-	bool set_head(Pokemon *);
+	bool set_head(const Pokemon *);
 	bool choose_next_pokemon();
 	bool revive_current_party();
 	bool choose_next_party();
@@ -53,13 +57,12 @@ public:
 	int team;
 	Strategy strategy;
 
-	Party **m_parties;
-	int m_parties_count;
-	int m_parties_count_max;
-	int m_party_head;
-
 private:
 	static int instance_count;
+
+	int m_parties_count{0};
+	Party m_parties[MAX_NUM_PARTIES];
+	Party *m_party_head{nullptr};
 
 	int *search_int_member(const char *);
 };

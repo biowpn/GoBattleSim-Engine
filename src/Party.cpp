@@ -2,16 +2,13 @@
 #include "Party.h"
 
 #include <string.h>
+#include <stdexcept>
 
 namespace GoBattleSim
 {
 
 Party::Party()
 {
-	m_pokemon = nullptr;
-	m_pokemon_count = 0;
-	m_pokemon_count_max = 0;
-	m_pokemon_head = 0;
 	m_revive_policy = 0;
 	m_revive_policy_init = 0;
 }
@@ -22,12 +19,10 @@ Party::Party(const Party &other)
 	m_revive_policy = other.m_revive_policy;
 	m_revive_policy_init = other.m_revive_policy_init;
 
-	m_pokemon = nullptr;
 	m_pokemon_count = 0;
-	m_pokemon_count_max = 0;
 	for (int i = 0; i < other.m_pokemon_count; ++i)
 	{
-		add(other.m_pokemon[i]);
+		add(&other.m_pokemon[i]);
 	}
 }
 
@@ -36,50 +31,35 @@ Party::~Party()
 	erase_pokemon();
 }
 
-void Party::add(Pokemon *t_pokemon)
+void Party::add(const Pokemon *t_pokemon)
 {
-	if (m_pokemon_count >= m_pokemon_count_max)
+	if (m_pokemon_count >= MAX_NUM_POKEMON)
 	{
-		m_pokemon_count_max += 2;
-		Pokemon **pokemon_temp = new Pokemon *[m_pokemon_count_max];
-		for (int i = 0; i < m_pokemon_count; ++i)
-		{
-			pokemon_temp[i] = m_pokemon[i];
-		}
-		if (m_pokemon)
-		{
-			delete[] m_pokemon;
-		}
-		m_pokemon = pokemon_temp;
+		throw std::runtime_error("too many Pokemon");
 	}
-	m_pokemon[m_pokemon_count++] = new Pokemon(*t_pokemon);
+	m_pokemon[m_pokemon_count] = *t_pokemon;
+	if (m_pokemon_head == nullptr)
+	{
+		m_pokemon_head = m_pokemon + m_pokemon_count;
+	}
+	++m_pokemon_count;
 }
 
-void Party::update(Pokemon *t_pokemon)
+void Party::update(const Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		if (m_pokemon[i]->id == t_pokemon->id)
+		if (m_pokemon[i].id == t_pokemon->id)
 		{
-			delete m_pokemon[i];
-			m_pokemon[i] = new Pokemon(*t_pokemon);
+			m_pokemon[i] = *t_pokemon;
 		}
 	}
 }
 
 void Party::erase_pokemon()
 {
-	if (m_pokemon && m_pokemon_count > 0)
-	{
-		for (int i = 0; i < m_pokemon_count; ++i)
-		{
-			delete m_pokemon[i];
-		}
-		delete[] m_pokemon;
-	}
-	m_pokemon = nullptr;
 	m_pokemon_count = 0;
-	m_pokemon_count_max = 0;
+	m_pokemon_head = nullptr;
 }
 
 bool Party::has_attr(const char *t_name)
@@ -123,24 +103,44 @@ int Party::get_pokemon_count() const
 
 Pokemon *Party::get_pokemon(int t_index)
 {
-	return m_pokemon[t_index];
+	if (0 <= t_index && t_index < m_pokemon_count)
+	{
+		return m_pokemon + t_index;
+	}
+	else
+	{
+		return m_pokemon_head;
+	}
 }
 
-void Party::get_all_pokemon(Pokemon **t_array)
+const Pokemon *Party::get_pokemon(int t_index) const
+{
+	if (0 <= t_index && t_index < m_pokemon_count)
+	{
+		return m_pokemon + t_index;
+	}
+	else
+	{
+		return m_pokemon_head;
+	}
+}
+
+Pokemon **Party::get_all_pokemon(Pokemon **out_first)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		t_array[i] = m_pokemon[i];
+		*out_first++ = m_pokemon + i;
 	}
+	return out_first;
 }
 
 void Party::init()
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		m_pokemon[i]->init();
+		m_pokemon[i].init();
 	}
-	m_pokemon_head = 0;
+	m_pokemon_head = m_pokemon;
 	m_revive_policy = m_revive_policy_init;
 }
 
@@ -148,23 +148,23 @@ void Party::heal()
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		m_pokemon[i]->heal();
+		m_pokemon[i].heal();
 	}
-	m_pokemon_head = 0;
+	m_pokemon_head = m_pokemon;
 }
 
 Pokemon *Party::get_head()
 {
-	return m_pokemon[m_pokemon_head];
+	return m_pokemon_head;
 }
 
-bool Party::set_head(Pokemon *t_pokemon)
+bool Party::set_head(const Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		if (m_pokemon[i] == t_pokemon)
+		if (m_pokemon + i == t_pokemon)
 		{
-			m_pokemon_head = i;
+			m_pokemon_head = m_pokemon + i;
 			return true;
 		}
 	}
@@ -175,7 +175,7 @@ bool Party::set_head(int t_index)
 {
 	if (0 <= t_index && t_index < m_pokemon_count)
 	{
-		m_pokemon_head = t_index;
+		m_pokemon_head = m_pokemon + t_index;
 		return true;
 	}
 	else
@@ -186,15 +186,16 @@ bool Party::set_head(int t_index)
 
 bool Party::set_head_to_next()
 {
-	for (int i = (m_pokemon_head + 1) % m_pokemon_count; i != m_pokemon_head; i = (i + 1) % m_pokemon_count)
+	auto p = m_pokemon_head;
+	do
 	{
-		if (m_pokemon[i]->is_alive())
+		if (++p >= m_pokemon + m_pokemon_count)
 		{
-			m_pokemon_head = i;
-			return true;
+			p = m_pokemon;
 		}
-	}
-	return false;
+
+	} while (!p->is_alive() && p != m_pokemon_head);
+	return p->is_alive();
 }
 
 bool Party::revive()

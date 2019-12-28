@@ -8,6 +8,8 @@
 namespace GoBattleSim
 {
 
+constexpr unsigned MAX_NUM_PLAYERS = 32;
+
 struct TimelineEventNode
 {
 	TimelineEventNode *next;
@@ -25,7 +27,7 @@ typedef struct
 
 typedef struct
 {
-	Player *player;
+	Player player;
 	int head_index;
 	int time_free;
 	Action current_action;
@@ -61,7 +63,6 @@ protected:
 	void erase_pokemon();
 
 	int search(const Pokemon *);
-	int search(const Player *);
 	int search_rival(int);
 
 	void go();
@@ -94,12 +95,11 @@ protected:
 
 	Timeline m_timeline;
 
+	PlayerState m_player_states[MAX_NUM_PLAYERS];
 	int m_players_count;
-	int m_players_count_max;
-	PlayerState *m_player_states;
 
+	Pokemon *m_pokemon[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	int m_pokemon_count;
-	Pokemon **m_pokemon;
 
 	int m_has_log;
 	int m_time_limit;
