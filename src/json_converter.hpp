@@ -128,6 +128,8 @@ void to_json(json &j, const Player &player)
     j["team"] = player.team;
     j["id"] = player.id;
     j["strategy"] = std::string(player.strategy.name);
+    j["attack_multiplier"] = player.get_attack_multiplier();
+    j["clone_multiplier"] = player.get_clone_multiplier();
 }
 
 void from_json(const json &j, Player &player)
@@ -148,6 +150,8 @@ void from_json(const json &j, Player &player)
             player.strategy = BUILT_IN_STRATEGIES[i];
         }
     }
+    player.set_attack_multiplier(j["attack_multiplier"]);
+    player.set_clone_multiplier(j["clone_multiplier"]);
 }
 
 void to_json(json &j, const GameMaster &gm)

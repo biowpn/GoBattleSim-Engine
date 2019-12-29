@@ -103,6 +103,12 @@ void Player::set_attack_multiplier(double t_attack_multiplier)
 			m_parties[i].get_pokemon(j)->attack_multiplier = t_attack_multiplier;
 		}
 	}
+	m_attack_multiplier = t_attack_multiplier;
+}
+
+double Player::get_attack_multiplier() const
+{
+	return m_attack_multiplier;
 }
 
 void Player::set_clone_multiplier(int t_clone_multiplier)
@@ -114,6 +120,12 @@ void Player::set_clone_multiplier(int t_clone_multiplier)
 			m_parties[i].get_pokemon(j)->clone_multiplier = t_clone_multiplier;
 		}
 	}
+	m_clone_multiplier = t_clone_multiplier;
+}
+
+int Player::get_clone_multiplier() const
+{
+	return m_clone_multiplier;
 }
 
 void Player::set_strategy(int t_strategy_index)
@@ -168,6 +180,18 @@ void Player::reset_head_party()
 }
 
 Pokemon *Player::get_head()
+{
+	if (m_party_head == nullptr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return m_party_head->get_head();
+	}
+}
+
+const Pokemon *Player::get_head() const
 {
 	if (m_party_head == nullptr)
 	{
@@ -252,6 +276,5 @@ int *Player::search_int_member(const char *t_name)
 	else
 		return nullptr;
 }
-
 
 } // namespace GoBattleSim

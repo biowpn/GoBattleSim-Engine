@@ -55,12 +55,13 @@ public:
 
 	// Interface functions
 	Player *get_player(int);
-	void add(Player *);
-	void update(Player *);
-	void update(Pokemon *);
+	void add(const Player *);
+	void update(const Player *);
+	void update(const Pokemon *);
 	void erase_players();
 	void set_time_limit(int);
 	void set_weather(int);
+	void set_enable_log(bool);
 	bool has_attr(const char *);
 	void set_attr(const char *, int);
 	int get_attr(const char *);
@@ -95,9 +96,9 @@ protected:
 	void handle_fainted_pokemon(int, int);
 
 	// three possible actions when a Pokemon faints
-	bool select_next_pokemon(PlayerState&);
-	bool revive_current_party(PlayerState&);
-	bool select_next_party(PlayerState&);
+	bool select_next_pokemon(PlayerState &);
+	bool revive_current_party(PlayerState &);
+	bool select_next_party(PlayerState &);
 
 	bool is_defeated(int);
 	bool is_end();

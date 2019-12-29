@@ -40,7 +40,7 @@ Player *Battle::get_player(int t_index)
 	return &m_player_states[t_index].player;
 }
 
-void Battle::add(Player *t_player)
+void Battle::add(const Player *t_player)
 {
 	if (m_players_count >= MAX_NUM_PLAYERS)
 	{
@@ -54,7 +54,7 @@ void Battle::add(Player *t_player)
 	m_player_states[m_players_count].head_index = search(t_player->get_head());
 }
 
-void Battle::update(Player *t_player)
+void Battle::update(const Player *t_player)
 {
 	for (int i = 0; i < m_players_count; ++i)
 	{
@@ -66,7 +66,7 @@ void Battle::update(Player *t_player)
 	fetch_pokemon();
 }
 
-void Battle::update(Pokemon *t_pokemon)
+void Battle::update(const Pokemon *t_pokemon)
 {
 	for (int i = 0; i < m_players_count; ++i)
 	{
@@ -145,6 +145,11 @@ void Battle::set_time_limit(int t_time_limit)
 void Battle::set_weather(int t_weather)
 {
 	m_weather = t_weather;
+}
+
+void Battle::set_enable_log(bool enable_log)
+{
+	m_has_log = enable_log;
 }
 
 int Battle::search(const Pokemon *t_pokemon)

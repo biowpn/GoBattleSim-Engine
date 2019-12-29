@@ -23,7 +23,9 @@ public:
 	void add(const Party *);
 	void erase_parties();
 	void set_attack_multiplier(double);
+	double get_attack_multiplier() const;
 	void set_clone_multiplier(int);
+	int get_clone_multiplier() const;
 	void set_strategy(int);
 	void set_strategy(const Strategy &);
 
@@ -34,6 +36,7 @@ public:
 	Pokemon **get_all_pokemon(Pokemon **out_first);
 
 	Pokemon *get_head();
+	const Pokemon *get_head() const;
 	bool set_head(const Pokemon *);
 
 	void init();
@@ -61,6 +64,9 @@ private:
 	int m_parties_count{0};
 	Party m_parties[MAX_NUM_PARTIES];
 	Party *m_party_head{nullptr};
+
+	double m_attack_multiplier{1};
+	int m_clone_multiplier{1};
 
 	int *search_int_member(const char *);
 };
