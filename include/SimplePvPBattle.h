@@ -13,15 +13,6 @@ struct SimplePvPBattleOutcome
 	double tdo_percent[2];
 };
 
-struct PokemonState
-{
-	int hp;
-	int energy;
-	int cooldown;
-	int shields;
-	Action decision;
-};
-
 class SimplePvPBattle
 {
 public:
@@ -39,6 +30,15 @@ public:
 	// End of Interface functions
 
 protected:
+	struct PokemonState
+	{
+		int hp;
+		int energy;
+		int cooldown;
+		int shields;
+		Action decision;
+	};
+
 	void register_action_fast(int, const Action &);
 	void register_action_charged(int, const Action &);
 	void handle_move_effect(int, const MoveEffect &);

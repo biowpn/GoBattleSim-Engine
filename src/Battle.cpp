@@ -1,12 +1,18 @@
 
 #include "Battle.h"
 
+#include <algorithm>
 #include <math.h>
 #include <string.h>
 #include <stdexcept>
 
 namespace GoBattleSim
 {
+
+bool operator<(const TimelineEvent &lhs, const TimelineEvent &rhs)
+{
+	return lhs.time > rhs.time || (lhs.time == rhs.time && lhs.player > rhs.player);
+}
 
 Battle::Battle()
 {
@@ -166,10 +172,24 @@ int Battle::search_rival(int t_player_index)
 	return -1;
 }
 
+void Battle::enqueue(TimelineEvent &&e)
+{
+	m_event_queue.emplace_back(std::move(e));
+	std::push_heap(m_event_queue.begin(), m_event_queue.end());
+}
+
+TimelineEvent Battle::dequeue()
+{
+	auto e = m_event_queue.front();
+	std::pop_heap(m_event_queue.begin(), m_event_queue.end());
+	m_event_queue.pop_back();
+	return e;
+}
+
 void Battle::init()
 {
 	m_time = 0;
-	m_timeline.erase();
+	m_event_queue.clear();
 	m_defeated_team = -1;
 
 	if (m_has_log)
@@ -192,11 +212,10 @@ void Battle::start()
 {
 	for (int i = 0; i < m_players_count; ++i)
 	{
-		m_timeline.put(TimelineEvent(
-			etype_Enter,
-			m_time,
-			i,
-			m_player_states[i].head_index));
+		enqueue({EventType::Enter,
+				 m_time,
+				 i,
+				 m_player_states[i].head_index});
 	}
 	go();
 	for (int i = 0; i < m_players_count; ++i)
@@ -218,7 +237,7 @@ void Battle::go()
 
 	while (!is_end())
 	{
-		next(m_timeline.get());
+		next(dequeue());
 	}
 }
 
@@ -227,22 +246,22 @@ void Battle::next(const TimelineEvent &t_event)
 	m_time = t_event.time;
 	switch (t_event.type)
 	{
-	case etype_Free:
+	case EventType::Free:
 		handle_event_free(t_event);
 		break;
-	case etype_Announce:
+	case EventType::Announce:
 		handle_event_announce(t_event);
 		break;
-	case etype_Fast:
+	case EventType::Fast:
 		handle_event_fast(t_event);
 		break;
-	case etype_Charged:
+	case EventType::Charged:
 		handle_event_charged(t_event);
 		break;
-	case etype_Dodge:
+	case EventType::Dodge:
 		handle_event_dodge(t_event);
 		break;
-	case etype_Enter:
+	case EventType::Enter:
 		handle_event_enter(t_event);
 		break;
 	default:
@@ -304,11 +323,10 @@ void Battle::handle_fainted_pokemon(int t_player_index, Pokemon *t_pokemon)
 
 	if (time_new_enter > 0) // Player chose a new head Pokemon
 	{
-		m_timeline.put(TimelineEvent(
-			etype_Enter,
-			time_new_enter,
-			t_player_index,
-			search(player.get_head())));
+		enqueue({EventType::Enter,
+				 time_new_enter,
+				 t_player_index,
+				 search(player.get_head())});
 	}
 	else if (is_defeated(player.team)) // Player is out of play. Check if his team is defeated
 	{
@@ -335,24 +353,24 @@ bool Battle::is_end()
 
 void Battle::register_action(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	ps.current_action = t_action;
 	ps.current_action.time = m_time + t_action.delay;
 	switch (t_action.type)
 	{
-	case atype_Fast:
+	case ActionType::Fast:
 		register_action_fast(t_player_index, t_action);
 		break;
-	case atype_Charged:
+	case ActionType::Charged:
 		register_action_charged(t_player_index, t_action);
 		break;
-	case atype_Dodge:
+	case ActionType::Dodge:
 		register_action_dodge(t_player_index, t_action);
 		break;
-	case atype_Switch:
+	case ActionType::Switch:
 		register_action_switch(t_player_index, t_action);
 		break;
-	case atype_Wait:
+	case ActionType::Wait:
 		register_action_wait(t_player_index, t_action);
 		break;
 	default:
@@ -362,34 +380,31 @@ void Battle::register_action(int t_player_index, const Action &t_action)
 
 void Battle::register_action_fast(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
 	int t_pokemon_index = ps.head_index;
 	auto move = m_pokemon[t_pokemon_index]->get_fmove(t_action.value);
-	m_timeline.put(TimelineEvent(
-		etype_Fast,
-		time_action_start + move->dws,
-		t_player_index,
-		t_action.value));
+	enqueue({EventType::Fast,
+			 time_action_start + move->dws,
+			 t_player_index,
+			 t_action.value});
 	ps.time_free = time_action_start + move->duration;
 	if (ps.player.team == 0)
 	{
 		ps.time_free += (rand() % 1000 + 1500);
-		m_timeline.put(TimelineEvent(
-			etype_Announce,
-			time_action_start,
-			t_player_index,
-			t_action.value));
+		enqueue({EventType::Announce,
+				 time_action_start,
+				 t_player_index,
+				 t_action.value});
 	}
-	m_timeline.put(TimelineEvent(
-		etype_Free,
-		ps.time_free,
-		t_player_index));
+	enqueue({EventType::Free,
+			 ps.time_free,
+			 t_player_index});
 }
 
 void Battle::register_action_charged(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
 	int t_pokemon_index = ps.head_index;
 	auto move = m_pokemon[t_pokemon_index]->get_cmove(t_action.value);
@@ -398,75 +413,67 @@ void Battle::register_action_charged(int t_player_index, const Action &t_action)
 		ps.time_free = time_action_start + 500;
 		return;
 	}
-	m_timeline.put(TimelineEvent(
-		etype_Charged,
-		time_action_start + move->dws,
-		t_player_index,
-		t_action.value));
+	enqueue({EventType::Charged,
+			 time_action_start + move->dws,
+			 t_player_index,
+			 t_action.value});
 	ps.time_free = time_action_start + move->duration;
 	if (ps.player.team == 0)
 	{
 		ps.time_free += (rand() % 1000 + 1500);
-		m_timeline.put(TimelineEvent(
-			etype_Announce,
-			time_action_start,
-			t_player_index,
-			t_action.value));
+		enqueue({EventType::Announce,
+				 time_action_start,
+				 t_player_index,
+				 t_action.value});
 	}
-	m_timeline.put(TimelineEvent(
-		etype_Free,
-		ps.time_free,
-		t_player_index));
+	enqueue({EventType::Free,
+			 ps.time_free,
+			 t_player_index});
 }
 
 void Battle::register_action_dodge(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
-	m_timeline.put(TimelineEvent(
-		etype_Dodge,
-		time_action_start,
-		t_player_index));
+	enqueue({EventType::Dodge,
+			 time_action_start,
+			 t_player_index});
 	ps.time_free = time_action_start + GameMaster::dodge_duration;
-	m_timeline.put(TimelineEvent(
-		etype_Free,
-		ps.time_free,
-		t_player_index));
+	enqueue({EventType::Free,
+			 ps.time_free,
+			 t_player_index});
 }
 
 void Battle::register_action_switch(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
-	m_timeline.put(TimelineEvent(
-		etype_Enter,
-		time_action_start,
-		t_player_index,
-		search(ps.player.get_head_party()->get_pokemon(t_action.value))));
+	enqueue({EventType::Enter,
+			 time_action_start,
+			 t_player_index,
+			 search(ps.player.get_head_party()->get_pokemon(t_action.value))});
 	ps.time_free = time_action_start + GameMaster::swap_duration;
-	m_timeline.put(TimelineEvent(
-		etype_Free,
-		ps.time_free,
-		t_player_index));
+	enqueue({EventType::Free,
+			 ps.time_free,
+			 t_player_index});
 }
 
 void Battle::register_action_wait(int t_player_index, const Action &t_action)
 {
-	PlayerState &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[t_player_index];
 	ps.time_free = m_time;
 	if (t_action.value > 0) // Finite waiting
 	{
-		m_timeline.put(TimelineEvent(
-			etype_Free,
-			ps.time_free + t_action.value,
-			t_player_index));
+		enqueue({EventType::Free,
+				 ps.time_free + t_action.value,
+				 t_player_index});
 	}
 }
 
 StrategyInput Battle::generate_strat_input(int t_player_index)
 {
-	PlayerState &ps = m_player_states[t_player_index];
-	PlayerState &enemy_ps = m_player_states[search_rival(t_player_index)];
+	auto &ps = m_player_states[t_player_index];
+	auto &enemy_ps = m_player_states[search_rival(t_player_index)];
 	if (ps.time_free < m_time)
 	{
 		ps.time_free = m_time;
@@ -485,13 +492,13 @@ StrategyInput Battle::generate_strat_input(int t_player_index)
 void Battle::handle_event_free(const TimelineEvent &t_event)
 {
 	int player_index = t_event.player;
-	PlayerState &ps = m_player_states[player_index];
+	auto &ps = m_player_states[player_index];
 	Pokemon *subject = m_pokemon[ps.head_index];
 	if (!subject->active || ps.time_free > m_time)
 	{
 		return;
 	}
-	if (ps.buffer_action.type == atype_None) // No buffer action, call on_free
+	if (ps.buffer_action.type == ActionType::None) // No buffer action, call on_free
 	{
 		Action action;
 		ps.player.strategy.on_free(generate_strat_input(player_index), &action);
@@ -500,7 +507,7 @@ void Battle::handle_event_free(const TimelineEvent &t_event)
 	else // Clear and execute buffer action
 	{
 		register_action(player_index, ps.buffer_action);
-		ps.buffer_action.type = atype_None;
+		ps.buffer_action.type = ActionType::None;
 	}
 	if (ps.player.strategy.on_clear) // Ask for buffer action is on_clear is not NULL
 	{
@@ -513,12 +520,12 @@ void Battle::handle_event_announce(const TimelineEvent &t_event)
 	int team = m_player_states[t_event.player].player.team;
 	for (int i = 0; i < m_players_count; ++i)
 	{
-		PlayerState &ps = m_player_states[i];
+		auto &ps = m_player_states[i];
 		if (ps.player.team == team)
 			continue;
 		if (ps.player.strategy.on_attack)
 		{
-			if (ps.current_action.type == atype_None || ps.current_action.type == atype_Wait)
+			if (ps.current_action.type == ActionType::None || ps.current_action.type == ActionType::Wait)
 			{
 				Action action;
 				ps.player.strategy.on_attack(generate_strat_input(i), &action);
@@ -535,7 +542,7 @@ void Battle::handle_event_announce(const TimelineEvent &t_event)
 void Battle::handle_event_fast(const TimelineEvent &t_event)
 {
 	int player_index = t_event.player;
-	PlayerState &ps = m_player_states[player_index];
+	auto &ps = m_player_states[player_index];
 	Pokemon *subject = m_pokemon[ps.head_index];
 	if (!subject->active)
 	{
@@ -574,7 +581,7 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 void Battle::handle_event_charged(const TimelineEvent &t_event)
 {
 	int player_index = t_event.player;
-	PlayerState &ps = m_player_states[player_index];
+	auto &ps = m_player_states[player_index];
 	Pokemon *subject = m_pokemon[ps.head_index];
 	if (!subject->active)
 	{
@@ -613,7 +620,7 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 void Battle::handle_event_dodge(const TimelineEvent &t_event)
 {
 	int player_index = t_event.player;
-	PlayerState &ps = m_player_states[player_index];
+	auto &ps = m_player_states[player_index];
 	Pokemon *subject = m_pokemon[ps.head_index];
 	subject->damage_reduction_expired_time = m_time + GameMaster::dodge_window + 1;
 	if (m_has_log)
@@ -625,19 +632,18 @@ void Battle::handle_event_dodge(const TimelineEvent &t_event)
 void Battle::handle_event_enter(const TimelineEvent &t_event)
 {
 	int player_index = t_event.player;
-	PlayerState &ps = m_player_states[player_index];
+	auto &ps = m_player_states[player_index];
 	Pokemon *cur_head_pokemon = m_pokemon[ps.head_index];
 	Pokemon *new_head_pokemon = m_pokemon[t_event.value];
 	cur_head_pokemon->active = false;
 	ps.player.set_head(new_head_pokemon);
 	ps.head_index = t_event.value;
-	ps.current_action = Action(atype_Switch);
+	ps.current_action = {ActionType::Switch};
 	new_head_pokemon->active = true;
 	new_head_pokemon->duration = m_time;
-	m_timeline.put(TimelineEvent(
-		etype_Free,
-		m_time + 500,
-		player_index));
+	enqueue({EventType::Free,
+			 m_time + 500,
+			 player_index});
 	if (m_has_log)
 	{
 		append_log(t_event);

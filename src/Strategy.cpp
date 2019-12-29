@@ -4,15 +4,6 @@
 namespace GoBattleSim
 {
 
-Action::Action(ActionType t_type, int t_delay, int t_value)
-{
-	type = t_type;
-	delay = t_delay;
-	value = t_value;
-
-	time = 0;
-}
-
 Strategy::Strategy(EventResponder t_on_free, EventResponder t_on_clear, EventResponder t_on_attack)
 	: on_free(t_on_free ? t_on_free : attacker_no_dodge_on_free), on_clear(t_on_clear), on_attack(t_on_attack)
 {
@@ -22,11 +13,11 @@ Strategy::Strategy(EventResponder t_on_free, EventResponder t_on_clear, EventRes
 int get_projected_energy(const StrategyInput &si)
 {
 	int projected_energy = si.subject->energy;
-	if (si.subject_action.type == atype_Fast)
+	if (si.subject_action.type == ActionType::Fast)
 	{
 		projected_energy += si.subject->get_fmove(0)->energy;
 	}
-	else if (si.subject_action.type == atype_Charged)
+	else if (si.subject_action.type == ActionType::Charged)
 	{
 		projected_energy += si.subject->cmove->energy;
 	}
@@ -35,7 +26,7 @@ int get_projected_energy(const StrategyInput &si)
 
 void defender_on_clear(const StrategyInput &si, Action *r_action)
 {
-	r_action->type = atype_Fast;
+	r_action->type = ActionType::Fast;
 	r_action->value = 0;
 	int projected_energy = get_projected_energy(si);
 	for (int i = 0; i < si.subject->cmoves_count; ++i)
@@ -43,7 +34,7 @@ void defender_on_clear(const StrategyInput &si, Action *r_action)
 		auto cmove = si.subject->get_cmove(i);
 		if (projected_energy + cmove->energy >= 0 && ((si.random_number >> i) & 1))
 		{
-			r_action->type = atype_Charged;
+			r_action->type = ActionType::Charged;
 			r_action->value = i;
 			break;
 		}
@@ -54,11 +45,11 @@ void attacker_no_dodge_on_free(const StrategyInput &si, Action *r_action)
 {
 	if (si.subject->energy + si.subject->cmove->energy >= 0)
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 	}
 	else
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 }
 
@@ -66,11 +57,11 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
 	int time_of_damage = -1, time_of_enemy_cooldown = -1;
-	if (si.enemy_action.type == atype_Fast)
+	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
 	}
-	else if (si.enemy_action.type == atype_Charged)
+	else if (si.enemy_action.type == ActionType::Charged)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
@@ -84,23 +75,23 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 	int time_till_damage = time_of_damage - si.time;
 	if (time_till_damage > si.subject->cmove->duration && si.subject->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 		r_action->value = -1;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 	else
 	{
 		if (predicted_attack)
 		{
-			r_action->type = atype_Wait;
+			r_action->type = ActionType::Wait;
 		}
 		else
 		{
 			int delay = time_till_damage - GameMaster::dodge_window;
-			r_action->type = atype_Dodge;
+			r_action->type = ActionType::Dodge;
 			r_action->delay = delay > 0 ? delay : 0;
 		}
 	}
@@ -109,7 +100,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 {
 	int time_of_damage;
-	if (si.enemy_action.type == atype_Fast)
+	if (si.enemy_action.type == ActionType::Fast)
 	{
 		// Ignore the coming enemy fast attack
 		attacker_no_dodge_on_free(si, r_action);
@@ -122,17 +113,17 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 	int time_till_damage = time_of_damage - si.time;
 	if (time_till_damage > si.subject->cmove->duration && si.subject->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 		r_action->value = -1;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 	else // Just dodge
 	{
 		int delay = time_till_damage - GameMaster::dodge_window;
-		r_action->type = atype_Dodge;
+		r_action->type = ActionType::Dodge;
 		r_action->delay = delay > 0 ? delay : 0;
 	}
 }
@@ -141,12 +132,12 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
 	int time_of_damage = -1, time_of_enemy_cooldown = -1;
-	if (si.enemy_action.type == atype_Fast)
+	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
 	}
-	else if (si.enemy_action.type == atype_Charged)
+	else if (si.enemy_action.type == ActionType::Charged)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
@@ -160,23 +151,23 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 	int time_till_damage = time_of_damage - si.time;
 	if (time_till_damage > si.subject->cmove->duration && si.subject->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 		r_action->value = -1;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 	else
 	{
 		if (predicted_attack)
 		{
-			r_action->type = atype_Wait;
+			r_action->type = ActionType::Wait;
 		}
 		else
 		{
 			int delay = time_till_damage - GameMaster::dodge_window;
-			r_action->type = atype_Dodge;
+			r_action->type = ActionType::Dodge;
 			r_action->delay = delay > 0 ? delay : 0;
 		}
 	}
@@ -185,7 +176,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 {
 	int time_of_damage;
-	if (si.enemy_action.type == atype_Fast)
+	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
 	}
@@ -196,17 +187,17 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 	int time_till_damage = time_of_damage - si.time;
 	if (time_till_damage > si.subject->cmove->duration && si.subject->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 		r_action->value = -1;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 	else // Just dodge
 	{
 		int delay = time_till_damage - GameMaster::dodge_window;
-		r_action->type = atype_Dodge;
+		r_action->type = ActionType::Dodge;
 		r_action->delay = delay > 0 ? delay : 0;
 	}
 }

@@ -3,12 +3,34 @@
 #define _BATTLE_H_
 
 #include "Player.h"
-#include "Timeline.h"
+
+#include <vector>
 
 namespace GoBattleSim
 {
 
 constexpr unsigned MAX_NUM_PLAYERS = 32;
+
+enum class EventType
+{
+	None,
+	Announce,
+	Free,
+	Fast,
+	Charged,
+	Dodge,
+	Enter
+};
+
+struct TimelineEvent
+{
+	EventType type;
+	int time;
+	int player;
+	int value;
+};
+
+bool operator<(const TimelineEvent &, const TimelineEvent &);
 
 struct TimelineEventNode
 {
@@ -16,23 +38,14 @@ struct TimelineEventNode
 	TimelineEvent item;
 };
 
-typedef struct
+struct BattleOutcome
 {
 	int duration;
 	bool win;
 	int tdo;
 	double tdo_percent;
 	int num_deaths;
-} BattleOutcome;
-
-typedef struct
-{
-	Player player;
-	int head_index;
-	int time_free;
-	Action current_action;
-	Action buffer_action;
-} PlayerState;
+};
 
 class Battle
 {
@@ -59,11 +72,23 @@ public:
 	// End of Interface functions
 
 protected:
+	struct PlayerState
+	{
+		Player player;
+		int head_index;
+		int time_free;
+		Action current_action;
+		Action buffer_action;
+	};
+
 	void fetch_pokemon();
 	void erase_pokemon();
 
 	int search(const Pokemon *);
 	int search_rival(int);
+
+	void enqueue(TimelineEvent &&);
+	TimelineEvent dequeue();
 
 	void go();
 
@@ -93,7 +118,7 @@ protected:
 	inline void append_log(const TimelineEvent &);
 	void erase_log();
 
-	Timeline m_timeline;
+	std::vector<TimelineEvent> m_event_queue;
 
 	PlayerState m_player_states[MAX_NUM_PLAYERS];
 	int m_players_count;

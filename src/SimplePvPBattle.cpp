@@ -75,7 +75,7 @@ void SimplePvPBattle::init()
 		m_pkms[i].energy = 0;
 		m_pkms[i].cooldown = 0;
 		m_pkms[i].shields = m_num_shields_max[i];
-		m_pkms[i].decision.type = atype_None;
+		m_pkms[i].decision.type = ActionType::None;
 	}
 	m_ended = false;
 }
@@ -86,7 +86,7 @@ void SimplePvPBattle::start()
 	{
 		for (int i = 0; i < 2; ++i)
 		{
-			if (m_pkms[i].decision.type == atype_None && m_pkms[i].cooldown <= 0)
+			if (m_pkms[i].decision.type == ActionType::None && m_pkms[i].cooldown <= 0)
 			{
 				m_strategies[i].on_free(generate_strat_input(i), &(m_pkms[i].decision));
 			}
@@ -94,27 +94,27 @@ void SimplePvPBattle::start()
 
 		switch (m_pkms[0].decision.type)
 		{
-		case atype_None:
+		case ActionType::None:
 			switch (m_pkms[1].decision.type)
 			{
-			case atype_Fast:
+			case ActionType::Fast:
 				register_action_fast(1, m_pkms[1].decision);
 				break;
-			case atype_Charged:
+			case ActionType::Charged:
 				register_action_charged(1, m_pkms[1].decision);
 				break;
 			default:
 				break;
 			}
 			break;
-		case atype_Fast:
+		case ActionType::Fast:
 			register_action_fast(0, m_pkms[0].decision);
 			switch (m_pkms[1].decision.type)
 			{
-			case atype_Fast:
+			case ActionType::Fast:
 				register_action_fast(1, m_pkms[1].decision);
 				break;
-			case atype_Charged:
+			case ActionType::Charged:
 				if (!m_ended)
 					register_action_charged(1, m_pkms[1].decision);
 				break;
@@ -122,15 +122,15 @@ void SimplePvPBattle::start()
 				break;
 			}
 			break;
-		case atype_Charged:
+		case ActionType::Charged:
 			switch (m_pkms[1].decision.type)
 			{
-			case atype_Fast:
+			case ActionType::Fast:
 				register_action_fast(1, m_pkms[1].decision);
 				if (!m_ended)
 					register_action_charged(0, m_pkms[0].decision);
 				break;
-			case atype_Charged:
+			case ActionType::Charged:
 				register_action_charged(0, m_pkms[0].decision);
 				if (!m_ended)
 					register_action_charged(1, m_pkms[1].decision);
@@ -166,7 +166,7 @@ void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 		m_ended = true;
 	}
 	m_pkms[i].cooldown = move->duration;
-	m_pkms[i].decision.type = atype_None;
+	m_pkms[i].decision.type = ActionType::None;
 }
 
 void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
@@ -180,12 +180,12 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	m_pkms[i].energy += move->energy;
 	if (m_pkms[1 - i].shields > 0)
 	{
-		Action action(atype_Dodge); // Default use shield, unless strategy decides otherwise
+		Action action{ActionType::Dodge}; // Default use shield, unless strategy decides otherwise
 		if (m_strategies[1 - i].on_attack)
 		{
 			m_strategies[1 - i].on_attack(generate_strat_input(1 - i), &action);
 		}
-		if (action.type == atype_Dodge)
+		if (action.type == ActionType::Dodge)
 		{
 			damage = 1;
 			--m_pkms[1 - i].shields;
@@ -202,7 +202,7 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	}
 	m_pkms[i].cooldown = 0;
 	m_pkms[1 - i].cooldown = 0;
-	m_pkms[i].decision.type = atype_None;
+	m_pkms[i].decision.type = ActionType::None;
 
 	if (move->effect.activation_chance > 0)
 	{

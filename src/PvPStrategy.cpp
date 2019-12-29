@@ -17,11 +17,11 @@ void pvp_basic_on_free(const PvPStrategyInput &si, Action *r_action)
 {
 	if (si.subject_energy + si.subject->cmove->energy >= 0)
 	{
-		r_action->type = atype_Charged;
+		r_action->type = ActionType::Charged;
 	}
 	else
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 }
 
@@ -34,7 +34,7 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	int my_fmove_damage = calc_damage_pvp_cmove(si.subject, si.subject->get_fmove(0), si.enemy);
 	if (my_fmove_damage >= si.enemy_hp)
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 		return;
 	}
 
@@ -65,12 +65,12 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	{
 		if (si.enemy_shields > 0)
 		{
-			r_action->type = atype_Charged;
+			r_action->type = ActionType::Charged;
 			r_action->value = cheaper_move_idx;
 		}
 		else
 		{
-			r_action->type = atype_Charged;
+			r_action->type = ActionType::Charged;
 			r_action->value = better_move_idx;
 		}
 	}
@@ -78,17 +78,17 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	{
 		if (cheaper_move_ko || calc_damage_pvp_fmove(si.enemy, si.enemy->get_fmove(0), si.subject) >= si.subject_hp)
 		{
-			r_action->type = atype_Charged;
+			r_action->type = ActionType::Charged;
 			r_action->value = cheaper_move_idx;
 		}
 		else
 		{
-			r_action->type = atype_Fast;
+			r_action->type = ActionType::Fast;
 		}
 	}
 	else
 	{
-		r_action->type = atype_Fast;
+		r_action->type = ActionType::Fast;
 	}
 }
 

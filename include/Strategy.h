@@ -8,28 +8,25 @@
 namespace GoBattleSim
 {
 
-enum ActionType
+enum class ActionType
 {
-	atype_None,
-	atype_Wait,
-	atype_Fast,
-	atype_Charged,
-	atype_Dodge,
-	atype_Switch
+	None,
+	Wait,
+	Fast,
+	Charged,
+	Dodge,
+	Switch
 };
 
-class Action
+struct Action
 {
-public:
-	Action(ActionType = atype_None, int = 0, int = 0);
-
 	ActionType type;
 	int delay;
 	int value;
 	int time;
 };
 
-typedef struct
+struct StrategyInput
 {
 	// The time when the subject Pokemon will be free
 	int time;
@@ -47,7 +44,7 @@ typedef struct
 	// The weather
 	int weather;
 
-} StrategyInput;
+};
 
 typedef void (*EventResponder)(const StrategyInput &, Action *);
 
