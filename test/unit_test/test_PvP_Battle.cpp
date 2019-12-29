@@ -39,40 +39,40 @@ int main()
 
 	// Set up PvP Moves
 	// (poketype, power, energy, duration (in turns), dws, move effect)
-	Move move_counter = Move{1, 8, 7, 2};
-	Move move_shadow_claw = Move{3, 6, 8, 2};
-	Move move_mud_shot = Move{5, 3, 9, 2};
-	Move move_dragon_breath = Move{0, 4, 3, 1};
-	Move move_bubble = Move{6, 8, 11, 3};
+	Move move_counter{1, 8, 7, 2};
+	Move move_shadow_claw{3, 6, 8, 2};
+	Move move_mud_shot{5, 3, 9, 2};
+	Move move_dragon_breath{0, 4, 3, 1};
+	Move move_bubble{6, 8, 11, 3};
 
-	Move move_power_up_punch = Move{1, 40, -35, 0, 0, {1, 1}};
-	Move move_shadow_ball = Move{3, 100, -55};
-	Move move_dragon_claw = Move{0, 50, -35};
-	Move move_ancient_power = Move{4, 70, -45, 0, 0, {0.1, 2, 2}};
-	Move move_iron_head = Move{2, 70, -50};
-	Move move_earthquake = Move{5, 120, -65};
+	Move move_power_up_punch{1, 40, -35, 0, 0, {1, 1}};
+	Move move_shadow_ball{3, 100, -55};
+	Move move_dragon_claw{0, 50, -35};
+	Move move_ancient_power{4, 70, -45, 0, 0, {0.1, 2, 2}};
+	Move move_iron_head{2, 70, -50};
+	Move move_earthquake{5, 120, -65};
 
 	// Set up Pokemon
 	// (poketyp1, poketyp2, attack, defense, max_hp)
-	PvPPokemon pokemon_lucario = PvPPokemon(1, 2, 190.39096, 121.08865056, 142);
+	PvPPokemon pokemon_lucario(1, 2, 190.39096, 121.08865056, 142);
 	pokemon_lucario.add_fmove(&move_counter);
 	pokemon_lucario.add_cmove(&move_power_up_punch);
 	//pokemon_lucario.add_cmove(&move_shadow_ball);
 
-	PvPPokemon pokemon_groudon = PvPPokemon(5, -1, 225.23550285000002, 192.04290243000003, 173);
+	PvPPokemon pokemon_groudon(5, -1, 225.23550285000002, 192.04290243000003, 173);
 	pokemon_groudon.add_fmove(&move_mud_shot);
 	pokemon_groudon.add_cmove(&move_earthquake);
 
-	PvPPokemon pokemon_dialga = PvPPokemon(0, 2, 229.1870029, 178.60780226, 173);
+	PvPPokemon pokemon_dialga(0, 2, 229.1870029, 178.60780226, 173);
 	pokemon_dialga.add_fmove(&move_dragon_breath);
 	pokemon_dialga.add_cmove(&move_iron_head);
 
-	PvPPokemon pokemon_giratina_altered = PvPPokemon(0, 3, 137.59531384, 162.11725095999998, 203);
+	PvPPokemon pokemon_giratina_altered(0, 3, 137.59531384, 162.11725095999998, 203);
 	pokemon_giratina_altered.add_fmove(&move_shadow_claw);
 	pokemon_giratina_altered.add_cmove(&move_ancient_power);
 	//pokemon_giratina_altered.add_cmove(&move_dragon_claw);
 
-	PvPPokemon pokemon_poliwrath = PvPPokemon(1, 6, 119.149306358, 120.35894398600001, 131);
+	PvPPokemon pokemon_poliwrath(1, 6, 119.149306358, 120.35894398600001, 131);
 	pokemon_poliwrath.add_fmove(&move_bubble);
 	pokemon_poliwrath.add_cmove(&move_power_up_punch);
 
@@ -126,10 +126,10 @@ int main()
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	for (int i = 0; i < num_sims; ++i)
 	{
-		SimplePvPBattle battle = SimplePvPBattle(&pokemon_lucario, &pokemon_giratina_altered);
+		SimplePvPBattle battle(&pokemon_lucario, &pokemon_giratina_altered);
 		battle.init();
 		battle.start();
-		SimplePvPBattleOutcome outcome = battle.get_outcome();
+		auto outcome = battle.get_outcome();
 	}
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Time elapsed (s) = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0 << std::endl;

@@ -11,8 +11,6 @@ int main()
 {
 	std::cout << "\nRaid Battle Test:" << std::endl;
 
-	// T3 Machamp 1v1 Solo
-
 	// In this demo, 0 = Psychic, 1 = Fighting, 2 = Steel, 3 = Flying
 	GameMaster::set_num_types(4);
 	GameMaster::set_effectiveness(0, 1, 1.6);
@@ -54,51 +52,177 @@ int main()
 	pokemon_machamp.add_fmove(&move_counter);
 	pokemon_machamp.add_cmove(&move_dynamic_punch);
 
-	// Set up parties
-	Party attacker_party = Party();
-	attacker_party.add(&pokemon_mewtwo);
-
-	Party raid_boss_party = Party();
-	raid_boss_party.add(&pokemon_machamp);
-
-	// Set up players
-	Player attacker = Player();
-	attacker.team = 1;
-	attacker.add(&attacker_party);
-	attacker.set_strategy(STRATEGY_ATTACKER_DODGE_ALL);
-
-	Player raid_boss = Player();
-	raid_boss.team = 0;
-	raid_boss.add(&raid_boss_party);
-	raid_boss.set_strategy(STRATEGY_DEFENDER);
-
-	// Construct battle
-	Battle battle = Battle();
-	battle.add(&raid_boss);
-	battle.add(&attacker);
-	battle.set_time_limit(180000);
-	battle.set_weather(1);
-
 	srand(1000);
 
-	// Run one battle
-	battle.init();
-	battle.start();
-	BattleOutcome battle_outcome = battle.get_outcome(1);
-	std::cout << "Duration: " << battle_outcome.duration << std::endl;
-	std::cout << "TDO%: " << battle_outcome.tdo_percent << std::endl;
-
-	const int num_sims = 10000;
-	std::cout << "Simulating " << num_sims << " battles..." << std::endl;
-
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	for (int i = 0; i < num_sims; ++i)
+	// 1 x Mewtwo VS T3 Machamp
 	{
+		Party attacker_party;
+		attacker_party.add(&pokemon_mewtwo);
+
+		Party raid_boss_party;
+		raid_boss_party.add(&pokemon_machamp);
+
+		Player attacker;
+		attacker.team = 1;
+		attacker.add(&attacker_party);
+		attacker.set_strategy(STRATEGY_ATTACKER_DODGE_ALL);
+
+		Player raid_boss;
+		raid_boss.team = 0;
+		raid_boss.add(&raid_boss_party);
+		raid_boss.set_strategy(STRATEGY_DEFENDER);
+
+		Battle battle;
+		battle.add(&raid_boss);
+		battle.add(&attacker);
+		battle.set_time_limit(180000);
+		battle.set_weather(1);
+
 		battle.init();
 		battle.start();
+		BattleOutcome battle_outcome = battle.get_outcome(1);
+
+		std::cout << "test#1 Duration: " << battle_outcome.duration << std::endl;
+		std::cout << "test#1 TDO%: " << battle_outcome.tdo_percent << std::endl;
+
+		assert(!battle_outcome.win);
+		assert(battle_outcome.tdo_percent > 0.8);
+		assert(battle_outcome.tdo_percent < 1);
+		assert(battle_outcome.duration > 120000);
+		assert(battle_outcome.duration < 160000);
+		assert(battle_outcome.num_deaths == 1);
 	}
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Time elapsed (s) = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0 << std::endl;
+
+	// 6 x Latios VS T3 Machamp, no rejoin
+	{
+		Party attacker_party = Party();
+		for (int i = 0; i < 6; ++i)
+		{
+			attacker_party.add(&pokemon_latios);
+		}
+
+		Party raid_boss_party = Party();
+		raid_boss_party.add(&pokemon_machamp);
+
+		Player attacker;
+		attacker.team = 1;
+		attacker.add(&attacker_party);
+		attacker.set_strategy(STRATEGY_ATTACKER_NO_DODGE);
+
+		Player raid_boss;
+		raid_boss.team = 0;
+		raid_boss.add(&raid_boss_party);
+		raid_boss.set_strategy(STRATEGY_DEFENDER);
+
+		Battle battle;
+		battle.add(&raid_boss);
+		battle.add(&attacker);
+		battle.set_time_limit(180000);
+		battle.set_weather(1);
+
+		battle.init();
+		battle.start();
+		BattleOutcome battle_outcome = battle.get_outcome(1);
+
+		std::cout << "test#2 Duration: " << battle_outcome.duration << std::endl;
+		std::cout << "test#2 TDO%: " << battle_outcome.tdo_percent << std::endl;
+
+		assert(battle_outcome.win);
+		assert(battle_outcome.tdo_percent >= 1);
+		assert(battle_outcome.duration > 150000);
+		assert(battle_outcome.duration < 170000);
+		assert(battle_outcome.num_deaths >= 1);
+		assert(battle_outcome.num_deaths < 6);
+	}
+
+	// 2 x Latios VS T3 Machamp, rejoin
+	{
+		Party attacker_party;
+		attacker_party.add(&pokemon_latios);
+		attacker_party.add(&pokemon_latios);
+		attacker_party.set_revive_policy(2);
+
+		Party raid_boss_party;
+		raid_boss_party.add(&pokemon_machamp);
+
+		Player attacker;
+		attacker.team = 1;
+		attacker.add(&attacker_party);
+		attacker.set_strategy(STRATEGY_ATTACKER_NO_DODGE);
+
+		Player raid_boss;
+		raid_boss.team = 0;
+		raid_boss.add(&raid_boss_party);
+		raid_boss.set_strategy(STRATEGY_DEFENDER);
+
+		Battle battle;
+		battle.add(&raid_boss);
+		battle.add(&attacker);
+		battle.set_time_limit(180000);
+		battle.set_weather(1);
+
+		battle.init();
+		battle.start();
+		auto battle_outcome = battle.get_outcome(1);
+
+		std::cout << "test#3 Duration: " << battle_outcome.duration << std::endl;
+		std::cout << "test#3 numDeaths: " << battle_outcome.num_deaths << std::endl;
+		std::cout << "test#3 TDO%: " << battle_outcome.tdo_percent << std::endl;
+
+		assert(battle_outcome.win);
+		assert(battle_outcome.tdo_percent >= 1);
+		assert(battle_outcome.duration > 140000);
+		assert(battle_outcome.duration < 170000);
+		assert(battle_outcome.num_deaths >= 2);
+		assert(battle_outcome.num_deaths < 6);
+	}
+
+	// 1 x lugia + 1 x Mewtwo vs T3 Machamp, rejoin
+	{
+		Party attacker_party_1, attacker_party_2;
+		attacker_party_1.add(&pokemon_lugia);
+		attacker_party_1.set_revive_policy(2);
+		attacker_party_2.add(&pokemon_mewtwo);
+		attacker_party_2.set_revive_policy(2);
+
+		Party raid_boss_party;
+		raid_boss_party.add(&pokemon_machamp);
+
+		Player attacker_1, attacker_2;
+		attacker_1.team = 1;
+		attacker_1.add(&attacker_party_1);
+		attacker_1.set_strategy(STRATEGY_ATTACKER_NO_DODGE);
+		attacker_2.team = 1;
+		attacker_2.add(&attacker_party_2);
+		attacker_2.set_strategy(STRATEGY_ATTACKER_NO_DODGE);
+
+		Player raid_boss;
+		raid_boss.team = 0;
+		raid_boss.add(&raid_boss_party);
+		raid_boss.set_strategy(STRATEGY_DEFENDER);
+
+		Battle battle;
+		battle.add(&raid_boss);
+		battle.add(&attacker_1);
+		battle.add(&attacker_2);
+		battle.set_time_limit(180000);
+		battle.set_weather(1);
+
+		battle.init();
+		battle.start();
+		BattleOutcome battle_outcome = battle.get_outcome(1);
+
+		std::cout << "test#4 Duration: " << battle_outcome.duration << std::endl;
+		std::cout << "test#4 numDeaths: " << battle_outcome.num_deaths << std::endl;
+		std::cout << "test#4 TDO%: " << battle_outcome.tdo_percent << std::endl;
+
+		assert(battle_outcome.win);
+		assert(battle_outcome.tdo_percent >= 1);
+		assert(battle_outcome.duration > 50000);
+		assert(battle_outcome.duration < 70000);
+		assert(battle_outcome.num_deaths > 0);
+		assert(battle_outcome.num_deaths < 4);
+	}
 
 	std::cout << "Raid Battle Test passed" << std::endl;
 
