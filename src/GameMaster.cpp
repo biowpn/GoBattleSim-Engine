@@ -99,6 +99,11 @@ void GameMaster::set_effectiveness(int t_type_i, int t_type_j, double t_multipli
 		throw 1;
 }
 
+int GameMaster::get_num_types()
+{
+	return GameMaster::num_types;
+}
+
 double GameMaster::get_effectiveness(int t_type_i, int t_type_j)
 {
 	if (t_type_i < 0 || t_type_j < 0 || t_type_i > num_types || t_type_j > num_types)

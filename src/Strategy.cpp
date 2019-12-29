@@ -10,7 +10,7 @@ void PokemonState::init()
 	active = false;
 	hp = max_hp;
 	energy = 0;
-	damage_reduction_expired_time = 0;
+	damage_reduction_expiry = 0;
 	tdo = 0;
 	tdo_fast = 0;
 	duration = 0;
@@ -115,7 +115,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
 	}
-	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expired_time)
+	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expiry)
 	{
 		// Predict next time of damage
 		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->cmove->dws;
@@ -191,7 +191,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
 		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
 	}
-	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expired_time)
+	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expiry)
 	{
 		// Predict next time of damage
 		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->get_fmove(0)->dws;

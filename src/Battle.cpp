@@ -644,7 +644,7 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 			continue;
 		}
 		int damage = calc_damage(subject, move, opponent, m_weather);
-		if (m_time < opponent_st.damage_reduction_expired_time)
+		if (m_time < opponent_st.damage_reduction_expiry)
 		{
 			damage = (1 - GameMaster::dodge_damage_reduction_percent) * damage;
 			damage = damage > 0 ? damage : 1;
@@ -691,7 +691,7 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 			continue;
 		}
 		int damage = calc_damage(subject, move, opponent, m_weather);
-		if (m_time < opponent_st.damage_reduction_expired_time)
+		if (m_time < opponent_st.damage_reduction_expiry)
 		{
 			damage = (1 - GameMaster::dodge_damage_reduction_percent) * damage;
 			damage = damage > 0 ? damage : 1;
@@ -714,7 +714,7 @@ void Battle::handle_event_dodge(const TimelineEvent &t_event)
 {
 	auto &ps = m_player_states[t_event.player];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
-	pkm_st.damage_reduction_expired_time = m_time + GameMaster::dodge_window + 1;
+	pkm_st.damage_reduction_expiry = m_time + GameMaster::dodge_window + 1;
 	if (m_has_log)
 	{
 		append_log(t_event);

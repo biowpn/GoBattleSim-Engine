@@ -19,6 +19,7 @@ public:
 
 	Party *get_party(int);
 	const Party *get_party(int) const;
+	int get_parties_count() const;
 	void add(const Party *);
 	void erase_parties();
 	void set_attack_multiplier(double);

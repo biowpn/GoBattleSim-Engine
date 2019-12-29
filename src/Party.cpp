@@ -61,6 +61,11 @@ void Party::set_revive_policy(int t_policy)
 	m_revive_policy = t_policy;
 }
 
+int Party::get_revive_policy() const
+{
+	return m_revive_policy;
+}
+
 void Party::erase_pokemon()
 {
 	m_pokemon_count = 0;

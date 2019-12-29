@@ -61,6 +61,11 @@ const Party *Player::get_party(int t_index) const
 	}
 }
 
+int Player::get_parties_count() const
+{
+	return m_parties_count;
+}
+
 void Player::add(const Party *t_party)
 {
 	if (m_parties_count >= MAX_NUM_PARTIES)

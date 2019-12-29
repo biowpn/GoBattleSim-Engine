@@ -33,6 +33,7 @@ public:
 
 	// number of times to revive
 	void set_revive_policy(int);
+	int get_revive_policy() const;
 
 	// this function only asks the party whether to revive (since it depends on the revive policy).
 	// the actual reviving is done in Battle::revive

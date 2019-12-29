@@ -33,7 +33,7 @@ struct PokemonState
 	int max_hp{0};
 	int hp{0};
 	int energy{0};
-	int damage_reduction_expired_time{0};
+	int damage_reduction_expiry{0};
 	int tdo;
 	int tdo_fast;
 	int duration;
@@ -58,9 +58,9 @@ struct StrategyInput
 	// The primary enemy Pokemon
 	const Pokemon *enemy;
 	// The subject Pokemon' state
-	const PokemonState * subject_state;
+	const PokemonState *subject_state;
 	// The enemy's state
-	const PokemonState * enemy_state;
+	const PokemonState *enemy_state;
 	// The subject player's action that is being executed
 	Action subject_action;
 	// The enemy player's action that is being executed
@@ -74,10 +74,10 @@ struct StrategyInput
 
 typedef void (*EventResponder)(const StrategyInput &, Action *);
 
-class Strategy
+struct Strategy
 {
-public:
-	Strategy(EventResponder = nullptr, EventResponder = nullptr, EventResponder = nullptr);
+	// A name for the strategy
+	const char *name;
 
 	// Called when the subject is free.
 	// The returned Action will be executed immediately.
@@ -105,28 +105,34 @@ void attacker_dodge_charged_on_attack(const StrategyInput &, Action *);
 void attacker_dodge_all_on_free(const StrategyInput &, Action *);
 void attacker_dodge_all_on_attack(const StrategyInput &, Action *);
 
-const Strategy STRATEGY_DEFENDER(
+const Strategy STRATEGY_DEFENDER{
+	"DEFENDER",
 	attacker_no_dodge_on_free,
-	defender_on_clear);
+	defender_on_clear};
 
-const Strategy STRATEGY_ATTACKER_NO_DODGE(attacker_no_dodge_on_free);
+const Strategy STRATEGY_ATTACKER_NO_DODGE{
+	"ATTACKER_NO_DODGE",
+	attacker_no_dodge_on_free};
 
-const Strategy STRATEGY_ATTACKER_DODGE_CHARGED(
+const Strategy STRATEGY_ATTACKER_DODGE_CHARGED{
+	"ATTACKER_DODGE_CHARGED",
 	attacker_dodge_charged_on_free,
 	nullptr,
-	attacker_dodge_charged_on_attack);
+	attacker_dodge_charged_on_attack};
 
-const Strategy STRATEGY_ATTACKER_DODGE_ALL(
+const Strategy STRATEGY_ATTACKER_DODGE_ALL{
+	"ATTACKER_DODGE_ALL",
 	attacker_dodge_all_on_free,
 	nullptr,
-	attacker_dodge_all_on_attack);
+	attacker_dodge_all_on_attack};
 
-const int NUM_STRATEGIES = 4;
-const Strategy BUILT_IN_STRATEGIES[NUM_STRATEGIES] = {
+const Strategy BUILT_IN_STRATEGIES[] = {
 	STRATEGY_DEFENDER,
 	STRATEGY_ATTACKER_NO_DODGE,
 	STRATEGY_ATTACKER_DODGE_CHARGED,
 	STRATEGY_ATTACKER_DODGE_ALL};
+
+const unsigned NUM_STRATEGIES = sizeof(BUILT_IN_STRATEGIES) / sizeof(BUILT_IN_STRATEGIES[0]);
 
 } // namespace GoBattleSim
 

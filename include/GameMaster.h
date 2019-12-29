@@ -19,6 +19,7 @@ public:
 	static void set_parameter(char *, double);
 
 	// Array-like parameter accessors
+	static int get_num_types();
 	static double get_effectiveness(int, int);
 	static int get_type_boosted_weather(int);
 	static double get_stage_multiplier(int);
