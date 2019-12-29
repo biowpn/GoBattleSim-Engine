@@ -283,12 +283,11 @@ BattleOutcome Battle::get_outcome(int t_team)
 		(m_defeated_team != t_team && m_time < m_time_limit)};
 
 	int sum_tdo = 0, sum_rival_max_hp = 0, sum_deaths = 0;
-	Pokemon *player_pkm_addr[MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	for (int i = 0; i < m_players_count; ++i)
 	{
-		auto count = m_player_states[i].player.get_pokemon_count();
-		m_player_states[i].player.get_all_pokemon(player_pkm_addr);
-		auto first_idx = search(*player_pkm_addr);
+		const auto &player = m_player_states[i].player;
+		auto count = player.get_pokemon_count();
+		auto first_idx = search(player.get_party(0)->get_pokemon(0));
 		if (m_player_states[i].player.team == t_team)
 		{
 			for (int i = 0; i < count; ++i)
@@ -354,7 +353,8 @@ void Battle::handle_fainted_pokemon(int t_player_index, int t_pokemon_index)
 
 bool Battle::select_next_pokemon(Battle::PlayerState &ps)
 {
-	auto first_index = search(ps.player.get_head_party()->get_pokemon(0));
+	auto party = ps.player.get_head_party();
+	auto first_index = search(party->get_pokemon(0));
 	auto count = ps.player.get_head_party()->get_pokemon_count();
 	auto cur_head = ps.head_index;
 	do
@@ -365,7 +365,15 @@ bool Battle::select_next_pokemon(Battle::PlayerState &ps)
 		}
 	} while (!m_pokemon_states[ps.head_index].is_alive() && ps.head_index != cur_head);
 
-	return m_pokemon_states[ps.head_index].is_alive();
+	if (m_pokemon_states[ps.head_index].is_alive())
+	{
+		party->set_head(ps.head_index - first_index);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Battle::revive_current_party(Battle::PlayerState &ps)

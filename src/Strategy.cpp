@@ -14,7 +14,7 @@ void PokemonState::init()
 	tdo = 0;
 	tdo_fast = 0;
 	duration = 0;
-	num_deaths;
+	num_deaths = 0;
 	num_fmoves_used = 0;
 	num_cmoves_used = 0;
 }

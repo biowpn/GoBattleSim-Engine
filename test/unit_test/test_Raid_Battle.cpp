@@ -126,12 +126,13 @@ int main()
 
 		std::cout << "test#2 Duration: " << battle_outcome.duration << std::endl;
 		std::cout << "test#2 TDO%: " << battle_outcome.tdo_percent << std::endl;
+		std::cout << "test#2 numDeaths: " << battle_outcome.num_deaths << std::endl;
 
 		assert(battle_outcome.win);
 		assert(battle_outcome.tdo_percent >= 1);
-		assert(battle_outcome.duration > 150000);
-		assert(battle_outcome.duration < 170000);
-		assert(battle_outcome.num_deaths >= 1);
+		assert(battle_outcome.duration > 100000);
+		assert(battle_outcome.duration < 140000);
+		assert(battle_outcome.num_deaths >= 2);
 		assert(battle_outcome.num_deaths < 6);
 	}
 
@@ -166,13 +167,13 @@ int main()
 		auto battle_outcome = battle.get_outcome(1);
 
 		std::cout << "test#3 Duration: " << battle_outcome.duration << std::endl;
-		std::cout << "test#3 numDeaths: " << battle_outcome.num_deaths << std::endl;
 		std::cout << "test#3 TDO%: " << battle_outcome.tdo_percent << std::endl;
+		std::cout << "test#3 numDeaths: " << battle_outcome.num_deaths << std::endl;
 
 		assert(battle_outcome.win);
 		assert(battle_outcome.tdo_percent >= 1);
-		assert(battle_outcome.duration > 140000);
-		assert(battle_outcome.duration < 170000);
+		assert(battle_outcome.duration > 100000);
+		assert(battle_outcome.duration < 140000);
 		assert(battle_outcome.num_deaths >= 2);
 		assert(battle_outcome.num_deaths < 6);
 	}
@@ -213,8 +214,8 @@ int main()
 		BattleOutcome battle_outcome = battle.get_outcome(1);
 
 		std::cout << "test#4 Duration: " << battle_outcome.duration << std::endl;
-		std::cout << "test#4 numDeaths: " << battle_outcome.num_deaths << std::endl;
 		std::cout << "test#4 TDO%: " << battle_outcome.tdo_percent << std::endl;
+		std::cout << "test#4 numDeaths: " << battle_outcome.num_deaths << std::endl;
 
 		assert(battle_outcome.win);
 		assert(battle_outcome.tdo_percent >= 1);
