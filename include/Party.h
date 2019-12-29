@@ -16,36 +16,35 @@ public:
 	Party(const Party &);
 	~Party();
 
-	// Interface functions
 	Pokemon *get_pokemon(int);
 	const Pokemon *get_pokemon(int) const;
-	void add(const Pokemon *);
-	void erase_pokemon();
-	bool has_attr(const char *);
-	int get_attr(const char *);
-	void set_attr(const char *, int);
-	// End of Interface functions
-
-	// Battle functions
-	void init();
-	void heal();
-
 	int get_pokemon_count() const;
-
 	// get the internal addresses of Pokemon objects, avoid copying
 	Pokemon **get_all_pokemon(Pokemon **out_first);
-
+	void add(const Pokemon *);
 	void update(const Pokemon *);
+	void erase_pokemon();
 
 	Pokemon *get_head();
 	bool set_head(const Pokemon *);
 	bool set_head(int);
-	bool set_head_to_next();
+
+	void init();
+
+	// number of times to revive
+	void set_revive_policy(int);
+
+	// this function only asks the party whether to revive (since it depends on the revive policy).
+	// the actual reviving is done in Battle::revive
 	bool revive();
 
+	bool has_attr(const char *);
+	int get_attr(const char *);
+	void set_attr(const char *, int);
+
 private:
+	int m_revive_quota;
 	int m_revive_policy;
-	int m_revive_policy_init;
 
 	Pokemon *m_pokemon_head{nullptr};
 	Pokemon m_pokemon[MAX_NUM_POKEMON];

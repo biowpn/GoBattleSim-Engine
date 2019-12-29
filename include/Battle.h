@@ -92,7 +92,13 @@ protected:
 
 	void go();
 
-	void handle_fainted_pokemon(int, Pokemon *);
+	void handle_fainted_pokemon(int, int);
+
+	// three possible actions when a Pokemon faints
+	bool select_next_pokemon(PlayerState&);
+	bool revive_current_party(PlayerState&);
+	bool select_next_party(PlayerState&);
+
 	bool is_defeated(int);
 	bool is_end();
 
@@ -124,6 +130,7 @@ protected:
 	int m_players_count;
 
 	Pokemon *m_pokemon[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
+	PokemonState m_pokemon_states[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	int m_pokemon_count;
 
 	int m_has_log;

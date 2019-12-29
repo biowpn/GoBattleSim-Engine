@@ -30,7 +30,6 @@ Pokemon::Pokemon(int t_poketype1, int t_poketype2, double t_attack, double t_def
 	: poketype1(t_poketype1), poketype2(t_poketype2), attack(t_attack), defense(t_defense), max_hp(t_max_hp)
 {
 	id = instance_count++;
-	init();
 }
 
 Pokemon::Pokemon(const Pokemon &other)
@@ -42,13 +41,8 @@ Pokemon::Pokemon(const Pokemon &other)
 	defense = other.defense;
 	max_hp = other.max_hp;
 
-	active = other.active;
-	immortal = other.immortal;
-	hp = other.hp;
-	energy = other.energy;
 	attack_multiplier = other.attack_multiplier;
 	clone_multiplier = other.clone_multiplier;
-	damage_reduction_expired_time = other.damage_reduction_expired_time;
 
 	fmove = other.fmove;
 	cmoves_count = 0;
@@ -165,8 +159,6 @@ bool *Pokemon::search_bool_member(const char *t_name)
 {
 	if (strcmp(t_name, "immortal") == 0)
 		return &immortal;
-	else if (strcmp(t_name, "active") == 0)
-		return &active;
 	else
 		return nullptr;
 }
@@ -181,30 +173,10 @@ int *Pokemon::search_int_member(const char *t_name)
 		return &poketype2;
 	else if (strcmp(t_name, "max_hp") == 0)
 		return &max_hp;
-	else if (strcmp(t_name, "hp") == 0)
-		return &hp;
-	else if (strcmp(t_name, "energy") == 0)
-		return &energy;
 	else if (strcmp(t_name, "cmoves_count") == 0)
 		return &cmoves_count;
 	else if (strcmp(t_name, "clone_multiplier") == 0)
 		return &clone_multiplier;
-	else if (strcmp(t_name, "damage_reduction_expired_time") == 0)
-		return &damage_reduction_expired_time;
-
-	else if (strcmp(t_name, "tdo") == 0)
-		return &tdo;
-	else if (strcmp(t_name, "tdo_fast") == 0)
-		return &tdo_fast;
-	else if (strcmp(t_name, "duration") == 0)
-		return &duration;
-	else if (strcmp(t_name, "num_deaths") == 0)
-		return &num_deaths;
-	else if (strcmp(t_name, "num_fmoves_used") == 0)
-		return &num_fmoves_used;
-	else if (strcmp(t_name, "num_cmoves_used") == 0)
-		return &num_cmoves_used;
-
 	else
 		return nullptr;
 }
@@ -219,52 +191,6 @@ double *Pokemon::search_double_member(const char *t_name)
 		return &defense;
 	else
 		return nullptr;
-}
-
-void Pokemon::init()
-{
-	heal();
-
-	tdo = 0;
-	tdo_fast = 0;
-	duration = 0;
-	num_deaths = 0;
-	num_fmoves_used = 0;
-	num_cmoves_used = 0;
-}
-
-void Pokemon::heal()
-{
-	hp = max_hp;
-	energy = 0;
-}
-
-bool Pokemon::is_alive() const
-{
-	return hp > 0 || immortal;
-}
-
-void Pokemon::charge(int t_energy_delta)
-{
-	energy += t_energy_delta;
-	if (energy > GameMaster::max_energy)
-	{
-		energy = GameMaster::max_energy;
-	}
-}
-
-void Pokemon::hurt(int t_damage)
-{
-	hp -= t_damage;
-}
-
-void Pokemon::attribute_damage(int t_damage, bool t_is_fmove)
-{
-	tdo += t_damage;
-	if (t_is_fmove)
-	{
-		tdo_fast += t_damage;
-	}
 }
 
 } // namespace GoBattleSim

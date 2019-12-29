@@ -26,14 +26,41 @@ struct Action
 	int time;
 };
 
+struct PokemonState
+{
+	bool active{false};
+	bool immortal{false};
+	int max_hp{0};
+	int hp{0};
+	int energy{0};
+	int damage_reduction_expired_time{0};
+	int tdo;
+	int tdo_fast;
+	int duration;
+	int num_deaths;
+	int num_fmoves_used;
+	int num_cmoves_used;
+
+	void init();
+	void heal();
+	bool is_alive() const;
+	void charge(int);
+	void hurt(int);
+	void attribute_damage(int, bool);
+};
+
 struct StrategyInput
 {
 	// The time when the subject Pokemon will be free
-	int time;
+	int time_free;
 	// The subject Pokemon
 	const Pokemon *subject;
 	// The primary enemy Pokemon
 	const Pokemon *enemy;
+	// The subject Pokemon' state
+	const PokemonState * subject_state;
+	// The enemy's state
+	const PokemonState * enemy_state;
 	// The subject player's action that is being executed
 	Action subject_action;
 	// The enemy player's action that is being executed
@@ -43,7 +70,6 @@ struct StrategyInput
 	int random_number;
 	// The weather
 	int weather;
-
 };
 
 typedef void (*EventResponder)(const StrategyInput &, Action *);

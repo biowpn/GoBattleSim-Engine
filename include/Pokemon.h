@@ -18,24 +18,15 @@ public:
 	Pokemon(const Pokemon &);
 	~Pokemon();
 
-	// Interface functions
 	const Move *get_fmove(int) const;
 	void add_fmove(const Move *);
 	const Move *get_cmove(int) const;
 	void add_cmove(const Move *);
 	void erase_cmoves();
+
 	bool has_attr(const char *);
 	void set_attr(const char *, double);
 	double get_attr(const char *);
-	// End of Interface functions
-
-	// Battle functions
-	void init();
-	void heal();
-	bool is_alive() const;
-	void charge(int);
-	void hurt(int);
-	void attribute_damage(int, bool);
 
 	// Members
 	int id;
@@ -44,28 +35,17 @@ public:
 	double attack{0};
 	double defense{0};
 	int max_hp{0};
+	bool immortal{false};
 
 	Move fmove;
 	Move *cmove{nullptr};
 	Move cmoves[MAX_NUM_CMOVES];
 	int cmoves_count{0};
 
-	// More members
-	bool active{false};
-	bool immortal{false};
-	int hp{0};
-	int energy{0};
+	// These two could be put into PokemonState,
+	// but leaving them here would make codes a lot easier
 	double attack_multiplier{1};
 	int clone_multiplier{1};
-	int damage_reduction_expired_time{0};
-
-	// Statistical members
-	int tdo;
-	int tdo_fast;
-	int duration;
-	int num_deaths;
-	int num_fmoves_used;
-	int num_cmoves_used;
 
 protected:
 	static int instance_count;

@@ -30,7 +30,6 @@ PvPPokemon::~PvPPokemon()
 
 void PvPPokemon::init()
 {
-	Pokemon::init();
 	attack_stage = 0;
 	defense_stage = 0;
 	attack = attack_init;

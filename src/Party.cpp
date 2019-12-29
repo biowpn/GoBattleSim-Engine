@@ -9,15 +9,15 @@ namespace GoBattleSim
 
 Party::Party()
 {
+	m_revive_quota = 0;
 	m_revive_policy = 0;
-	m_revive_policy_init = 0;
 }
 
 Party::Party(const Party &other)
 {
 	m_pokemon_head = other.m_pokemon_head;
+	m_revive_quota = other.m_revive_quota;
 	m_revive_policy = other.m_revive_policy;
-	m_revive_policy_init = other.m_revive_policy_init;
 
 	m_pokemon_count = 0;
 	for (int i = 0; i < other.m_pokemon_count; ++i)
@@ -56,6 +56,11 @@ void Party::update(const Pokemon *t_pokemon)
 	}
 }
 
+void Party::set_revive_policy(int t_policy)
+{
+	m_revive_policy = t_policy;
+}
+
 void Party::erase_pokemon()
 {
 	m_pokemon_count = 0;
@@ -89,7 +94,7 @@ void Party::set_attr(const char *t_name, int t_value)
 int *Party::search_int_member(const char *t_name)
 {
 	if (strcmp(t_name, "revive_policy") == 0)
-		return &m_revive_policy_init;
+		return &m_revive_policy;
 	else if (strcmp(t_name, "pokemon_count") == 0)
 		return &m_pokemon_count;
 	else
@@ -136,21 +141,8 @@ Pokemon **Party::get_all_pokemon(Pokemon **out_first)
 
 void Party::init()
 {
-	for (int i = 0; i < m_pokemon_count; ++i)
-	{
-		m_pokemon[i].init();
-	}
 	m_pokemon_head = m_pokemon;
-	m_revive_policy = m_revive_policy_init;
-}
-
-void Party::heal()
-{
-	for (int i = 0; i < m_pokemon_count; ++i)
-	{
-		m_pokemon[i].heal();
-	}
-	m_pokemon_head = m_pokemon;
+	m_revive_quota = m_revive_policy;
 }
 
 Pokemon *Party::get_head()
@@ -184,26 +176,11 @@ bool Party::set_head(int t_index)
 	}
 }
 
-bool Party::set_head_to_next()
-{
-	auto p = m_pokemon_head;
-	do
-	{
-		if (++p >= m_pokemon + m_pokemon_count)
-		{
-			p = m_pokemon;
-		}
-
-	} while (!p->is_alive() && p != m_pokemon_head);
-	return p->is_alive();
-}
-
 bool Party::revive()
 {
-	if (m_revive_policy != 0)
+	if (m_revive_quota != 0)
 	{
-		heal();
-		--m_revive_policy;
+		--m_revive_quota;
 		return true;
 	}
 	else

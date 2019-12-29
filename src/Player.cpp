@@ -23,8 +23,8 @@ Player::Player(const Player &other)
 	id = other.id;
 	team = other.team;
 	strategy = other.strategy;
-	m_party_head = other.m_party_head;
 
+	m_party_head = nullptr;
 	m_parties_count = 0;
 	for (int i = 0; i < other.m_parties_count; ++i)
 	{
@@ -79,43 +79,6 @@ void Player::erase_parties()
 {
 	m_parties_count = 0;
 	m_party_head = nullptr;
-}
-
-bool Player::has_attr(const char *t_name)
-{
-	return search_int_member(t_name);
-}
-
-int Player::get_attr(const char *t_name)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		return *int_member_ptr;
-	}
-	return 0;
-}
-
-void Player::set_attr(const char *t_name, int t_value)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		*int_member_ptr = t_value;
-		return;
-	}
-}
-
-int *Player::search_int_member(const char *t_name)
-{
-	if (strcmp(t_name, "id") == 0)
-		return &id;
-	else if (strcmp(t_name, "team") == 0)
-		return &team;
-	else if (strcmp(t_name, "parties_count") == 0)
-		return &m_parties_count;
-	else
-		return nullptr;
 }
 
 void Player::update(const Pokemon *t_pokemon)
@@ -191,15 +154,11 @@ void Player::init()
 	{
 		m_parties[i].init();
 	}
-	m_party_head = m_parties;
+	reset_head_party();
 }
 
-void Player::heal()
+void Player::reset_head_party()
 {
-	for (int i = 0; i < m_parties_count; ++i)
-	{
-		m_parties[i].heal();
-	}
 	m_party_head = m_parties;
 }
 
@@ -227,18 +186,6 @@ bool Player::set_head(const Pokemon *t_pokemon)
 	}
 }
 
-bool Player::choose_next_pokemon()
-{
-	if (m_party_head == nullptr)
-	{
-		return false;
-	}
-	else
-	{
-		return m_party_head->set_head_to_next();
-	}
-}
-
 bool Player::revive_current_party()
 {
 	if (m_party_head == nullptr)
@@ -251,7 +198,7 @@ bool Player::revive_current_party()
 	}
 }
 
-bool Player::choose_next_party()
+bool Player::set_head_party_to_next()
 {
 	if (++m_party_head < m_parties + m_parties_count)
 	{
@@ -264,43 +211,42 @@ bool Player::choose_next_party()
 	}
 }
 
-int Player::get_tdo() const
+bool Player::has_attr(const char *t_name)
 {
-	int tdo = 0;
-	for (int i = 0; i < m_parties_count; ++i)
-	{
-		for (int j = 0; j < m_parties[i].get_pokemon_count(); ++j)
-		{
-			tdo += m_parties[i].get_pokemon(j)->tdo;
-		}
-	}
-	return tdo;
+	return search_int_member(t_name);
 }
 
-int Player::get_max_hp() const
+int Player::get_attr(const char *t_name)
 {
-	int max_hp = 0;
-	for (int i = 0; i < m_parties_count; ++i)
+	int *int_member_ptr = search_int_member(t_name);
+	if (int_member_ptr)
 	{
-		for (int j = 0; j < m_parties[i].get_pokemon_count(); ++j)
-		{
-			max_hp += m_parties[i].get_pokemon(j)->max_hp;
-		}
+		return *int_member_ptr;
 	}
-	return max_hp;
+	return 0;
 }
 
-int Player::get_num_deaths() const
+void Player::set_attr(const char *t_name, int t_value)
 {
-	int num_deaths = 0;
-	for (int i = 0; i < m_parties_count; ++i)
+	int *int_member_ptr = search_int_member(t_name);
+	if (int_member_ptr)
 	{
-		for (int j = 0; j < m_parties[i].get_pokemon_count(); ++j)
-		{
-			num_deaths += m_parties[i].get_pokemon(j)->num_deaths;
-		}
+		*int_member_ptr = t_value;
+		return;
 	}
-	return num_deaths;
 }
+
+int *Player::search_int_member(const char *t_name)
+{
+	if (strcmp(t_name, "id") == 0)
+		return &id;
+	else if (strcmp(t_name, "team") == 0)
+		return &team;
+	else if (strcmp(t_name, "parties_count") == 0)
+		return &m_parties_count;
+	else
+		return nullptr;
+}
+
 
 } // namespace GoBattleSim
