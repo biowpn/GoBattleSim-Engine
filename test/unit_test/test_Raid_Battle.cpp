@@ -21,8 +21,8 @@ int main()
 	GameMaster::get().effectiveness(1, 3, 1 / 1.6);
 	GameMaster::get().effectiveness(3, 1, 1.6);
 	GameMaster::get().effectiveness(3, 2, 1 / 1.6);
-	GameMaster::get().type_boosted_weather(0, 1);
-	GameMaster::get().type_boosted_weather(3, 1);
+	GameMaster::get().boosted_weather(0, 1);
+	GameMaster::get().boosted_weather(3, 1);
 
 	// Set up moves
 	// (poketype, power, energy, duration, damage_window_start)

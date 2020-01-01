@@ -81,7 +81,7 @@ void GameMaster_set_effectiveness(int t_type1, int t_type2, double t_effe)
 
 void GameMaster_set_type_boosted_weather(int t_type, int t_weather)
 {
-	GameMaster::get().type_boosted_weather(t_type, t_weather);
+	GameMaster::get().boosted_weather(t_type, t_weather);
 }
 
 void GameMaster_set_stage_bounds(int t_min_stage, int t_max_stage)

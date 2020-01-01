@@ -39,29 +39,17 @@ target_link_libraries(gbs
 
 enable_testing()
 
-add_executable(test_Raid_Battle
-    ${PROJECT_SOURCE_DIR}/test/unit_test/test_Raid_Battle.cpp
-)
-target_link_libraries(test_Raid_Battle
-    GoBattleSim
-)
-add_test(Raid_Battle test_Raid_Battle)
-
-add_executable(test_PvP_Battle
-    ${PROJECT_SOURCE_DIR}/test/unit_test/test_PvP_Battle.cpp
-)
-target_link_libraries(test_PvP_Battle
-    GoBattleSim
-)
-add_test(PvP_Battle test_PvP_Battle)
-
-add_executable(test_json_converter
-    ${PROJECT_SOURCE_DIR}/test/unit_test/test_json_converter.cpp
-)
-target_link_libraries(test_json_converter
-    GoBattleSim
-)
-add_test(json_converter test_json_converter)
+file(GLOB test_srcs "${PROJECT_SOURCE_DIR}/test/unit_test/*.cpp")
+foreach(src ${test_srcs})
+    get_filename_component(test_name ${src} NAME_WE)
+    add_executable(${test_name}
+        ${src}
+    )
+    target_link_libraries(${test_name}
+        GoBattleSim
+    )
+    add_test(${test_name} ${test_name})
+endforeach()
 
 file(GLOB example_inputs "${PROJECT_SOURCE_DIR}/examples/*.json")
 foreach(example_input ${example_inputs})

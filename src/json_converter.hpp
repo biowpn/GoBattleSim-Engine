@@ -280,7 +280,7 @@ void from_json(const json &j, GameMaster &gm)
     auto type_boosted_weather = j["type_boosted_weather"].get<std::vector<int>>();
     for (int i = 0; i < num_types; ++i)
     {
-        gm.type_boosted_weather(i, type_boosted_weather.at(i));
+        gm.boosted_weather(i, type_boosted_weather.at(i));
     }
 }
 

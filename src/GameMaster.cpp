@@ -76,7 +76,7 @@ double GameMaster::effectiveness(int t_type_i, int t_type_j) const
 	}
 }
 
-int GameMaster::type_boosted_weather(unsigned t_type, int t_weather)
+int GameMaster::boosted_weather(unsigned t_type, int t_weather)
 {
 	if (0 <= t_type && t_type < m_num_types)
 	{

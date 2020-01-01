@@ -20,7 +20,7 @@ public:
 	// setters
 	unsigned num_types(unsigned);
 	double effectiveness(unsigned, unsigned, double);
-	int type_boosted_weather(unsigned, int);
+	int boosted_weather(unsigned, int);
 	double stage_multiplier(int, double);
 
 	// special setters who don't have their getter counterpart
