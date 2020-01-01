@@ -3,6 +3,7 @@
 #include <chrono>
 #include <assert.h>
 
+#include "GameMaster.h"
 #include "Battle.h"
 
 using namespace GoBattleSim;

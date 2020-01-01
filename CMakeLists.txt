@@ -21,6 +21,7 @@ add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/Party.cpp
     ${PROJECT_SOURCE_DIR}/src/Player.cpp
     ${PROJECT_SOURCE_DIR}/src/Pokemon.cpp
+    ${PROJECT_SOURCE_DIR}/src/PokemonState.cpp
     ${PROJECT_SOURCE_DIR}/src/PvPPokemon.cpp
     ${PROJECT_SOURCE_DIR}/src/PvPStrategy.cpp
     ${PROJECT_SOURCE_DIR}/src/SimplePvPBattle.cpp

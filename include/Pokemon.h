@@ -3,7 +3,6 @@
 #define _POKEMON_H_
 
 #include "Move.h"
-#include "GameMaster.h"
 
 namespace GoBattleSim
 {

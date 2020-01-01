@@ -1,6 +1,8 @@
 
 #include "Pokemon.h"
 
+#include "GameMaster.h"
+
 #include <string.h>
 #include <stdexcept>
 

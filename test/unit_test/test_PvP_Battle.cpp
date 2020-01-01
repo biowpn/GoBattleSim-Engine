@@ -3,6 +3,7 @@
 #include <chrono>
 #include <assert.h>
 
+#include "GameMaster.h"
 #include "SimplePvPBattle.h"
 #include "BattleMatrix.h"
 
@@ -91,7 +92,7 @@ int main()
 	battle.init();
 	battle.start();
 	SimplePvPBattleOutcome outcome = battle.get_outcome();
-	
+
 	assert(outcome.tdo_percent[0] > 0.5);
 	assert(outcome.tdo_percent[0] < 0.6);
 	assert(outcome.tdo_percent[1] >= 1.0);

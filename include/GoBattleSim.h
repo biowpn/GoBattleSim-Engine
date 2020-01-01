@@ -2,6 +2,8 @@
 #ifndef _GOBATTLESIM_H_
 #define _GOBATTLESIM_H_
 
+#include "GameMaster.h"
+
 #include "Move.h"
 #include "Pokemon.h"
 #include "Strategy.h"

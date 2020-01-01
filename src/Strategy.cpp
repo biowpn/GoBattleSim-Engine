@@ -1,57 +1,10 @@
 
 #include "Strategy.h"
 
+#include "GameMaster.h"
+
 namespace GoBattleSim
 {
-
-void PokemonState::init()
-{
-	heal();
-	active = false;
-	hp = max_hp;
-	energy = 0;
-	damage_reduction_expiry = 0;
-	tdo = 0;
-	tdo_fast = 0;
-	duration = 0;
-	num_deaths = 0;
-	num_fmoves_used = 0;
-	num_cmoves_used = 0;
-}
-
-void PokemonState::heal()
-{
-	hp = max_hp;
-	energy = 0;
-}
-
-bool PokemonState::is_alive() const
-{
-	return hp > 0 || immortal;
-}
-
-void PokemonState::charge(int t_energy_delta)
-{
-	energy += t_energy_delta;
-	if (energy > GameMaster::get().max_energy)
-	{
-		energy = GameMaster::get().max_energy;
-	}
-}
-
-void PokemonState::hurt(int t_damage)
-{
-	hp -= t_damage;
-}
-
-void PokemonState::attribute_damage(int t_damage, bool t_is_fmove)
-{
-	tdo += t_damage;
-	if (t_is_fmove)
-	{
-		tdo_fast += t_damage;
-	}
-}
 
 // Helper function
 int get_projected_energy(const StrategyInput &si)
@@ -245,7 +198,5 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 		r_action->delay = delay > 0 ? delay : 0;
 	}
 }
-
-// int damage_if_dodged = (1 - GameMaster::get().dodge_damage_reduction_percent) * calc_damage(si.battle_p, si.enemy, enemy_move, subject);
 
 } // namespace GoBattleSim

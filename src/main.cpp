@@ -6,6 +6,12 @@
 #include <streambuf>
 #include <string>
 
+std::string get_file_contents(std::ifstream &ifs)
+{
+    return std::string((std::istreambuf_iterator<char>(ifs)),
+                       std::istreambuf_iterator<char>());
+}
+
 int main(int argc, char **argv)
 {
     if (argc < 2)
@@ -21,10 +27,18 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    std::string str((std::istreambuf_iterator<char>(ifs)),
-                    std::istreambuf_iterator<char>());
+    if (argc >= 3)
+    {
+        std::ifstream gm_ifs(argv[2]);
+        if (!gm_ifs.good())
+        {
+            std::cerr << "bad file: " << argv[2] << std::endl;
+            return -1;
+        }
+        GameMaster_set(get_file_contents(gm_ifs).c_str());
+    }
 
-    GBS_prepare(str.c_str());
+    GBS_prepare(get_file_contents(ifs).c_str());
 
     GBS_run();
 

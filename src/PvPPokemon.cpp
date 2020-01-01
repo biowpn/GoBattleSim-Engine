@@ -1,6 +1,8 @@
 
 #include "PvPPokemon.h"
 
+#include "GameMaster.h"
+
 namespace GoBattleSim
 {
 
