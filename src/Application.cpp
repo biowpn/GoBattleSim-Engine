@@ -56,7 +56,7 @@ void GoBattleSimApp::run()
             m_pve_battle.start();
             SimOutput output;
             output.statistics = m_pve_battle.get_outcome(1);
-            // TODO: get log
+            output.battle_log = m_pve_battle.get_log();
             m_sim_output.push_back(output);
         }
     }

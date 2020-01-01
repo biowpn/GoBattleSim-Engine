@@ -25,7 +25,7 @@ void GBS_collect(char *j_c_str, int *j_c_str_len)
 	// for now, hardcode to get last output
 	SimOutput output;
 	GoBattleSimApp::get().collect(output);
-	
+
 	auto j_str = nlohmann::json(output).dump(4);
 	*j_c_str_len = j_str.size();
 	if (j_c_str != nullptr)
@@ -379,9 +379,18 @@ void Battle_get_outcome(void *__this__, int t_team, void *r_battle_outcome)
 	*static_cast<BattleOutcome *>(r_battle_outcome) = static_cast<Battle *>(__this__)->get_outcome(t_team);
 }
 
-void Battle_get_log(void *__this__, void *t_node)
+void Battle_get_log(void *__this__, void *t_events, int *t_event_count)
 {
-	*static_cast<TimelineEventNode *>(t_node) = *static_cast<Battle *>(__this__)->get_log();
+	const auto &events = static_cast<Battle *>(__this__)->get_log();
+	auto n = t_event_count ? *t_event_count : events.size();
+	if (t_events != nullptr)
+	{
+		memcpy(static_cast<TimelineEvent *>(t_events), events.data(), n * sizeof(TimelineEvent));
+	}
+	if (t_event_count)
+	{
+		*t_event_count = events.size();
+	}
 }
 
 /* PvP */

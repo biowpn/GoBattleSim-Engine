@@ -27,8 +27,6 @@ Battle::Battle()
 	m_players_count = 0;
 
 	m_pokemon_count = 0;
-
-	m_tenode_last = m_tenode_first = new TimelineEventNode{nullptr};
 }
 
 Battle::~Battle()
@@ -203,7 +201,6 @@ void Battle::init()
 	if (m_has_log)
 	{
 		erase_log();
-		m_tenode_last = m_tenode_first = new TimelineEventNode{nullptr};
 	}
 
 	for (int i = 0; i < m_players_count; ++i)
@@ -240,10 +237,6 @@ void Battle::start()
 		{
 			pkm_st.duration = m_time - pkm_st.duration;
 		}
-	}
-	if (m_has_log)
-	{
-		m_tenode_last->next = nullptr;
 	}
 }
 
@@ -318,9 +311,9 @@ BattleOutcome Battle::get_outcome(int t_team)
 	return outcome;
 }
 
-TimelineEventNode *Battle::get_log()
+const std::vector<TimelineEvent> &Battle::get_log()
 {
-	return m_tenode_first;
+	return m_event_history;
 }
 
 void Battle::handle_fainted_pokemon(int t_player_index, int t_pokemon_index)
@@ -752,22 +745,12 @@ void Battle::handle_event_enter(const TimelineEvent &t_event)
 
 void Battle::append_log(const TimelineEvent &t_event)
 {
-	m_tenode_last->next = new TimelineEventNode;
-	m_tenode_last = m_tenode_last->next;
-	m_tenode_last->item = t_event;
-	// m_tenode_last->next = nullptr;
+	m_event_history.push_back(t_event);
 }
 
 void Battle::erase_log()
 {
-	TimelineEventNode *temp;
-	while (m_tenode_first)
-	{
-		temp = m_tenode_first->next;
-		delete m_tenode_first;
-		m_tenode_first = temp;
-	}
-	m_tenode_last = nullptr;
+	m_event_history.clear();
 }
 
 } // namespace GoBattleSim

@@ -100,7 +100,7 @@ extern "C"
 	void Battle_init(void *);
 	void Battle_start(void *);
 	void Battle_get_outcome(void *, int, void *);
-	void Battle_get_log(void *, void *);
+	void Battle_get_log(void *, void *, int *);
 
 	/* PvP */
 	void *PvPPokemon_new(int, int, double, double, int);

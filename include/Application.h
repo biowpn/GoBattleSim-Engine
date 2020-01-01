@@ -42,8 +42,8 @@ struct SimInput
 struct SimOutput
 {
     BattleOutcome statistics;
+    std::vector<TimelineEvent> battle_log;
     // TODO: by-player stats
-    // TODO: battle log
 };
 
 struct AverageBattleOutcome

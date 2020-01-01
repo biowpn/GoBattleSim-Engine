@@ -314,9 +314,9 @@ void to_json(json &j, const ActionType &action_type)
 
 void to_json(json &j, const Action &action)
 {
+    j["time"] = action.time;
     j["type"] = action.type;
     j["delay"] = action.delay;
-    j["value"] = action.value;
     j["value"] = action.value;
 }
 
@@ -353,8 +353,8 @@ void to_json(json &j, const EventType &event_type)
 
 void to_json(json &j, const TimelineEvent &event)
 {
+    j["time"] = event.time;
     j["type"] = event.type;
-    j["delay"] = event.time;
     j["player"] = event.player;
     j["value"] = event.value;
 }
@@ -436,6 +436,7 @@ void from_json(const json &j, SimInput &input)
 void to_json(json &j, const SimOutput &output)
 {
     j["statistics"] = output.statistics;
+    j["battle_log"] = output.battle_log;
 }
 
 void to_json(json &j, const AverageBattleOutcome &outcome)

@@ -32,12 +32,6 @@ struct TimelineEvent
 
 bool operator<(const TimelineEvent &, const TimelineEvent &);
 
-struct TimelineEventNode
-{
-	TimelineEventNode *next;
-	TimelineEvent item;
-};
-
 struct BattleOutcome
 {
 	int duration;
@@ -69,7 +63,7 @@ public:
 	void init();
 	void start();
 	BattleOutcome get_outcome(int);
-	TimelineEventNode *get_log();
+	const std::vector<TimelineEvent> &get_log();
 	// End of Interface functions
 
 protected:
@@ -126,6 +120,7 @@ protected:
 	void erase_log();
 
 	std::vector<TimelineEvent> m_event_queue;
+	std::vector<TimelineEvent> m_event_history;
 
 	PlayerState m_player_states[MAX_NUM_PLAYERS];
 	int m_players_count;
@@ -139,9 +134,6 @@ protected:
 	int m_time;
 	int m_weather;
 	int m_defeated_team;
-
-	TimelineEventNode *m_tenode_first;
-	TimelineEventNode *m_tenode_last;
 
 private:
 	int *search_int_member(const char *);

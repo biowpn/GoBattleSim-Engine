@@ -1,6 +1,7 @@
 {
     "mode": "raid",
     "time_limit": 180000,
+    "enable_log": true,
     "players": [
         {
             "team": 0,
