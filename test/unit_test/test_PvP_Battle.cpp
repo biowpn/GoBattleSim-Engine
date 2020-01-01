@@ -83,10 +83,16 @@ int main()
 	SimplePvPBattleOutcome outcome = battle.get_outcome();
 	std::cout << outcome.tdo_percent[0] << " ; " << outcome.tdo_percent[1] << std::endl;
 
+	assert(outcome.tdo_percent[0] > 0.5);
+	assert(outcome.tdo_percent[0] < 0.6);
+	assert(outcome.tdo_percent[1] >= 1.0);
+
 	std::cout << "\nTesting battle score..." << std::endl;
 
 	double score = get_battle_score(&pokemon_lucario, &pokemon_giratina_altered, 0, 0);
 	std::cout << score << std::endl;
+
+	assert(score == outcome.tdo_percent[0] - outcome.tdo_percent[1]);
 
 	std::cout << "Battle score completed\n"
 			  << std::endl;
