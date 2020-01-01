@@ -156,92 +156,92 @@ void from_json(const json &j, Player &player)
 
 void to_json(json &j, const GameMaster &gm)
 {
-    j["max_energy"] = GameMaster::max_energy;
-    j["min_stage"] = GameMaster::min_stage;
-    j["max_stage"] = GameMaster::max_stage;
-    j["dodge_duration"] = GameMaster::dodge_duration;
-    j["dodge_window"] = GameMaster::dodge_window;
-    j["swap_duration"] = GameMaster::swap_duration;
-    j["switching_cooldown"] = GameMaster::switching_cooldown;
-    j["rejoin_duration"] = GameMaster::rejoin_duration;
-    j["item_menu_animation_time"] = GameMaster::item_menu_animation_time;
-    j["max_revive_time_per_pokemon"] = GameMaster::max_revive_time_per_pokemon;
-    j["same_type_attack_bonus_multiplier"] = GameMaster::same_type_attack_bonus_multiplier;
-    j["weather_attack_bonus_multiplier"] = GameMaster::weather_attack_bonus_multiplier;
-    j["pvp_fast_attack_bonus_multiplier"] = GameMaster::pvp_fast_attack_bonus_multiplier;
-    j["pvp_charged_attack_bonus_multiplier"] = GameMaster::pvp_charged_attack_bonus_multiplier;
-    j["dodge_damage_reduction_percent"] = GameMaster::dodge_damage_reduction_percent;
-    j["energy_delta_per_health_lost"] = GameMaster::energy_delta_per_health_lost;
+    j["max_energy"] = gm.max_energy;
+    j["min_stage"] = gm.min_stage;
+    j["max_stage"] = gm.max_stage;
+    j["dodge_duration"] = gm.dodge_duration;
+    j["dodge_window"] = gm.dodge_window;
+    j["swap_duration"] = gm.swap_duration;
+    j["switching_cooldown"] = gm.switching_cooldown;
+    j["rejoin_duration"] = gm.rejoin_duration;
+    j["item_menu_animation_time"] = gm.item_menu_animation_time;
+    j["max_revive_time_per_pokemon"] = gm.max_revive_time_per_pokemon;
+    j["same_type_attack_bonus_multiplier"] = gm.same_type_attack_bonus_multiplier;
+    j["weather_attack_bonus_multiplier"] = gm.weather_attack_bonus_multiplier;
+    j["pvp_fast_attack_bonus_multiplier"] = gm.pvp_fast_attack_bonus_multiplier;
+    j["pvp_charged_attack_bonus_multiplier"] = gm.pvp_charged_attack_bonus_multiplier;
+    j["dodge_damage_reduction_percent"] = gm.dodge_damage_reduction_percent;
+    j["energy_delta_per_health_lost"] = gm.energy_delta_per_health_lost;
 
     std::vector<std::vector<double>> matrix;
-    auto num_types = GameMaster::get_num_types();
+    auto num_types = gm.num_types();
     for (int i = 0; i < num_types; ++i)
     {
         std::vector<double> row;
         for (int j = 0; j < num_types; ++j)
         {
-            row.push_back(GameMaster::get_effectiveness(i, j));
+            row.push_back(gm.effectiveness(i, j));
         }
         matrix.push_back(row);
     }
     j["type_effectiveness"] = matrix;
 
     std::vector<double> stage_multipliers;
-    for (auto s = GameMaster::min_stage; s <= GameMaster::max_stage; ++s)
+    for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        stage_multipliers.push_back(GameMaster::get_stage_multiplier(s));
+        stage_multipliers.push_back(gm.stage_multiplier(s));
     }
     j["stage_multipliers"] = stage_multipliers;
 
     std::vector<int> type_boosted_weather;
     for (int i = 0; i < num_types; ++i)
     {
-        type_boosted_weather.push_back(GameMaster::get_type_boosted_weather(i));
+        type_boosted_weather.push_back(gm.boosted_weather(i));
     }
     j["type_boosted_weather"] = type_boosted_weather;
 }
 
 void from_json(const json &j, GameMaster &gm)
 {
-    GameMaster::max_energy = j["max_energy"];
-    GameMaster::min_stage = j["min_stage"];
-    GameMaster::max_stage = j["max_stage"];
-    GameMaster::dodge_duration = j["dodge_duration"];
-    GameMaster::dodge_window = j["dodge_window"];
-    GameMaster::swap_duration = j["swap_duration"];
-    GameMaster::switching_cooldown = j["switching_cooldown"];
-    GameMaster::rejoin_duration = j["rejoin_duration"];
-    GameMaster::item_menu_animation_time = j["item_menu_animation_time"];
-    GameMaster::max_revive_time_per_pokemon = j["max_revive_time_per_pokemon"];
-    GameMaster::same_type_attack_bonus_multiplier = j["same_type_attack_bonus_multiplier"];
-    GameMaster::weather_attack_bonus_multiplier = j["weather_attack_bonus_multiplier"];
-    GameMaster::pvp_fast_attack_bonus_multiplier = j["pvp_fast_attack_bonus_multiplier"];
-    GameMaster::pvp_charged_attack_bonus_multiplier = j["pvp_charged_attack_bonus_multiplier"];
-    GameMaster::dodge_damage_reduction_percent = j["dodge_damage_reduction_percent"];
-    GameMaster::energy_delta_per_health_lost = j["energy_delta_per_health_lost"];
+    gm.max_energy = j["max_energy"];
+    gm.min_stage = j["min_stage"];
+    gm.max_stage = j["max_stage"];
+    gm.dodge_duration = j["dodge_duration"];
+    gm.dodge_window = j["dodge_window"];
+    gm.swap_duration = j["swap_duration"];
+    gm.switching_cooldown = j["switching_cooldown"];
+    gm.rejoin_duration = j["rejoin_duration"];
+    gm.item_menu_animation_time = j["item_menu_animation_time"];
+    gm.max_revive_time_per_pokemon = j["max_revive_time_per_pokemon"];
+    gm.same_type_attack_bonus_multiplier = j["same_type_attack_bonus_multiplier"];
+    gm.weather_attack_bonus_multiplier = j["weather_attack_bonus_multiplier"];
+    gm.pvp_fast_attack_bonus_multiplier = j["pvp_fast_attack_bonus_multiplier"];
+    gm.pvp_charged_attack_bonus_multiplier = j["pvp_charged_attack_bonus_multiplier"];
+    gm.dodge_damage_reduction_percent = j["dodge_damage_reduction_percent"];
+    gm.energy_delta_per_health_lost = j["energy_delta_per_health_lost"];
 
     auto matrix = j["type_effectiveness"].get<std::vector<std::vector<double>>>();
     auto num_types = matrix.size();
-    GameMaster::set_num_types(num_types);
+    gm.num_types(num_types);
     for (int i = 0; i < num_types; ++i)
     {
         for (int j = 0; j < num_types; ++j)
         {
-            GameMaster::set_effectiveness(i, j, matrix.at(i).at(j));
+            gm.effectiveness(i, j, matrix.at(i).at(j));
         }
     }
 
     auto stage_multipliers = j["stage_multipliers"].get<std::vector<double>>();
-    GameMaster::set_stage_bounds(GameMaster::min_stage, GameMaster::max_stage);
-    for (auto s = GameMaster::min_stage; s <= GameMaster::max_stage; ++s)
+    gm.set_stage_bounds(gm.min_stage, gm.max_stage);
+    for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        GameMaster::set_stage_multiplier(s, stage_multipliers.at(s - GameMaster::min_stage));
+        gm.stage_multiplier(s, stage_multipliers.at(s - gm.min_stage));
     }
 
     auto type_boosted_weather = j["type_boosted_weather"].get<std::vector<int>>();
     for (int i = 0; i < num_types; ++i)
     {
-        GameMaster::set_type_boosted_weather(i, type_boosted_weather.at(i));
+        gm.type_boosted_weather(i, type_boosted_weather.at(i));
     }
 }
 

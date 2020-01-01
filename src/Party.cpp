@@ -35,7 +35,8 @@ void Party::add(const Pokemon *t_pokemon)
 {
 	if (m_pokemon_count >= MAX_NUM_POKEMON)
 	{
-		throw std::runtime_error("too many Pokemon");
+		sprintf(err_msg, "too many Pokemon (max %d)", MAX_NUM_POKEMON);
+		throw std::runtime_error(err_msg);
 	}
 	m_pokemon[m_pokemon_count] = *t_pokemon;
 	if (m_pokemon_head == nullptr)

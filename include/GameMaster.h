@@ -4,51 +4,60 @@
 
 namespace GoBattleSim
 {
+extern char err_msg[256];
+
+constexpr unsigned MAX_NUM_TYPES = 20;
+constexpr unsigned MAX_NUM_STAGES = 16;
 
 class GameMaster
 {
 public:
-	~GameMaster();
+	static GameMaster &get();
 
-	// Interface functions
-	static void set_num_types(int);
-	static void set_effectiveness(int, int, double);
-	static void set_type_boosted_weather(int, int);
-	static void set_stage_bounds(int, int);
-	static void set_stage_multiplier(int, double);
-	static void set_parameter(char *, double);
+	// Some battle parameters are accessed via setters/getters (for bound checks)
+	// setters
+	unsigned num_types(unsigned);
+	double effectiveness(unsigned, unsigned, double);
+	int type_boosted_weather(unsigned, int);
+	double stage_multiplier(int, double);
 
-	// Array-like parameter accessors
-	static int get_num_types();
-	static double get_effectiveness(int, int);
-	static int get_type_boosted_weather(int);
-	static double get_stage_multiplier(int);
+	// special setters who don't have their getter counterpart
+	void set_stage_bounds(int, int);
+	void set_parameter(char *, double);
 
-	// Simple battle parameters are public and available for direct access
-	static int max_energy;
-	static int min_stage;
-	static int max_stage;
-	static int dodge_duration;
-	static int dodge_window;
-	static int swap_duration;
-	static int switching_cooldown;
-	static int rejoin_duration;
-	static int item_menu_animation_time;
-	static int max_revive_time_per_pokemon;
-	static double same_type_attack_bonus_multiplier;
-	static double weather_attack_bonus_multiplier;
-	static double pvp_fast_attack_bonus_multiplier;
-	static double pvp_charged_attack_bonus_multiplier;
-	static double dodge_damage_reduction_percent;
-	static double energy_delta_per_health_lost;
+	// getters
+	unsigned num_types() const;
+	double effectiveness(int, int) const;
+	int boosted_weather(int) const;
+	double stage_multiplier(int) const;
+
+	// Other simple battle parameters are just public members for direct access
+	int max_energy{100};
+	int min_stage{-4};
+	int max_stage{4};
+	int dodge_duration{500};
+	int dodge_window{700};
+	int swap_duration{100};
+	int switching_cooldown{60000};
+	int rejoin_duration{10000};
+	int item_menu_animation_time{2000};
+	int max_revive_time_per_pokemon{1000};
+	double same_type_attack_bonus_multiplier{1.2};
+	double weather_attack_bonus_multiplier{1.2};
+	double pvp_fast_attack_bonus_multiplier{1.3};
+	double pvp_charged_attack_bonus_multiplier{1.3};
+	double dodge_damage_reduction_percent{0.75};
+	double energy_delta_per_health_lost{0.5};
 
 private:
-	static int num_types;
+	GameMaster();
+	static GameMaster instance;
 
-	static double **type_effectiveness;
-	static int *type_boosted_weathers;
+	int m_num_types{0};
+	double m_type_effectiveness[MAX_NUM_TYPES][MAX_NUM_TYPES];
+	int m_type_boosted_weathers[MAX_NUM_TYPES];
 
-	static double *stage_multipliers;
+	double m_stage_multipliers[MAX_NUM_STAGES];
 };
 
 } // namespace GoBattleSim

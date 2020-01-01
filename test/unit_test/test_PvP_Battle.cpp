@@ -13,29 +13,29 @@ int main()
 	std::cout << "\nSimple PvP Battle Test:" << std::endl;
 
 	double stage_multipliers[9] = {0.5, 0.5714286, 0.66666669, 0.8, 1, 1.25, 1.5, 1.75, 2};
-	GameMaster::set_stage_bounds(-4, 4);
+	GameMaster::get().set_stage_bounds(-4, 4);
 	for (int i = -4; i <= 4; ++i)
 	{
-		GameMaster::set_stage_multiplier(i, stage_multipliers[i + 4]);
+		GameMaster::get().stage_multiplier(i, stage_multipliers[i + 4]);
 	}
 
 	// In this demo, 0 = Dragon, 1 = Fighting, 2 = Steel, 3 = Ghost, 4 = Rock, 5 = Ground, 6 = Water
-	GameMaster::set_num_types(7);
-	GameMaster::set_effectiveness(0, 0, 1.6);
-	GameMaster::set_effectiveness(0, 2, 1 / 1.6);
-	GameMaster::set_effectiveness(1, 2, 1.6);
-	GameMaster::set_effectiveness(1, 3, 1 / 1.6 / 1.6);
-	GameMaster::set_effectiveness(2, 6, 1 / 1.6);
-	GameMaster::set_effectiveness(3, 3, 1.6);
-	GameMaster::set_effectiveness(4, 1, 1 / 1.6);
-	GameMaster::set_effectiveness(4, 2, 1 / 1.6);
-	GameMaster::set_effectiveness(4, 5, 1 / 1.6);
-	GameMaster::set_effectiveness(5, 2, 1.6);
-	GameMaster::set_effectiveness(5, 4, 1.6);
-	GameMaster::set_effectiveness(6, 0, 1 / 1.6);
-	GameMaster::set_effectiveness(6, 4, 1.6);
-	GameMaster::set_effectiveness(6, 5, 1.6);
-	GameMaster::set_effectiveness(6, 6, 1 / 1.6);
+	GameMaster::get().num_types(7);
+	GameMaster::get().effectiveness(0, 0, 1.6);
+	GameMaster::get().effectiveness(0, 2, 1 / 1.6);
+	GameMaster::get().effectiveness(1, 2, 1.6);
+	GameMaster::get().effectiveness(1, 3, 1 / 1.6 / 1.6);
+	GameMaster::get().effectiveness(2, 6, 1 / 1.6);
+	GameMaster::get().effectiveness(3, 3, 1.6);
+	GameMaster::get().effectiveness(4, 1, 1 / 1.6);
+	GameMaster::get().effectiveness(4, 2, 1 / 1.6);
+	GameMaster::get().effectiveness(4, 5, 1 / 1.6);
+	GameMaster::get().effectiveness(5, 2, 1.6);
+	GameMaster::get().effectiveness(5, 4, 1.6);
+	GameMaster::get().effectiveness(6, 0, 1 / 1.6);
+	GameMaster::get().effectiveness(6, 4, 1.6);
+	GameMaster::get().effectiveness(6, 5, 1.6);
+	GameMaster::get().effectiveness(6, 6, 1 / 1.6);
 
 	// Set up PvP Moves
 	// (poketype, power, energy, duration (in turns), dws, move effect)

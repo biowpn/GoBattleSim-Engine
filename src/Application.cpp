@@ -12,7 +12,8 @@ void GoBattleSimApp::prepare(const SimInput &input)
 
     if (input.time_limit <= 0)
     {
-        throw std::runtime_error("timelimit must be positive");
+        sprintf(err_msg, "timelimit must be positive (got %d)", input.time_limit);
+        throw std::runtime_error(err_msg);
     }
     m_pve_battle.set_time_limit(input.time_limit);
 
@@ -32,7 +33,8 @@ void GoBattleSimApp::prepare(const SimInput &input)
     }
     else
     {
-        throw std::runtime_error("unknown battle mode");
+        sprintf(err_msg, "unknown battle mode (%d)", input.mode);
+        throw std::runtime_error(err_msg);
     }
 }
 

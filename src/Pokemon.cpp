@@ -14,14 +14,14 @@ int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_
 	double multiplier = t_attacker->attack_multiplier;
 	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
 	{
-		multiplier *= GameMaster::same_type_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().same_type_attack_bonus_multiplier;
 	}
-	if (GameMaster::get_type_boosted_weather(t_move->poketype) == t_weather)
+	if (GameMaster::get().boosted_weather(t_move->poketype) == t_weather)
 	{
-		multiplier *= GameMaster::weather_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().weather_attack_bonus_multiplier;
 	}
-	multiplier *= GameMaster::get_effectiveness(t_move->poketype, t_defender->poketype1);
-	multiplier *= GameMaster::get_effectiveness(t_move->poketype, t_defender->poketype2);
+	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
+	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);
 
 	return (int)(0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1) * t_attacker->clone_multiplier;
 }
@@ -92,7 +92,8 @@ void Pokemon::add_cmove(const Move *t_move)
 	}
 	if (cmoves_count >= MAX_NUM_CMOVES)
 	{
-		throw std::runtime_error("too many cmoves");
+		sprintf(err_msg, "too many cmoves (max %d)", MAX_NUM_CMOVES);
+		throw std::runtime_error(err_msg);
 	}
 	cmoves[cmoves_count] = *t_move;
 	if (cmove == nullptr)

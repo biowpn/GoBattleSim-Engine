@@ -28,32 +28,32 @@ int Global_calc_damage_pvp_cmove(void *t_attacker, void *t_move, void *t_defende
 
 void GameMaster_set_num_types(int t_num_types)
 {
-	GameMaster::set_num_types(t_num_types);
+	GameMaster::get().num_types(t_num_types);
 }
 
 void GameMaster_set_effectiveness(int t_type1, int t_type2, double t_effe)
 {
-	GameMaster::set_effectiveness(t_type1, t_type2, t_effe);
+	GameMaster::get().effectiveness(t_type1, t_type2, t_effe);
 }
 
 void GameMaster_set_type_boosted_weather(int t_type, int t_weather)
 {
-	GameMaster::set_type_boosted_weather(t_type, t_weather);
+	GameMaster::get().type_boosted_weather(t_type, t_weather);
 }
 
 void GameMaster_set_stage_bounds(int t_min_stage, int t_max_stage)
 {
-	GameMaster::set_stage_bounds(t_min_stage, t_max_stage);
+	GameMaster::get().set_stage_bounds(t_min_stage, t_max_stage);
 }
 
 void GameMaster_set_stage_multiplier(int t_stage, double t_multiplier)
 {
-	GameMaster::set_stage_multiplier(t_stage, t_multiplier);
+	GameMaster::get().stage_multiplier(t_stage, t_multiplier);
 }
 
 void GameMaster_set_parameter(char *t_name, double t_value)
 {
-	GameMaster::set_parameter(t_name, t_value);
+	GameMaster::get().set_parameter(t_name, t_value);
 }
 
 void *Move_new(int t_poketype, int t_power, int t_energy, int t_duration, int t_dws)

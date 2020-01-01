@@ -12,16 +12,16 @@ int main()
 	std::cout << "\nRaid Battle Test:" << std::endl;
 
 	// In this demo, 0 = Psychic, 1 = Fighting, 2 = Steel, 3 = Flying
-	GameMaster::set_num_types(4);
-	GameMaster::set_effectiveness(0, 1, 1.6);
-	GameMaster::set_effectiveness(0, 2, 1 / 1.6);
-	GameMaster::set_effectiveness(1, 0, 1 / 1.6);
-	GameMaster::set_effectiveness(1, 2, 1.6);
-	GameMaster::set_effectiveness(1, 3, 1 / 1.6);
-	GameMaster::set_effectiveness(3, 1, 1.6);
-	GameMaster::set_effectiveness(3, 2, 1 / 1.6);
-	GameMaster::set_type_boosted_weather(0, 1);
-	GameMaster::set_type_boosted_weather(3, 1);
+	GameMaster::get().num_types(4);
+	GameMaster::get().effectiveness(0, 1, 1.6);
+	GameMaster::get().effectiveness(0, 2, 1 / 1.6);
+	GameMaster::get().effectiveness(1, 0, 1 / 1.6);
+	GameMaster::get().effectiveness(1, 2, 1.6);
+	GameMaster::get().effectiveness(1, 3, 1 / 1.6);
+	GameMaster::get().effectiveness(3, 1, 1.6);
+	GameMaster::get().effectiveness(3, 2, 1 / 1.6);
+	GameMaster::get().type_boosted_weather(0, 1);
+	GameMaster::get().type_boosted_weather(3, 1);
 
 	// Set up moves
 	// (poketype, power, energy, duration, damage_window_start)

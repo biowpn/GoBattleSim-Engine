@@ -70,7 +70,8 @@ void Player::add(const Party *t_party)
 {
 	if (m_parties_count >= MAX_NUM_PARTIES)
 	{
-		throw std::runtime_error("too many parties");
+		sprintf(err_msg, "too many parties (max %d)", MAX_NUM_PARTIES);
+		throw std::runtime_error(err_msg);
 	}
 	m_parties[m_parties_count] = *t_party;
 	if (m_party_head == nullptr)

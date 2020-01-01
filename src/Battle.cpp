@@ -44,6 +44,7 @@ void Battle::add(const Player *t_player)
 {
 	if (m_players_count >= MAX_NUM_PLAYERS)
 	{
+		sprintf(err_msg, "too many players (max %d)", MAX_NUM_PLAYERS);
 		throw std::runtime_error("too many players");
 	}
 	m_player_states[m_players_count].player = *t_player;
@@ -332,15 +333,15 @@ void Battle::handle_fainted_pokemon(int t_player_index, int t_pokemon_index)
 	int time_new_enter = -1;
 	if (select_next_pokemon(ps)) // Select next Pokemon from current party
 	{
-		time_new_enter = m_time + GameMaster::swap_duration;
+		time_new_enter = m_time + GameMaster::get().swap_duration;
 	}
 	else if (revive_current_party(ps)) // Max revive current party and re-lobby
 	{
-		time_new_enter = m_time + GameMaster::rejoin_duration + GameMaster::item_menu_animation_time + party->get_pokemon_count() * GameMaster::max_revive_time_per_pokemon;
+		time_new_enter = m_time + GameMaster::get().rejoin_duration + GameMaster::get().item_menu_animation_time + party->get_pokemon_count() * GameMaster::get().max_revive_time_per_pokemon;
 	}
 	else if (select_next_party(ps)) // Select next Party and re-lobby
 	{
-		time_new_enter = m_time + GameMaster::rejoin_duration;
+		time_new_enter = m_time + GameMaster::get().rejoin_duration;
 	}
 
 	if (time_new_enter > 0) // Player chose a new head Pokemon
@@ -519,7 +520,7 @@ void Battle::register_action_dodge(int t_player_index, const Action &t_action)
 	enqueue({EventType::Dodge,
 			 time_action_start,
 			 t_player_index});
-	ps.time_free = time_action_start + GameMaster::dodge_duration;
+	ps.time_free = time_action_start + GameMaster::get().dodge_duration;
 	enqueue({EventType::Free,
 			 ps.time_free,
 			 t_player_index});
@@ -533,7 +534,7 @@ void Battle::register_action_switch(int t_player_index, const Action &t_action)
 			 time_action_start,
 			 t_player_index,
 			 search(ps.player.get_head_party()->get_pokemon(t_action.value))});
-	ps.time_free = time_action_start + GameMaster::swap_duration;
+	ps.time_free = time_action_start + GameMaster::get().swap_duration;
 	enqueue({EventType::Free,
 			 ps.time_free,
 			 t_player_index});
@@ -651,12 +652,12 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 		int damage = calc_damage(subject, move, opponent, m_weather);
 		if (m_time < opponent_st.damage_reduction_expiry)
 		{
-			damage = (1 - GameMaster::dodge_damage_reduction_percent) * damage;
+			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;
 			damage = damage > 0 ? damage : 1;
 		}
 		subject_st.attribute_damage(damage, true);
 		opponent_st.hurt(damage);
-		opponent_st.charge(ceil(GameMaster::energy_delta_per_health_lost * damage));
+		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
 		if (!opponent_st.is_alive())
 		{
 			handle_fainted_pokemon(i, opponent_idx);
@@ -698,12 +699,12 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 		int damage = calc_damage(subject, move, opponent, m_weather);
 		if (m_time < opponent_st.damage_reduction_expiry)
 		{
-			damage = (1 - GameMaster::dodge_damage_reduction_percent) * damage;
+			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;
 			damage = damage > 0 ? damage : 1;
 		}
 		subject_st.attribute_damage(damage, false);
 		opponent_st.hurt(damage);
-		opponent_st.charge(ceil(GameMaster::energy_delta_per_health_lost * damage));
+		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
 		if (!opponent_st.is_alive())
 		{
 			handle_fainted_pokemon(i, opponent_idx);
@@ -719,7 +720,7 @@ void Battle::handle_event_dodge(const TimelineEvent &t_event)
 {
 	auto &ps = m_player_states[t_event.player];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
-	pkm_st.damage_reduction_expiry = m_time + GameMaster::dodge_window + 1;
+	pkm_st.damage_reduction_expiry = m_time + GameMaster::get().dodge_window + 1;
 	if (m_has_log)
 	{
 		append_log(t_event);

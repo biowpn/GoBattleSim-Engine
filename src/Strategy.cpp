@@ -33,9 +33,9 @@ bool PokemonState::is_alive() const
 void PokemonState::charge(int t_energy_delta)
 {
 	energy += t_energy_delta;
-	if (energy > GameMaster::max_energy)
+	if (energy > GameMaster::get().max_energy)
 	{
-		energy = GameMaster::max_energy;
+		energy = GameMaster::get().max_energy;
 	}
 }
 
@@ -51,11 +51,6 @@ void PokemonState::attribute_damage(int t_damage, bool t_is_fmove)
 	{
 		tdo_fast += t_damage;
 	}
-}
-
-Strategy::Strategy(EventResponder t_on_free, EventResponder t_on_clear, EventResponder t_on_attack)
-	: on_free(t_on_free ? t_on_free : attacker_no_dodge_on_free), on_clear(t_on_clear), on_attack(t_on_attack)
-{
 }
 
 // Helper function
@@ -139,7 +134,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 		}
 		else
 		{
-			int delay = time_till_damage - GameMaster::dodge_window;
+			int delay = time_till_damage - GameMaster::get().dodge_window;
 			r_action->type = ActionType::Dodge;
 			r_action->delay = delay > 0 ? delay : 0;
 		}
@@ -171,7 +166,7 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 	}
 	else // Just dodge
 	{
-		int delay = time_till_damage - GameMaster::dodge_window;
+		int delay = time_till_damage - GameMaster::get().dodge_window;
 		r_action->type = ActionType::Dodge;
 		r_action->delay = delay > 0 ? delay : 0;
 	}
@@ -215,7 +210,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 		}
 		else
 		{
-			int delay = time_till_damage - GameMaster::dodge_window;
+			int delay = time_till_damage - GameMaster::get().dodge_window;
 			r_action->type = ActionType::Dodge;
 			r_action->delay = delay > 0 ? delay : 0;
 		}
@@ -245,12 +240,12 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 	}
 	else // Just dodge
 	{
-		int delay = time_till_damage - GameMaster::dodge_window;
+		int delay = time_till_damage - GameMaster::get().dodge_window;
 		r_action->type = ActionType::Dodge;
 		r_action->delay = delay > 0 ? delay : 0;
 	}
 }
 
-// int damage_if_dodged = (1 - GameMaster::dodge_damage_reduction_percent) * calc_damage(si.battle_p, si.enemy, enemy_move, subject);
+// int damage_if_dodged = (1 - GameMaster::get().dodge_damage_reduction_percent) * calc_damage(si.battle_p, si.enemy, enemy_move, subject);
 
 } // namespace GoBattleSim

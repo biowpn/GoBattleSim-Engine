@@ -155,9 +155,9 @@ void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 {
 	const Move *move = m_pokemon[i]->get_fmove(0);
 	m_pkms[i].energy += move->energy;
-	if (m_pkms[i].energy > GameMaster::max_energy)
+	if (m_pkms[i].energy > GameMaster::get().max_energy)
 	{
-		m_pkms[i].energy = GameMaster::max_energy;
+		m_pkms[i].energy = GameMaster::get().max_energy;
 	}
 	int damage = calc_damage_pvp_fmove(m_pokemon[i], move, m_pokemon[1 - i]);
 	m_pkms[1 - i].hp -= damage;
