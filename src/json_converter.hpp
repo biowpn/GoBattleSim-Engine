@@ -73,12 +73,12 @@ void to_json(json &j, const Move &move)
 
 void from_json(const json &j, Move &move)
 {
-    move.poketype = j["poketype"];
-    move.power = j["power"];
-    move.energy = j["energy"];
-    move.duration = j["duration"];
-    move.dws = j["dws"];
-    move.effect = j["effect"];
+    j.at("poketype").get_to(move.poketype);
+    j.at("power").get_to(move.power);
+    j.at("energy").get_to(move.energy);
+    try_get_to(j, "duration", 0, move.duration);
+    try_get_to(j, "dws", 0, move.dws);
+    try_get_to(j, "effect", {}, move.effect);
 }
 
 void to_json(json &j, const Pokemon &pkm)
@@ -98,19 +98,21 @@ void to_json(json &j, const Pokemon &pkm)
 
 void from_json(const json &j, Pokemon &pkm)
 {
-    j.at("id").get_to(pkm.id);
     j.at("poketype1").get_to(pkm.poketype1);
-    j.at("poketype1").get_to(pkm.poketype1);
+    j.at("poketype2").get_to(pkm.poketype2);
     j.at("attack").get_to(pkm.attack);
     j.at("defense").get_to(pkm.defense);
     j.at("max_hp").get_to(pkm.max_hp);
-    j.at("immortal").get_to(pkm.immortal);
+
     j.at("fmove").get_to(pkm.fmove);
     for (const auto &cmove_j : j.at("cmoves"))
     {
         auto cmove = cmove_j.get<Move>();
         pkm.add_cmove(&cmove);
     }
+
+    try_get_to(j, "id", 0, pkm.id);
+    try_get_to(j, "immortal", false, pkm.immortal);
     try_get_to(j, "attack_multiplier", 1.0, pkm.attack_multiplier);
     try_get_to(j, "clone_multiplier", 1, pkm.clone_multiplier);
 }

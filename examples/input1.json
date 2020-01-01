@@ -1,0 +1,78 @@
+{
+    "mode": "E",
+    "time_limit": 180000,
+    "players": [
+        {
+            "team": 0,
+            "strategy": "DEFENDER",
+            "parties": [
+                {
+                    "pokemon": [
+                        {
+                            "name": "Machamp",
+                            "poketype1": 1,
+                            "poketype2": -1,
+                            "attack": 181.7700047492981,
+                            "defense": 127.02000331878662,
+                            "max_hp": 3600,
+                            "fmove": {
+                                "name": "Counter",
+                                "poketype": 1,
+                                "power": 12,
+                                "energy": 8,
+                                "duration": 900,
+                                "dws": 700
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "Dynamic Punch",
+                                    "poketype": 1,
+                                    "power": 90,
+                                    "energy": -50,
+                                    "duration": 2700,
+                                    "dws": 1200
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "team": 1,
+            "strategy": "ATTACKER_DODGE_CHARGED",
+            "parties": [
+                {
+                    "pokemon": [
+                        {
+                            "name": "Mewtwo",
+                            "poketype1": 0,
+                            "poketype2": -1,
+                            "attack": 248.94450315,
+                            "defense": 155.68910197000002,
+                            "max_hp": 180,
+                            "fmove": {
+                                "name": "Confusion",
+                                "poketype": 0,
+                                "power": 20,
+                                "energy": 15,
+                                "duration": 1600,
+                                "dws": 600
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "Psychic",
+                                    "poketype": 0,
+                                    "power": 100,
+                                    "energy": -100,
+                                    "duration": 2800,
+                                    "dws": 1300
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -27,6 +27,14 @@ add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/Strategy.cpp
 )
 
+add_executable(gbs
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
+)
+
+target_link_libraries(gbs 
+    GoBattleSim
+)
+
 
 enable_testing()
 
