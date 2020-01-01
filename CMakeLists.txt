@@ -61,3 +61,9 @@ target_link_libraries(test_json_converter
     GoBattleSim
 )
 add_test(json_converter test_json_converter)
+
+file(GLOB example_inputs "${PROJECT_SOURCE_DIR}/examples/*.json")
+foreach(example_input ${example_inputs})
+    get_filename_component(fname ${example_input} NAME_WE)
+    add_test("app_${fname}" gbs ${example_input})
+endforeach()
