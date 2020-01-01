@@ -8,12 +8,40 @@
 
 #include "json.hpp"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace GoBattleSim
 {
 using nlohmann::json;
+
+template <class T>
+T try_get(const json &j, const std::string &key, const T &t_default)
+{
+    if (j.find(key) != j.end())
+    {
+        return j.at(key).get<T>();
+    }
+    else
+    {
+        return t_default;
+    }
+}
+
+template <class T>
+bool try_get_to(const json &j, const std::string &key, const T &t_default, T &dst)
+{
+    if (j.find(key) != j.end())
+    {
+        j.at(key).get_to(dst);
+        return true;
+    }
+    else
+    {
+        dst = t_default;
+        return false;
+    }
+}
 
 void to_json(json &j, const MoveEffect &effect)
 {
@@ -70,21 +98,21 @@ void to_json(json &j, const Pokemon &pkm)
 
 void from_json(const json &j, Pokemon &pkm)
 {
-    pkm.id = j["id"];
-    pkm.poketype1 = j["poketype1"];
-    pkm.poketype2 = j["poketype2"];
-    pkm.attack = j["attack"];
-    pkm.defense = j["defense"];
-    pkm.max_hp = j["max_hp"];
-    pkm.immortal = j["immortal"];
-    pkm.fmove = j["fmove"];
-    for (const auto &cmove_j : j["cmove"])
+    j.at("id").get_to(pkm.id);
+    j.at("poketype1").get_to(pkm.poketype1);
+    j.at("poketype1").get_to(pkm.poketype1);
+    j.at("attack").get_to(pkm.attack);
+    j.at("defense").get_to(pkm.defense);
+    j.at("max_hp").get_to(pkm.max_hp);
+    j.at("immortal").get_to(pkm.immortal);
+    j.at("fmove").get_to(pkm.fmove);
+    for (const auto &cmove_j : j.at("cmoves"))
     {
         auto cmove = cmove_j.get<Move>();
         pkm.add_cmove(&cmove);
     }
-    pkm.attack_multiplier = j["attack_multiplier"];
-    pkm.clone_multiplier = j["clone_multiplier"];
+    try_get_to(j, "attack_multiplier", 1.0, pkm.attack_multiplier);
+    try_get_to(j, "clone_multiplier", 1, pkm.clone_multiplier);
 }
 
 void to_json(json &j, const PvPPokemon &pkm)
@@ -104,18 +132,19 @@ void to_json(json &j, const Party &party)
     {
         pkm.push_back(*party.get_pokemon(i));
     }
+    j["pokemon"] = pkm;
     j["revive_policy"] = party.get_revive_policy();
 }
 
 void from_json(const json &j, Party &party)
 {
     party.erase_pokemon();
-    for (const auto &pkm_j : j["pokemon"])
+    for (const auto &pkm_j : j.at("pokemon"))
     {
         auto pkm = pkm_j.get<Pokemon>();
         party.add(&pkm);
     }
-    party.set_revive_policy(j["revive_policy"]);
+    party.set_revive_policy(try_get(j, "revive_policy", 0));
 }
 
 void to_json(json &j, const Player &player)
@@ -128,7 +157,7 @@ void to_json(json &j, const Player &player)
     j["parties"] = parties;
     j["team"] = player.team;
     j["id"] = player.id;
-    j["strategy"] = std::string(player.strategy.name);
+    j["strategy"] = player.strategy.name;
     j["attack_multiplier"] = player.get_attack_multiplier();
     j["clone_multiplier"] = player.get_clone_multiplier();
 }
@@ -151,8 +180,15 @@ void from_json(const json &j, Player &player)
             player.strategy = BUILT_IN_STRATEGIES[i];
         }
     }
-    player.set_attack_multiplier(j["attack_multiplier"]);
-    player.set_clone_multiplier(j["clone_multiplier"]);
+
+    if (j.find("attack_multiplier") != j.end())
+    {
+        player.set_attack_multiplier(j.at("attack_multiplier"));
+    }
+    if (j.find("clone_multiplier") != j.end())
+    {
+        player.set_clone_multiplier(j.at("clone_multiplier"));
+    }
 }
 
 void to_json(json &j, const GameMaster &gm)
@@ -352,23 +388,11 @@ void from_json(const json &j, SimInput &input)
     j.at("time_limit").get_to(input.time_limit);
     j.at("players").get_to(input.players);
 
-    if (j.find("pokemon") != j.end())
-    {
-        j.at("pokemon").get_to(input.pvp_pokemon);
-    }
-    if (j.find("num_shields") != j.end())
-    {
-        j.at("num_shields").get_to(input.pvp_num_shields);
-    }
-    if (j.find("weather") != j.end())
-    {
-        j.at("weather").get_to(input.weather);
-    }
-
-    if (j.find("num_sims") != j.end())
-    {
-        j.at("num_sims").get_to(input.num_sims);
-    }
+    try_get_to(j, "pokemon", {}, input.pvp_pokemon);
+    try_get_to(j, "num_shields", {}, input.pvp_num_shields);
+    try_get_to(j, "weather", -1, input.weather);
+    try_get_to(j, "num_sims", 1, input.num_sims);
+    try_get_to(j, "enable_log", false, input.enable_log);
 
     input.aggreation = AggregationMode::None;
     if (j.find("aggreation") != j.end())
@@ -386,11 +410,6 @@ void from_json(const json &j, SimInput &input)
         {
             sprintf(err_msg, "unknown aggreation ('%s')", agg_str.c_str());
         }
-    }
-
-    if (j.find("enable_log") != j.end())
-    {
-        j.at("enable_log").get_to(input.enable_log);
     }
 }
 

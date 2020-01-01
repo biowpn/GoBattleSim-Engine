@@ -77,7 +77,7 @@ typedef void (*EventResponder)(const StrategyInput &, Action *);
 struct Strategy
 {
 	// A name for the strategy
-	const char *name;
+	char name[32];
 
 	// Called when the subject is free.
 	// The returned Action will be executed immediately.

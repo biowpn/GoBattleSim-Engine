@@ -56,7 +56,7 @@ public:
 	// Battle state variables
 	int id;
 	int team;
-	Strategy strategy;
+	Strategy strategy{STRATEGY_ATTACKER_NO_DODGE};
 
 private:
 	static int instance_count;

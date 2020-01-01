@@ -4,6 +4,7 @@
 
 #include "GoBattleSim.h"
 
+#include <array>
 #include <vector>
 
 namespace GoBattleSim
@@ -29,10 +30,10 @@ struct SimInput
     int weather;
     int time_limit;
 
-    PvPPokemon pvp_pokemon[2];
-    int pvp_num_shields[2];
-    PvPStrategy pvp_strateies[2];
-    
+    std::array<PvPPokemon, 2> pvp_pokemon;
+    std::array<int, 2> pvp_num_shields;
+    std::array<PvPStrategy, 2> pvp_strateies;
+
     int num_sims;
     AggregationMode aggreation;
     bool enable_log;

@@ -45,3 +45,11 @@ target_link_libraries(test_PvP_Battle
     GoBattleSim
 )
 add_test(PvP_Battle test_PvP_Battle)
+
+add_executable(test_json_converter
+    ${PROJECT_SOURCE_DIR}/test/unit_test/test_json_converter.cpp
+)
+target_link_libraries(test_json_converter
+    GoBattleSim
+)
+add_test(json_converter test_json_converter)
