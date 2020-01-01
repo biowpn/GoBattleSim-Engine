@@ -4,6 +4,7 @@
  */
 
 #include "GoBattleSim.h"
+#include "Application.h"
 
 #include "json.hpp"
 
@@ -343,6 +344,73 @@ void to_json(json &j, const BattleOutcome &outcome)
     j["tdo"] = outcome.tdo;
     j["tdo_percent"] = outcome.tdo_percent;
     j["num_deaths"] = outcome.num_deaths;
+}
+
+void from_json(const json &j, SimInput &input)
+{
+    input.mode = static_cast<BattleMode>(j.at("mode").get<char>());
+    j.at("time_limit").get_to(input.time_limit);
+    j.at("players").get_to(input.players);
+
+    if (j.find("pokemon") != j.end())
+    {
+        j.at("pokemon").get_to(input.pvp_pokemon);
+    }
+    if (j.find("num_shields") != j.end())
+    {
+        j.at("num_shields").get_to(input.pvp_num_shields);
+    }
+    if (j.find("weather") != j.end())
+    {
+        j.at("weather").get_to(input.weather);
+    }
+
+    if (j.find("num_sims") != j.end())
+    {
+        j.at("num_sims").get_to(input.num_sims);
+    }
+
+    input.aggreation = AggregationMode::None;
+    if (j.find("aggreation") != j.end())
+    {
+        auto agg_str = j.at("aggreation").get<std::string>();
+        if (agg_str == "avrg")
+        {
+            input.aggreation = AggregationMode::Average;
+        }
+        else if (agg_str == "none")
+        {
+            input.aggreation = AggregationMode::None;
+        }
+        else
+        {
+            sprintf(err_msg, "unknown aggreation ('%s')", agg_str.c_str());
+        }
+    }
+
+    if (j.find("enable_log") != j.end())
+    {
+        j.at("enable_log").get_to(input.enable_log);
+    }
+}
+
+void to_json(json &j, const SimOutput &output)
+{
+    j["statistics"] = output.statistics;
+}
+
+void to_json(json &j, const AverageBattleOutcome &outcome)
+{
+    j["duration"] = outcome.duration;
+    j["win"] = outcome.win;
+    j["tdo"] = outcome.tdo;
+    j["tdo_percent"] = outcome.tdo_percent;
+    j["num_deaths"] = outcome.num_deaths;
+}
+
+void to_json(json &j, const AverageSimOutput &output)
+{
+    j["statistics"] = output.statistics;
 }
 
 }; // namespace GoBattleSim

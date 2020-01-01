@@ -5,6 +5,14 @@
 
 namespace GoBattleSim
 {
+
+GoBattleSimApp GoBattleSimApp::instance;
+
+GoBattleSimApp &GoBattleSimApp::get()
+{
+    return instance;
+}
+
 void GoBattleSimApp::prepare(const SimInput &input)
 {
     m_sim_output.clear();

@@ -1,13 +1,29 @@
 
 /**
- * This file defines the C-interface needed to build DLL.
+ * This file defines the C-interface for GoBattleSim.
  */
 
 #ifndef _GOBATTLESIM_EXTERN_H_
 #define _GOBATTLESIM_EXTERN_H_
 
+#define GBS_FLAG_LAST 0
+#define GBS_FLAG_ALL 1
+#define GBS_FLAG_AVG 2
+
+#ifdef __cplusplus
 extern "C"
 {
+#endif
+
+	/* For application calls */
+	void GBS_prepare(const char *);
+	void GBS_run();
+	void GBS_collect(char *, int *);
+
+	void GameMaster_set(const char *);
+	void GameMaster_get(char *, int *);
+
+	/* common */
 	void Global_set_random_seed(int);
 	int Global_calc_damage(void *, void *, void *, int);
 	int Global_calc_damage_pvp_fmove(void *, void *, void *);
@@ -110,6 +126,9 @@ extern "C"
 	void BattleMatrix_delete(void *);
 	void BattleMatrix_run(void *);
 	void BattleMatrix_get(void *, double **);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif

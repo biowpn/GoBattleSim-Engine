@@ -9,20 +9,33 @@
 namespace GoBattleSim
 {
 
-enum class BattleMode
+enum class BattleMode : char
 {
-    PvE,
-    PvP
+    PvE = 'E',
+    PvP = 'P',
+};
+
+enum class AggregationMode
+{
+    None,
+    Average,
 };
 
 struct SimInput
 {
     BattleMode mode;
-    int time_limit;
-    int weather;
-    int num_sims;
-    bool enable_log;
+
     std::vector<Player> players;
+    int weather;
+    int time_limit;
+
+    PvPPokemon pvp_pokemon[2];
+    int pvp_num_shields[2];
+    PvPStrategy pvp_strateies[2];
+    
+    int num_sims;
+    AggregationMode aggreation;
+    bool enable_log;
 };
 
 struct SimOutput
@@ -50,6 +63,8 @@ struct AverageSimOutput
 class GoBattleSimApp
 {
 public:
+    static GoBattleSimApp &get();
+
     /**
      * initialize new simulation. This will clear all output.
      */
@@ -76,6 +91,8 @@ public:
     void collect(AverageSimOutput &);
 
 private:
+    static GoBattleSimApp instance;
+
     SimInput m_sim_input;
     Battle m_pve_battle;
     SimplePvPBattle m_pvp_battle;

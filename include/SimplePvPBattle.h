@@ -16,11 +16,13 @@ struct SimplePvPBattleOutcome
 class SimplePvPBattle
 {
 public:
+	SimplePvPBattle() = default;
 	SimplePvPBattle(const PvPPokemon *, const PvPPokemon *);
 	SimplePvPBattle(const SimplePvPBattle &other);
 	~SimplePvPBattle();
 
 	// Interface functions
+	void set_pokemon(const PvPPokemon *, const PvPPokemon *);
 	void set_num_shields_max(int, int);
 	void set_strategy(int, const PvPStrategy &);
 

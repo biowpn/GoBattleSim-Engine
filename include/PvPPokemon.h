@@ -15,6 +15,7 @@ int calc_damage_pvp_cmove(const Pokemon *, const Move *, const Pokemon *);
 class PvPPokemon : public Pokemon
 {
 public:
+	PvPPokemon() = default;
 	PvPPokemon(int, int, double, double, int);
 	PvPPokemon(const PvPPokemon &);
 	~PvPPokemon();

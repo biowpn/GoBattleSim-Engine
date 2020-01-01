@@ -14,6 +14,8 @@ class GameMaster
 public:
 	static GameMaster &get();
 
+	GameMaster();
+
 	// Some battle parameters are accessed via setters/getters (for bound checks)
 	// setters
 	unsigned num_types(unsigned);
@@ -50,7 +52,6 @@ public:
 	double energy_delta_per_health_lost{0.5};
 
 private:
-	GameMaster();
 	static GameMaster instance;
 
 	int m_num_types{0};

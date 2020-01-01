@@ -4,15 +4,10 @@
 namespace GoBattleSim
 {
 
-PvPStrategy::PvPStrategy(PvPEventResponder t_on_free, PvPEventResponder t_on_attack, PvPEventResponder t_on_switch)
-	: on_free(t_on_free), on_attack(t_on_attack), on_switch(t_on_switch)
-{
-}
-
-/*
-	PvP Basic Strategy
-	Use default cmove as soon as possible
-*/
+/**
+ * PvP Basic Strategy
+ * Use default cmove as soon as possible
+ */
 void pvp_basic_on_free(const PvPStrategyInput &si, Action *r_action)
 {
 	if (si.subject_energy + si.subject->cmove->energy >= 0)
@@ -25,10 +20,10 @@ void pvp_basic_on_free(const PvPStrategyInput &si, Action *r_action)
 	}
 }
 
-/*
-	PvP Advance Strategy
-	See docs
-*/
+/**
+ * PvP Advance Strategy
+ * See docs
+ */
 void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 {
 	int my_fmove_damage = calc_damage_pvp_cmove(si.subject, si.subject->get_fmove(0), si.enemy);

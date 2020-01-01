@@ -6,16 +6,7 @@ namespace GoBattleSim
 
 SimplePvPBattle::SimplePvPBattle(const PvPPokemon *t_pokemon_0, const PvPPokemon *t_pokemon_1)
 {
-	m_pokemon[0] = t_pokemon_0;
-	m_pokemon[1] = t_pokemon_1;
-	m_own_pokemon = false;
-
-	m_num_shields_max[0] = m_pokemon[0]->num_shields_max;
-	m_num_shields_max[1] = m_pokemon[1]->num_shields_max;
-	m_strategies[0] = m_pokemon[0]->cmoves_count > 1 ? pvp_advance : pvp_basic;
-	m_strategies[1] = m_pokemon[1]->cmoves_count > 1 ? pvp_advance : pvp_basic;
-	m_branch[0] = nullptr;
-	m_branch[1] = nullptr;
+	set_pokemon(t_pokemon_0, t_pokemon_1);
 }
 
 SimplePvPBattle::SimplePvPBattle(const SimplePvPBattle &other)
@@ -54,6 +45,20 @@ SimplePvPBattle::~SimplePvPBattle()
 		delete m_branch[1];
 		m_branch[1] = nullptr;
 	}
+}
+
+void SimplePvPBattle::set_pokemon(const PvPPokemon *t_pokemon_0, const PvPPokemon *t_pokemon_1)
+{
+	m_pokemon[0] = t_pokemon_0;
+	m_pokemon[1] = t_pokemon_1;
+	m_own_pokemon = false;
+
+	m_num_shields_max[0] = m_pokemon[0]->num_shields_max;
+	m_num_shields_max[1] = m_pokemon[1]->num_shields_max;
+	m_strategies[0] = m_pokemon[0]->cmoves_count > 1 ? pvp_advance : pvp_basic;
+	m_strategies[1] = m_pokemon[1]->cmoves_count > 1 ? pvp_advance : pvp_basic;
+	m_branch[0] = nullptr;
+	m_branch[1] = nullptr;
 }
 
 void SimplePvPBattle::set_num_shields_max(int t_num_0, int t_num_1)

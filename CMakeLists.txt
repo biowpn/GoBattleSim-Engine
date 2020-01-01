@@ -12,6 +12,7 @@ include_directories(
 )
 
 add_library(GoBattleSim SHARED
+    ${PROJECT_SOURCE_DIR}/src/Application.cpp
     ${PROJECT_SOURCE_DIR}/src/Battle.cpp
     ${PROJECT_SOURCE_DIR}/src/BattleMatrix.cpp
     ${PROJECT_SOURCE_DIR}/src/GameMaster.cpp

@@ -108,11 +108,14 @@ void attacker_dodge_all_on_attack(const StrategyInput &, Action *);
 const Strategy STRATEGY_DEFENDER{
 	"DEFENDER",
 	attacker_no_dodge_on_free,
-	defender_on_clear};
+	defender_on_clear,
+	nullptr};
 
 const Strategy STRATEGY_ATTACKER_NO_DODGE{
 	"ATTACKER_NO_DODGE",
-	attacker_no_dodge_on_free};
+	attacker_no_dodge_on_free,
+	nullptr,
+	nullptr};
 
 const Strategy STRATEGY_ATTACKER_DODGE_CHARGED{
 	"ATTACKER_DODGE_CHARGED",

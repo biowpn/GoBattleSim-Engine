@@ -1,10 +1,53 @@
 
 #include "GoBattleSim_Extern.h"
 #include "GoBattleSim.h"
+#include "json_converter.hpp"
 
 #include <stdlib.h>
 
 using namespace GoBattleSim;
+
+void GBS_prepare(const char *j_c_str)
+{
+	SimInput input = nlohmann::json::parse(j_c_str);
+	// for now, hardcode to no aggregation
+	input.aggreation = AggregationMode::None;
+	GoBattleSimApp::get().prepare(input);
+}
+
+void GBS_run()
+{
+	GoBattleSimApp::get().run();
+}
+
+void GBS_collect(char *j_c_str, int *j_c_str_len)
+{
+	// for now, hardcode to get last output
+	SimOutput output;
+	GoBattleSimApp::get().collect(output);
+	
+	auto j_str = nlohmann::json(output).dump(4);
+	*j_c_str_len = j_str.size();
+	if (j_c_str != nullptr)
+	{
+		strcpy(j_c_str, j_str.c_str());
+	}
+}
+
+void GameMaster_set(const char *j_c_str)
+{
+	GameMaster::get() = nlohmann::json::parse(j_c_str);
+}
+
+void GameMaster_get(char *j_c_str, int *j_c_str_len)
+{
+	auto j_str = nlohmann::json(GameMaster::get()).dump(4);
+	*j_c_str_len = j_str.size();
+	if (j_c_str != nullptr)
+	{
+		strcpy(j_c_str, j_str.c_str());
+	}
+}
 
 void Global_set_random_seed(int t_seed)
 {
@@ -103,7 +146,7 @@ void Pokemon_delete(void *__this__)
 
 void *Pokemon_get_fmove(void *__this__, int t_index)
 {
-	return const_cast<Move * >(static_cast<Pokemon *>(__this__)->get_fmove(t_index));
+	return const_cast<Move *>(static_cast<Pokemon *>(__this__)->get_fmove(t_index));
 }
 
 void Pokemon_add_fmove(void *__this__, void *t_move)
@@ -113,7 +156,7 @@ void Pokemon_add_fmove(void *__this__, void *t_move)
 
 void *Pokemon_get_cmove(void *__this__, int t_index)
 {
-	return const_cast<Move * >(static_cast<Pokemon *>(__this__)->get_cmove(t_index));
+	return const_cast<Move *>(static_cast<Pokemon *>(__this__)->get_cmove(t_index));
 }
 
 void Pokemon_add_cmove(void *__this__, void *t_move)
