@@ -17,9 +17,16 @@ GameMaster &GameMaster::get()
 
 GameMaster::GameMaster()
 {
-	for (auto s = min_stage; s <= max_stage; ++s)
+	for (int i = 0; i < MAX_NUM_STAGES; ++i)
 	{
-		stage_multiplier(s, 1);
+		m_stage_multipliers[i] = 1.0;
+	}
+	for (int i = 0; i < MAX_NUM_TYPES; ++i)
+	{
+		for (int j = 0; j < MAX_NUM_TYPES; ++j)
+		{
+			m_type_effectiveness[i][j] = 1.0;
+		}
 	}
 }
 
