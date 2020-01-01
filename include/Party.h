@@ -13,6 +13,7 @@ class Party
 {
 public:
 	Party();
+	Party& operator=(const Party &);
 	Party(const Party &);
 	~Party();
 

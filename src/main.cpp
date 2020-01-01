@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <streambuf>
+#include <string>
 
 int main(int argc, char **argv)
 {
@@ -19,24 +21,16 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    ifs.seekg(0, std::ios::end);
-    auto length = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
+    std::string str((std::istreambuf_iterator<char>(ifs)),
+                    std::istreambuf_iterator<char>());
 
-    auto buf = new char[length];
-    ifs.read(buf, length);
+    GBS_prepare(str.c_str());
 
-    GBS_prepare(buf);
-    
     GBS_run();
 
     int output_len;
     GBS_collect(nullptr, &output_len);
-    if (output_len > length)
-    {
-        delete buf;
-        buf = new char[output_len];
-    }
+    auto buf = new char[output_len];
     GBS_collect(buf, &output_len);
 
     std::cout << buf << std::endl;

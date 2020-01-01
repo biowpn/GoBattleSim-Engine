@@ -15,15 +15,20 @@ Party::Party()
 
 Party::Party(const Party &other)
 {
-	m_pokemon_head = other.m_pokemon_head;
-	m_revive_quota = other.m_revive_quota;
-	m_revive_policy = other.m_revive_policy;
+	*this = other;
+}
 
-	m_pokemon_count = 0;
-	for (int i = 0; i < other.m_pokemon_count; ++i)
+Party &Party::operator=(const Party &other)
+{
+	m_pokemon_count = other.m_pokemon_count;
+	for (int i = 0; i < m_pokemon_count; ++i)
 	{
-		add(&other.m_pokemon[i]);
+		m_pokemon[i] = other.m_pokemon[i];
 	}
+	m_pokemon_head = m_pokemon + (other.m_pokemon_head - other.m_pokemon);
+	m_revive_policy = other.m_revive_policy;
+	m_revive_quota = other.m_revive_quota;
+	return *this;
 }
 
 Party::~Party()

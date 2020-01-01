@@ -13,9 +13,10 @@ constexpr unsigned MAX_NUM_CMOVES = 3;
 class Pokemon
 {
 public:
-	Pokemon() = default;
+	Pokemon();
 	Pokemon(int, int, double, double, int);
 	Pokemon(const Pokemon &);
+	Pokemon& operator=(const Pokemon &);
 	~Pokemon();
 
 	const Move *get_fmove(int) const;
@@ -38,8 +39,8 @@ public:
 	bool immortal{false};
 
 	Move fmove;
-	Move *cmove{nullptr};
 	Move cmoves[MAX_NUM_CMOVES];
+	Move *cmove{nullptr};
 	int cmoves_count{0};
 
 	// These two could be put into PokemonState,

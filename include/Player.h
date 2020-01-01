@@ -15,6 +15,7 @@ class Player
 public:
 	Player();
 	Player(const Player &);
+	Player& operator=(const Player &);
 	~Player();
 
 	Party *get_party(int);

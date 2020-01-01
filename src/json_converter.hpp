@@ -76,9 +76,9 @@ void from_json(const json &j, Move &move)
     j.at("poketype").get_to(move.poketype);
     j.at("power").get_to(move.power);
     j.at("energy").get_to(move.energy);
-    try_get_to(j, "duration", 0, move.duration);
-    try_get_to(j, "dws", 0, move.dws);
-    try_get_to(j, "effect", {}, move.effect);
+    try_get_to(j, "duration", move.duration, move.duration);
+    try_get_to(j, "dws", move.dws, move.dws);
+    try_get_to(j, "effect", move.effect, move.effect);
 }
 
 void to_json(json &j, const Pokemon &pkm)
@@ -111,10 +111,10 @@ void from_json(const json &j, Pokemon &pkm)
         pkm.add_cmove(&cmove);
     }
 
-    try_get_to(j, "id", 0, pkm.id);
-    try_get_to(j, "immortal", false, pkm.immortal);
-    try_get_to(j, "attack_multiplier", 1.0, pkm.attack_multiplier);
-    try_get_to(j, "clone_multiplier", 1, pkm.clone_multiplier);
+    try_get_to(j, "id", pkm.id, pkm.id);
+    try_get_to(j, "immortal", pkm.immortal, pkm.immortal);
+    try_get_to(j, "attack_multiplier", pkm.attack_multiplier, pkm.attack_multiplier);
+    try_get_to(j, "clone_multiplier", pkm.clone_multiplier, pkm.clone_multiplier);
 }
 
 void to_json(json &j, const PvPPokemon &pkm)
@@ -172,8 +172,8 @@ void from_json(const json &j, Player &player)
         auto party = party_j.get<Party>();
         player.add(&party);
     }
-    player.team = j["team"];
-    player.id = j["id"];
+    player.team = j.at("team");
+    try_get_to(j, "id", player.id, player.id);
     auto strategy_name = j["strategy"].get<std::string>();
     for (int i = 0; i < NUM_STRATEGIES; ++i)
     {
@@ -384,15 +384,33 @@ void to_json(json &j, const BattleOutcome &outcome)
     j["num_deaths"] = outcome.num_deaths;
 }
 
+void from_json(const json &j, BattleMode &mode)
+{
+    auto mode_str = j.get<std::string>();
+    if (mode_str == "raid" || mode_str == "gym")
+    {
+        mode = BattleMode::PvE;
+    }
+    else if (mode_str == "pvp")
+    {
+        mode = BattleMode::PvP;
+    }
+    else
+    {
+        sprintf(err_msg, "unknown battle mode '%s'", mode_str.c_str());
+        throw std::runtime_error(err_msg);
+    }
+}
+
 void from_json(const json &j, SimInput &input)
 {
-    input.mode = static_cast<BattleMode>(j.at("mode").get<char>());
+    j.at("mode").get_to(input.mode);
     j.at("time_limit").get_to(input.time_limit);
     j.at("players").get_to(input.players);
 
-    try_get_to(j, "pokemon", {}, input.pvp_pokemon);
-    try_get_to(j, "num_shields", {}, input.pvp_num_shields);
-    try_get_to(j, "weather", -1, input.weather);
+    try_get_to(j, "pokemon", input.pvp_pokemon, input.pvp_pokemon);
+    try_get_to(j, "num_shields", input.pvp_num_shields, input.pvp_num_shields);
+    try_get_to(j, "weather", input.weather, input.weather);
     try_get_to(j, "num_sims", 1, input.num_sims);
     try_get_to(j, "enable_log", false, input.enable_log);
 

@@ -20,16 +20,23 @@ Player::Player()
 
 Player::Player(const Player &other)
 {
+	*this = other;
+}
+
+Player &Player::operator=(const Player &other)
+{
+	m_parties_count = other.m_parties_count;
+	for (int i = 0; i < m_parties_count; ++i)
+	{
+		m_parties[i] = other.m_parties[i];
+	}
+	m_party_head = m_parties + (other.m_party_head - other.m_parties);
 	id = other.id;
 	team = other.team;
-	strategy = other.strategy;
-
-	m_party_head = nullptr;
-	m_parties_count = 0;
-	for (int i = 0; i < other.m_parties_count; ++i)
-	{
-		add(&other.m_parties[i]);
-	}
+	memcpy(&strategy, &other.strategy, sizeof(Strategy));
+	m_attack_multiplier = other.m_attack_multiplier;
+	m_clone_multiplier = other.m_clone_multiplier;
+	return *this;
 }
 
 Player::~Player()

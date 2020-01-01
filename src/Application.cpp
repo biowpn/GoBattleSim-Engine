@@ -18,30 +18,30 @@ void GoBattleSimApp::prepare(const SimInput &input)
     m_sim_output.clear();
     m_sim_input = input;
 
-    if (input.time_limit <= 0)
+    if (m_sim_input.time_limit <= 0)
     {
-        sprintf(err_msg, "timelimit must be positive (got %d)", input.time_limit);
+        sprintf(err_msg, "timelimit must be positive (got %d)", m_sim_input.time_limit);
         throw std::runtime_error(err_msg);
     }
-    m_pve_battle.set_time_limit(input.time_limit);
+    m_pve_battle.set_time_limit(m_sim_input.time_limit);
 
-    if (input.mode == BattleMode::PvE)
+    if (m_sim_input.mode == BattleMode::PvE)
     {
-        m_pve_battle.set_weather(input.weather);
-        m_pve_battle.set_enable_log(input.enable_log);
+        m_pve_battle.set_weather(m_sim_input.weather);
+        m_pve_battle.set_enable_log(m_sim_input.enable_log);
         m_pve_battle.erase_players();
-        for (const auto &player : input.players)
+        for (const auto &player : m_sim_input.players)
         {
             m_pve_battle.add(&player);
         }
     }
-    else if (input.mode == BattleMode::PvP)
+    else if (m_sim_input.mode == BattleMode::PvP)
     {
         throw std::runtime_error("PvP not supported yet");
     }
     else
     {
-        sprintf(err_msg, "unknown battle mode (%d)", input.mode);
+        sprintf(err_msg, "unknown battle mode (%d)", m_sim_input.mode);
         throw std::runtime_error(err_msg);
     }
 }
