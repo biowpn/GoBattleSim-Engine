@@ -10,7 +10,7 @@ using namespace GoBattleSim;
 
 int main()
 {
-	std::cout << "\nSimple PvP Battle Test:" << std::endl;
+	std::cout << "setting gamemaster ... ";
 
 	double stage_multipliers[9] = {0.5, 0.5714286, 0.66666669, 0.8, 1, 1.25, 1.5, 1.75, 2};
 	GameMaster::get().set_stage_bounds(-4, 4);
@@ -37,7 +37,10 @@ int main()
 	GameMaster::get().effectiveness(6, 5, 1.6);
 	GameMaster::get().effectiveness(6, 6, 1 / 1.6);
 
-	// Set up PvP Moves
+	std::cout << "done" << std::endl;
+
+	std::cout << "defining moves ... ";
+
 	// (poketype, power, energy, duration (in turns), dws, move effect)
 	Move move_counter{1, 8, 7, 2};
 	Move move_shadow_claw{3, 6, 8, 2};
@@ -52,7 +55,10 @@ int main()
 	Move move_iron_head{2, 70, -50};
 	Move move_earthquake{5, 120, -65};
 
-	// Set up Pokemon
+	std::cout << "done" << std::endl;
+
+	std::cout << "defining pokemon ... ";
+
 	// (poketyp1, poketyp2, attack, defense, max_hp)
 	PvPPokemon pokemon_lucario(1, 2, 190.39096, 121.08865056, 142);
 	pokemon_lucario.add_fmove(&move_counter);
@@ -76,71 +82,74 @@ int main()
 	pokemon_poliwrath.add_fmove(&move_bubble);
 	pokemon_poliwrath.add_cmove(&move_power_up_punch);
 
+	std::cout << "done" << std::endl;
+
+	std::cout << "testing simple battle ... ";
+
 	SimplePvPBattle battle = SimplePvPBattle(&pokemon_lucario, &pokemon_giratina_altered);
 	battle.set_num_shields_max(0, 0);
 	battle.init();
 	battle.start();
 	SimplePvPBattleOutcome outcome = battle.get_outcome();
-	std::cout << outcome.tdo_percent[0] << " ; " << outcome.tdo_percent[1] << std::endl;
-
+	
 	assert(outcome.tdo_percent[0] > 0.5);
 	assert(outcome.tdo_percent[0] < 0.6);
 	assert(outcome.tdo_percent[1] >= 1.0);
 
-	std::cout << "\nTesting battle score..." << std::endl;
+	std::cout << "success" << std::endl;
+	std::cout << outcome.tdo_percent[0] << ", " << outcome.tdo_percent[1] << std::endl;
+
+	std::cout << "testing battle score ... ";
 
 	double score = get_battle_score(&pokemon_lucario, &pokemon_giratina_altered, 0, 0);
-	std::cout << score << std::endl;
-
 	assert(score == outcome.tdo_percent[0] - outcome.tdo_percent[1]);
 
-	std::cout << "Battle score completed\n"
-			  << std::endl;
+	std::cout << "success" << std::endl;
 
-	std::cout << "\nTesting battle matrix..." << std::endl;
+	std::cout << "testing battle matrix ... ";
 
-	const PvPPokemon **pkm_list = new const PvPPokemon *[5];
-	pkm_list[0] = &pokemon_groudon;
-	pkm_list[1] = &pokemon_dialga;
-	pkm_list[2] = &pokemon_lucario;
-	pkm_list[3] = &pokemon_giratina_altered;
-	pkm_list[4] = &pokemon_poliwrath;
+	const PvPPokemon *pkm_list[5] = {
+		&pokemon_groudon,
+		&pokemon_dialga,
+		&pokemon_lucario,
+		&pokemon_giratina_altered,
+		&pokemon_poliwrath,
+	};
 
 	BattleMatrix bm(pkm_list, 5, pkm_list, 5, false);
 	bm.run();
 
-	double **matrix = new double *[5];
-	for (int i = 0; i < 5; ++i)
-		matrix[i] = new double[5];
+	double matrix[25];
 	bm.get(matrix);
 
-	for (int i = 0; i < 5; ++i)
+	std::cout << "success" << std::endl;
+
+	for (unsigned i = 0; i < 5; ++i)
 	{
-		for (int j = 0; j < 5; ++j)
+		for (unsigned j = 0; j < 5; ++j)
 		{
-			std::cout << matrix[i][j] << " , ";
+			printf("%+.04f ", matrix[i * 5 + j]);
 		}
 		std::cout << std::endl;
 	}
 
-	std::cout << "Battle matrix completed\n"
-			  << std::endl;
+	constexpr unsigned num_sims = 10000;
+	std::cout << "testing " << num_sims << " battles ... ";
 
-	// Construct and run battle
-	const int num_sims = 10000;
-	std::cout << "Simulating " << num_sims << " PvP battles..." << std::endl;
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	for (int i = 0; i < num_sims; ++i)
+	auto start = std::chrono::high_resolution_clock::now();
+	for (unsigned i = 0; i < num_sims; ++i)
 	{
 		SimplePvPBattle battle(&pokemon_lucario, &pokemon_giratina_altered);
 		battle.init();
 		battle.start();
 		auto outcome = battle.get_outcome();
 	}
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Time elapsed (s) = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0 << std::endl;
+	auto finish = std::chrono::high_resolution_clock::now();
 
-	std::cout << "Simple PvP Battle Test passed" << std::endl;
+	std::cout << "success" << std::endl;
+
+	auto duration = finish - start;
+	std::cout << "time elapsed (ms) = " << duration.count() / 1000000.0 << std::endl;
 
 	return 0;
 }

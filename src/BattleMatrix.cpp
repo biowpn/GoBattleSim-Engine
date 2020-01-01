@@ -140,4 +140,15 @@ void BattleMatrix::get(double **r_matrix)
 	}
 }
 
+void BattleMatrix::get(double *r_matrix)
+{
+	for (int i = 0; i < m_row_size; ++i)
+	{
+		for (int j = 0; j < m_col_size; ++j)
+		{
+			r_matrix[i * m_col_size + j] = m_matrix[i][j];
+		}
+	}
+}
+
 } // namespace GoBattleSim

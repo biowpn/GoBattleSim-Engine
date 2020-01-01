@@ -17,6 +17,7 @@ public:
 
 	void run();
 	void get(double **);
+	void get(double *);
 
 protected:
 	PvPPokemon **m_row_pkm;
