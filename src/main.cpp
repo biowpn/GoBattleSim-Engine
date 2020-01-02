@@ -35,7 +35,7 @@ int main(int argc, char **argv)
             std::cerr << "bad file: " << argv[2] << std::endl;
             return -1;
         }
-        GameMaster_set(get_file_contents(gm_ifs).c_str());
+        GBS_GameMaster_set(get_file_contents(gm_ifs).c_str());
     }
 
     GBS_prepare(get_file_contents(ifs).c_str());

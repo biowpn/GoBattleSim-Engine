@@ -25,7 +25,6 @@ public:
 
 	// special setters who don't have their getter counterpart
 	void set_stage_bounds(int, int);
-	void set_parameter(char *, double);
 
 	// getters
 	unsigned num_types() const;
@@ -54,7 +53,7 @@ public:
 private:
 	static GameMaster instance;
 
-	int m_num_types{0};
+	unsigned m_num_types{0};
 	double m_type_effectiveness[MAX_NUM_TYPES][MAX_NUM_TYPES];
 	int m_type_boosted_weathers[MAX_NUM_TYPES];
 

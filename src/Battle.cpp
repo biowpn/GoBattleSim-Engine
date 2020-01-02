@@ -7,6 +7,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -57,7 +58,7 @@ void Battle::add(const Player *t_player)
 
 void Battle::update(const Player *t_player)
 {
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.id == t_player->id)
 		{
@@ -69,7 +70,7 @@ void Battle::update(const Player *t_player)
 
 void Battle::update(const Pokemon *t_pokemon)
 {
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		m_player_states[i].player.update(t_pokemon);
 	}
@@ -89,53 +90,11 @@ void Battle::erase_pokemon()
 void Battle::fetch_pokemon()
 {
 	auto out_first = m_pokemon;
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		out_first = m_player_states[i].player.get_all_pokemon(out_first);
 	}
 	m_pokemon_count = out_first - m_pokemon;
-}
-
-bool Battle::has_attr(const char *t_name)
-{
-	return search_int_member(t_name);
-}
-
-int Battle::get_attr(const char *t_name)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		return *int_member_ptr;
-	}
-	return 0;
-}
-
-void Battle::set_attr(const char *t_name, int t_value)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		*int_member_ptr = t_value;
-	}
-}
-
-int *Battle::search_int_member(const char *t_name)
-{
-	if (strcmp(t_name, "players_count") == 0)
-		return &m_players_count;
-	else if (strcmp(t_name, "pokemon_count") == 0)
-		return &m_pokemon_count;
-	else if (strcmp(t_name, "has_log") == 0)
-		return &m_has_log;
-	else if (strcmp(t_name, "time_limit") == 0)
-		return &m_time_limit;
-	else if (strcmp(t_name, "weather") == 0)
-		return &m_weather;
-	else if (strcmp(t_name, "time") == 0)
-		return &m_time;
-	else
-		return nullptr;
 }
 
 void Battle::set_time_limit(int t_time_limit)
@@ -165,10 +124,10 @@ int Battle::search(const Pokemon *t_pokemon)
 	return -1;
 }
 
-int Battle::search_rival(int t_player_index)
+int Battle::search_rival(unsigned t_player_index)
 {
 	int team = m_player_states[t_player_index].player.team;
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team != team)
 		{
@@ -203,7 +162,7 @@ void Battle::init()
 		erase_log();
 	}
 
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		m_player_states[i].player.init();
 		m_player_states[i].head_index = search(m_player_states[i].player.get_head());
@@ -222,7 +181,7 @@ void Battle::init()
 
 void Battle::start()
 {
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		enqueue({EventType::Enter,
 				 m_time,
@@ -230,7 +189,7 @@ void Battle::start()
 				 m_player_states[i].head_index});
 	}
 	go();
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		auto &pkm_st = m_pokemon_states[m_player_states[i].head_index];
 		if (pkm_st.active)
@@ -284,7 +243,7 @@ BattleOutcome Battle::get_outcome(int t_team)
 		(m_defeated_team != t_team && m_time < m_time_limit)};
 
 	int sum_tdo = 0, sum_rival_max_hp = 0, sum_deaths = 0;
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		const auto &player = m_player_states[i].player;
 		auto count = player.get_pokemon_count();
@@ -316,7 +275,7 @@ const std::vector<TimelineEvent> &Battle::get_log()
 	return m_event_history;
 }
 
-void Battle::handle_fainted_pokemon(int t_player_index, int t_pokemon_index)
+void Battle::handle_fainted_pokemon(unsigned t_player_index, unsigned t_pokemon_index)
 {
 	auto &ps = m_player_states[t_player_index];
 	auto &pkm_st = m_pokemon_states[t_pokemon_index];
@@ -412,7 +371,7 @@ bool Battle::select_next_party(Battle::PlayerState &ps)
 
 bool Battle::is_defeated(int t_team)
 {
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		const auto &ps = m_player_states[i];
 		const auto &pkm_st = m_pokemon_states[ps.head_index];
@@ -429,7 +388,7 @@ bool Battle::is_end()
 	return m_defeated_team >= 0 || (m_time > m_time_limit && m_time_limit > 0);
 }
 
-void Battle::register_action(int t_player_index, const Action &t_action)
+void Battle::register_action(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	ps.current_action = t_action;
@@ -456,7 +415,7 @@ void Battle::register_action(int t_player_index, const Action &t_action)
 	}
 }
 
-void Battle::register_action_fast(int t_player_index, const Action &t_action)
+void Battle::register_action_fast(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
@@ -479,7 +438,7 @@ void Battle::register_action_fast(int t_player_index, const Action &t_action)
 			 t_player_index});
 }
 
-void Battle::register_action_charged(int t_player_index, const Action &t_action)
+void Battle::register_action_charged(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
@@ -508,7 +467,7 @@ void Battle::register_action_charged(int t_player_index, const Action &t_action)
 			 t_player_index});
 }
 
-void Battle::register_action_dodge(int t_player_index, const Action &t_action)
+void Battle::register_action_dodge(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
@@ -521,7 +480,7 @@ void Battle::register_action_dodge(int t_player_index, const Action &t_action)
 			 t_player_index});
 }
 
-void Battle::register_action_switch(int t_player_index, const Action &t_action)
+void Battle::register_action_switch(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	int time_action_start = m_time + t_action.delay;
@@ -535,7 +494,7 @@ void Battle::register_action_switch(int t_player_index, const Action &t_action)
 			 t_player_index});
 }
 
-void Battle::register_action_wait(int t_player_index, const Action &t_action)
+void Battle::register_action_wait(unsigned t_player_index, const Action &t_action)
 {
 	auto &ps = m_player_states[t_player_index];
 	ps.time_free = m_time;
@@ -547,7 +506,7 @@ void Battle::register_action_wait(int t_player_index, const Action &t_action)
 	}
 }
 
-StrategyInput Battle::generate_strat_input(int t_player_index)
+StrategyInput Battle::generate_strat_input(unsigned t_player_index)
 {
 	auto &ps = m_player_states[t_player_index];
 	auto &enemy_ps = m_player_states[search_rival(t_player_index)];
@@ -597,7 +556,7 @@ void Battle::handle_event_free(const TimelineEvent &t_event)
 void Battle::handle_event_announce(const TimelineEvent &t_event)
 {
 	int team = m_player_states[t_event.player].player.team;
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		auto &ps = m_player_states[i];
 		if (ps.player.team == team)
@@ -631,7 +590,7 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 	++subject_st.num_fmoves_used;
 	subject_st.charge(move->energy);
 
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team == ps.player.team)
 		{
@@ -678,7 +637,7 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 	++subject_st.num_cmoves_used;
 	subject_st.charge(move->energy);
 
-	for (int i = 0; i < m_players_count; ++i)
+	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team == ps.player.team)
 		{
@@ -724,7 +683,7 @@ void Battle::handle_event_dodge(const TimelineEvent &t_event)
 
 void Battle::handle_event_enter(const TimelineEvent &t_event)
 {
-	int player_index = t_event.player;
+	auto player_index = t_event.player;
 	auto &ps = m_player_states[player_index];
 	auto &cur_head_st = m_pokemon_states[ps.head_index];
 	auto &new_head_st = m_pokemon_states[t_event.value];

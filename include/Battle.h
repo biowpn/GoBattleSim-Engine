@@ -26,7 +26,7 @@ struct TimelineEvent
 {
 	EventType type;
 	int time;
-	int player;
+	unsigned player;
 	int value;
 };
 
@@ -47,7 +47,6 @@ public:
 	Battle();
 	~Battle();
 
-	// Interface functions
 	Player *get_player(int);
 	void add(const Player *);
 	void update(const Player *);
@@ -56,15 +55,10 @@ public:
 	void set_time_limit(int);
 	void set_weather(int);
 	void set_enable_log(bool);
-	bool has_attr(const char *);
-	void set_attr(const char *, int);
-	int get_attr(const char *);
-
 	void init();
 	void start();
 	BattleOutcome get_outcome(int);
 	const std::vector<TimelineEvent> &get_log();
-	// End of Interface functions
 
 protected:
 	struct PlayerState
@@ -80,14 +74,14 @@ protected:
 	void erase_pokemon();
 
 	int search(const Pokemon *);
-	int search_rival(int);
+	int search_rival(unsigned);
 
 	void enqueue(TimelineEvent &&);
 	TimelineEvent dequeue();
 
 	void go();
 
-	void handle_fainted_pokemon(int, int);
+	void handle_fainted_pokemon(unsigned, unsigned);
 
 	// three possible actions when a Pokemon faints
 	bool select_next_pokemon(PlayerState &);
@@ -97,15 +91,15 @@ protected:
 	bool is_defeated(int);
 	bool is_end();
 
-	void register_action(int, const Action &);
+	void register_action(unsigned, const Action &);
 
-	void register_action_fast(int, const Action &);
-	void register_action_charged(int, const Action &);
-	void register_action_dodge(int, const Action &);
-	void register_action_switch(int, const Action &);
-	void register_action_wait(int, const Action &);
+	void register_action_fast(unsigned, const Action &);
+	void register_action_charged(unsigned, const Action &);
+	void register_action_dodge(unsigned, const Action &);
+	void register_action_switch(unsigned, const Action &);
+	void register_action_wait(unsigned, const Action &);
 
-	inline StrategyInput generate_strat_input(int);
+	inline StrategyInput generate_strat_input(unsigned);
 
 	void next(const TimelineEvent &);
 
@@ -123,11 +117,11 @@ protected:
 	std::vector<TimelineEvent> m_event_history;
 
 	PlayerState m_player_states[MAX_NUM_PLAYERS];
-	int m_players_count;
+	unsigned m_players_count;
 
 	Pokemon *m_pokemon[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	PokemonState m_pokemon_states[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
-	int m_pokemon_count;
+	unsigned m_pokemon_count;
 
 	int m_has_log;
 	int m_time_limit;

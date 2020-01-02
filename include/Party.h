@@ -13,13 +13,14 @@ class Party
 {
 public:
 	Party();
-	Party& operator=(const Party &);
+	Party &operator=(const Party &);
 	Party(const Party &);
 	~Party();
 
 	Pokemon *get_pokemon(int);
 	const Pokemon *get_pokemon(int) const;
-	int get_pokemon_count() const;
+	unsigned get_pokemon_count() const;
+
 	// get the internal addresses of Pokemon objects, avoid copying
 	Pokemon **get_all_pokemon(Pokemon **out_first);
 	void add(const Pokemon *);
@@ -40,19 +41,13 @@ public:
 	// the actual reviving is done in Battle::revive
 	bool revive();
 
-	bool has_attr(const char *);
-	int get_attr(const char *);
-	void set_attr(const char *, int);
-
 private:
 	int m_revive_quota;
 	int m_revive_policy;
 
 	Pokemon *m_pokemon_head{nullptr};
 	Pokemon m_pokemon[MAX_NUM_POKEMON];
-	int m_pokemon_count{0};
-
-	int *search_int_member(const char *);
+	unsigned m_pokemon_count{0};
 };
 
 } // namespace GoBattleSim

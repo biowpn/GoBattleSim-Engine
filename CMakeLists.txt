@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.1)
 project (GoBattleSim)
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(COMPILE_FLAGS "-Wall")
+SET(CMAKE_CXX_FLAGS "--std=c++11 -Wall -Wno-sign-compare")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -17,7 +17,6 @@ add_library(GoBattleSim SHARED
     ${PROJECT_SOURCE_DIR}/src/BattleMatrix.cpp
     ${PROJECT_SOURCE_DIR}/src/GameMaster.cpp
     ${PROJECT_SOURCE_DIR}/src/GoBattleSim_extern.cpp
-    ${PROJECT_SOURCE_DIR}/src/Move.cpp
     ${PROJECT_SOURCE_DIR}/src/Party.cpp
     ${PROJECT_SOURCE_DIR}/src/Player.cpp
     ${PROJECT_SOURCE_DIR}/src/Pokemon.cpp

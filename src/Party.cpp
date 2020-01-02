@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -23,7 +24,7 @@ Party::Party(const Party &other)
 Party &Party::operator=(const Party &other)
 {
 	m_pokemon_count = other.m_pokemon_count;
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (unsigned i = 0; i < m_pokemon_count; ++i)
 	{
 		m_pokemon[i] = other.m_pokemon[i];
 	}
@@ -55,7 +56,7 @@ void Party::add(const Pokemon *t_pokemon)
 
 void Party::update(const Pokemon *t_pokemon)
 {
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (unsigned i = 0; i < m_pokemon_count; ++i)
 	{
 		if (m_pokemon[i].id == t_pokemon->id)
 		{
@@ -80,41 +81,7 @@ void Party::erase_pokemon()
 	m_pokemon_head = nullptr;
 }
 
-bool Party::has_attr(const char *t_name)
-{
-	return search_int_member(t_name);
-}
-
-int Party::get_attr(const char *t_name)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		return *int_member_ptr;
-	}
-	return 0;
-}
-
-void Party::set_attr(const char *t_name, int t_value)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		*int_member_ptr = t_value;
-	}
-}
-
-int *Party::search_int_member(const char *t_name)
-{
-	if (strcmp(t_name, "revive_policy") == 0)
-		return &m_revive_policy;
-	else if (strcmp(t_name, "pokemon_count") == 0)
-		return &m_pokemon_count;
-	else
-		return nullptr;
-}
-
-int Party::get_pokemon_count() const
+unsigned Party::get_pokemon_count() const
 {
 	return m_pokemon_count;
 }
@@ -145,7 +112,7 @@ const Pokemon *Party::get_pokemon(int t_index) const
 
 Pokemon **Party::get_all_pokemon(Pokemon **out_first)
 {
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (unsigned i = 0; i < m_pokemon_count; ++i)
 	{
 		*out_first++ = m_pokemon + i;
 	}
@@ -165,7 +132,7 @@ Pokemon *Party::get_head()
 
 bool Party::set_head(const Pokemon *t_pokemon)
 {
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (unsigned i = 0; i < m_pokemon_count; ++i)
 	{
 		if (m_pokemon + i == t_pokemon)
 		{

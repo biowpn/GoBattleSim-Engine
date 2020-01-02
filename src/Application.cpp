@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -41,7 +42,7 @@ void GoBattleSimApp::prepare(const SimInput &input)
     }
     else
     {
-        sprintf(err_msg, "unknown battle mode (%d)", m_sim_input.mode);
+        sprintf(err_msg, "unknown battle mode (%d)", (int)m_sim_input.mode);
         throw std::runtime_error(err_msg);
     }
 }

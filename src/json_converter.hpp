@@ -9,6 +9,7 @@
 #include "json.hpp"
 
 #include <string>
+#include <stdio.h>
 #include <vector>
 
 namespace GoBattleSim
@@ -175,7 +176,7 @@ void from_json(const json &j, Player &player)
     player.team = j.at("team");
     try_get_to(j, "id", player.id, player.id);
     auto strategy_name = j["strategy"].get<std::string>();
-    for (int i = 0; i < NUM_STRATEGIES; ++i)
+    for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
     {
         if (strcmp(BUILT_IN_STRATEGIES[i].name, strategy_name.c_str()) == 0)
         {
@@ -214,10 +215,10 @@ void to_json(json &j, const GameMaster &gm)
 
     std::vector<std::vector<double>> matrix;
     auto num_types = gm.num_types();
-    for (int i = 0; i < num_types; ++i)
+    for (unsigned i = 0; i < num_types; ++i)
     {
         std::vector<double> row;
-        for (int j = 0; j < num_types; ++j)
+        for (unsigned j = 0; j < num_types; ++j)
         {
             row.push_back(gm.effectiveness(i, j));
         }
@@ -233,7 +234,7 @@ void to_json(json &j, const GameMaster &gm)
     j["stage_multipliers"] = stage_multipliers;
 
     std::vector<int> type_boosted_weather;
-    for (int i = 0; i < num_types; ++i)
+    for (unsigned i = 0; i < num_types; ++i)
     {
         type_boosted_weather.push_back(gm.boosted_weather(i));
     }
@@ -262,9 +263,9 @@ void from_json(const json &j, GameMaster &gm)
     auto matrix = j["type_effectiveness"].get<std::vector<std::vector<double>>>();
     auto num_types = matrix.size();
     gm.num_types(num_types);
-    for (int i = 0; i < num_types; ++i)
+    for (unsigned i = 0; i < num_types; ++i)
     {
-        for (int j = 0; j < num_types; ++j)
+        for (unsigned j = 0; j < num_types; ++j)
         {
             gm.effectiveness(i, j, matrix.at(i).at(j));
         }
@@ -278,7 +279,7 @@ void from_json(const json &j, GameMaster &gm)
     }
 
     auto type_boosted_weather = j["type_boosted_weather"].get<std::vector<int>>();
-    for (int i = 0; i < num_types; ++i)
+    for (unsigned i = 0; i < num_types; ++i)
     {
         gm.boosted_weather(i, type_boosted_weather.at(i));
     }

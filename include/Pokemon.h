@@ -15,18 +15,15 @@ public:
 	Pokemon();
 	Pokemon(int, int, double, double, int);
 	Pokemon(const Pokemon &);
-	Pokemon& operator=(const Pokemon &);
+	Pokemon &operator=(const Pokemon &);
 	~Pokemon();
 
 	const Move *get_fmove(int) const;
 	void add_fmove(const Move *);
 	const Move *get_cmove(int) const;
+	unsigned get_cmoves_count() const;
 	void add_cmove(const Move *);
 	void erase_cmoves();
-
-	bool has_attr(const char *);
-	void set_attr(const char *, double);
-	double get_attr(const char *);
 
 	// Members
 	int id;
@@ -40,7 +37,7 @@ public:
 	Move fmove;
 	Move cmoves[MAX_NUM_CMOVES];
 	Move *cmove{nullptr};
-	int cmoves_count{0};
+	unsigned cmoves_count{0};
 
 	// These two could be put into PokemonState,
 	// but leaving them here would make codes a lot easier
@@ -49,10 +46,6 @@ public:
 
 protected:
 	static int instance_count;
-
-	bool *search_bool_member(const char *);
-	int *search_int_member(const char *);
-	double *search_double_member(const char *);
 };
 
 // Damage calculation as a public function

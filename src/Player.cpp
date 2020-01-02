@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -70,7 +71,7 @@ const Party *Player::get_party(int t_index) const
 	}
 }
 
-int Player::get_parties_count() const
+unsigned Player::get_parties_count() const
 {
 	return m_parties_count;
 }
@@ -151,10 +152,10 @@ void Player::set_strategy(const Strategy &t_strategy)
 	strategy = t_strategy;
 }
 
-int Player::get_pokemon_count() const
+unsigned Player::get_pokemon_count() const
 {
 	int count = 0;
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
 		count += m_parties[i].get_pokemon_count();
 	}
@@ -248,43 +249,6 @@ bool Player::set_head_party_to_next()
 		--m_party_head;
 		return false;
 	}
-}
-
-bool Player::has_attr(const char *t_name)
-{
-	return search_int_member(t_name);
-}
-
-int Player::get_attr(const char *t_name)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		return *int_member_ptr;
-	}
-	return 0;
-}
-
-void Player::set_attr(const char *t_name, int t_value)
-{
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		*int_member_ptr = t_value;
-		return;
-	}
-}
-
-int *Player::search_int_member(const char *t_name)
-{
-	if (strcmp(t_name, "id") == 0)
-		return &id;
-	else if (strcmp(t_name, "team") == 0)
-		return &team;
-	else if (strcmp(t_name, "parties_count") == 0)
-		return &m_parties_count;
-	else
-		return nullptr;
 }
 
 } // namespace GoBattleSim

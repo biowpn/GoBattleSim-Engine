@@ -20,7 +20,7 @@ public:
 
 	Party *get_party(int);
 	const Party *get_party(int) const;
-	int get_parties_count() const;
+	unsigned get_parties_count() const;
 	void add(const Party *);
 	void erase_parties();
 	void set_attack_multiplier(double);
@@ -32,7 +32,7 @@ public:
 
 	void update(const Pokemon *);
 	Party *get_head_party();
-	int get_pokemon_count() const;
+	unsigned get_pokemon_count() const;
 	// same with Party::get_all_pokemon, get only the addresses
 	Pokemon **get_all_pokemon(Pokemon **out_first);
 
@@ -50,10 +50,6 @@ public:
 	// set head party to next
 	bool set_head_party_to_next();
 
-	bool has_attr(const char *);
-	void set_attr(const char *, int);
-	int get_attr(const char *);
-
 	// Battle state variables
 	int id;
 	int team;
@@ -68,8 +64,6 @@ private:
 
 	double m_attack_multiplier{1};
 	int m_clone_multiplier{1};
-
-	int *search_int_member(const char *);
 };
 
 } // namespace GoBattleSim

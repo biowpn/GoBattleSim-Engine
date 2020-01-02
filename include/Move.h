@@ -14,15 +14,8 @@ struct MoveEffect
 	int target_defense_stage_delta;
 };
 
-class Move
+struct Move
 {
-public:
-	// Interface functions
-	bool has_attr(const char *);
-	int get_attr(const char *);
-	void set_attr(const char *, int);
-	// End of interface functions
-
 	int poketype;
 	int power;
 	int energy;
@@ -30,9 +23,6 @@ public:
 	int dws;
 
 	MoveEffect effect;
-
-protected:
-	int *search_int_member(const char *);
 };
 
 } // namespace GoBattleSim

@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -104,91 +105,6 @@ void Pokemon::erase_cmoves()
 {
 	cmoves_count = 0;
 	cmove = nullptr;
-}
-
-bool Pokemon::has_attr(const char *t_name)
-{
-	return search_bool_member(t_name) || search_int_member(t_name) || search_double_member(t_name);
-}
-
-double Pokemon::get_attr(const char *t_name)
-{
-	bool *bool_member_ptr = search_bool_member(t_name);
-	if (bool_member_ptr)
-	{
-		return *bool_member_ptr;
-	}
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		return *int_member_ptr;
-	}
-	double *double_member_ptr = search_double_member(t_name);
-	if (double_member_ptr)
-	{
-		return *double_member_ptr;
-	}
-	return 0;
-}
-
-void Pokemon::set_attr(const char *t_name, double t_value)
-{
-	bool *bool_member_ptr = search_bool_member(t_name);
-	if (bool_member_ptr)
-	{
-		*bool_member_ptr = t_value;
-		return;
-	}
-	int *int_member_ptr = search_int_member(t_name);
-	if (int_member_ptr)
-	{
-		*int_member_ptr = t_value;
-		return;
-	}
-	double *double_member_ptr = search_double_member(t_name);
-	if (double_member_ptr)
-	{
-		*double_member_ptr = t_value;
-		return;
-	}
-}
-
-bool *Pokemon::search_bool_member(const char *t_name)
-{
-	if (strcmp(t_name, "immortal") == 0)
-		return &immortal;
-	else
-		return nullptr;
-}
-
-int *Pokemon::search_int_member(const char *t_name)
-{
-	if (strcmp(t_name, "id") == 0)
-		return &id;
-	else if (strcmp(t_name, "poketype1") == 0)
-		return &poketype1;
-	else if (strcmp(t_name, "poketype2") == 0)
-		return &poketype2;
-	else if (strcmp(t_name, "max_hp") == 0)
-		return &max_hp;
-	else if (strcmp(t_name, "cmoves_count") == 0)
-		return &cmoves_count;
-	else if (strcmp(t_name, "clone_multiplier") == 0)
-		return &clone_multiplier;
-	else
-		return nullptr;
-}
-
-double *Pokemon::search_double_member(const char *t_name)
-{
-	if (strcmp(t_name, "attack_multiplier") == 0)
-		return &attack_multiplier;
-	else if (strcmp(t_name, "attack") == 0)
-		return &attack;
-	else if (strcmp(t_name, "defense") == 0)
-		return &defense;
-	else
-		return nullptr;
 }
 
 } // namespace GoBattleSim

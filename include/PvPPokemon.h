@@ -29,10 +29,6 @@ public:
 	int defense_stage;
 
 	int num_shields_max;
-
-protected:
-	// Don't use virtual functions to slow things down
-	// int* search_int_member(const char*);
 };
 
 } // namespace GoBattleSim

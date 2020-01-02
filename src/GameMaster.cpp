@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace GoBattleSim
 {
@@ -17,16 +18,17 @@ GameMaster &GameMaster::get()
 
 GameMaster::GameMaster()
 {
-	for (int i = 0; i < MAX_NUM_STAGES; ++i)
+	for (unsigned i = 0; i < MAX_NUM_STAGES; ++i)
 	{
 		m_stage_multipliers[i] = 1.0;
 	}
-	for (int i = 0; i < MAX_NUM_TYPES; ++i)
+	for (unsigned i = 0; i < MAX_NUM_TYPES; ++i)
 	{
-		for (int j = 0; j < MAX_NUM_TYPES; ++j)
+		for (unsigned j = 0; j < MAX_NUM_TYPES; ++j)
 		{
 			m_type_effectiveness[i][j] = 1.0;
 		}
+		m_type_boosted_weathers[i] = -1;
 	}
 }
 
@@ -34,7 +36,7 @@ unsigned GameMaster::num_types(unsigned t_num_types)
 {
 	if (t_num_types >= MAX_NUM_TYPES)
 	{
-		sprintf(err_msg, "too many types (%d, max &d)", t_num_types, MAX_NUM_TYPES);
+		sprintf(err_msg, "too many types (%d, max %d)", t_num_types, MAX_NUM_TYPES);
 		throw std::runtime_error(err_msg);
 	}
 	return m_num_types = t_num_types;
@@ -141,42 +143,6 @@ double GameMaster::stage_multiplier(int t_stage) const
 		throw std::runtime_error(err_msg);
 	}
 	return m_stage_multipliers[t_stage - min_stage];
-}
-
-void GameMaster::set_parameter(char *t_name, double t_value)
-{
-	if (strcmp(t_name, "max_energy") == 0)
-		max_energy = t_value;
-	else if (strcmp(t_name, "min_stage") == 0)
-		min_stage = t_value;
-	else if (strcmp(t_name, "max_stage") == 0)
-		max_stage = t_value;
-	else if (strcmp(t_name, "dodge_duration") == 0)
-		dodge_duration = t_value;
-	else if (strcmp(t_name, "dodge_window") == 0)
-		dodge_window = t_value;
-	else if (strcmp(t_name, "swap_duration") == 0)
-		swap_duration = t_value;
-	else if (strcmp(t_name, "switching_cooldown") == 0)
-		switching_cooldown = t_value;
-	else if (strcmp(t_name, "rejoin_duration") == 0)
-		rejoin_duration = t_value;
-	else if (strcmp(t_name, "item_menu_animation_time") == 0)
-		item_menu_animation_time = t_value;
-	else if (strcmp(t_name, "max_revive_time_per_pokemon") == 0)
-		max_revive_time_per_pokemon = t_value;
-	else if (strcmp(t_name, "same_type_attack_bonus_multiplier") == 0)
-		same_type_attack_bonus_multiplier = t_value;
-	else if (strcmp(t_name, "weather_attack_bonus_multiplier") == 0)
-		weather_attack_bonus_multiplier = t_value;
-	else if (strcmp(t_name, "pvp_fast_attack_bonus_multiplier") == 0)
-		pvp_fast_attack_bonus_multiplier = t_value;
-	else if (strcmp(t_name, "pvp_charged_attack_bonus_multiplier") == 0)
-		pvp_charged_attack_bonus_multiplier = t_value;
-	else if (strcmp(t_name, "dodge_damage_reduction_percent") == 0)
-		dodge_damage_reduction_percent = t_value;
-	else if (strcmp(t_name, "energy_delta_per_health_lost") == 0)
-		energy_delta_per_health_lost = t_value;
 }
 
 } // namespace GoBattleSim
