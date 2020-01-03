@@ -7,6 +7,50 @@
 
 using namespace GoBattleSim;
 
+class MessageCenter
+{
+public:
+	static MessageCenter &get()
+	{
+		return instance;
+	}
+
+	void set_msg(const std::string &msg)
+	{
+		if (msg.size() >= m_msg_max_len)
+		{
+			delete[] m_msg;
+			m_msg_max_len = msg.size();
+			m_msg = new char[m_msg_max_len + 1];
+		}
+		strcpy(m_msg, msg.c_str());
+	}
+
+	const char *get_msg() const
+	{
+		return m_msg;
+	}
+
+private:
+	MessageCenter() = default;
+	static MessageCenter instance;
+
+	char *m_msg{nullptr};
+	unsigned m_msg_max_len{0};
+};
+
+MessageCenter MessageCenter::instance;
+
+const char *GBS_version()
+{
+	return "0.8.0";
+}
+
+const char *GBS_error()
+{
+	return err_msg;
+}
+
 void GBS_prepare(const char *input_j)
 {
 	SimInput input = nlohmann::json::parse(input_j);
@@ -20,37 +64,23 @@ void GBS_run()
 	GoBattleSimApp::get().run();
 }
 
-void GBS_collect(char *output_j, int *output_j_len)
+const char *GBS_collect()
 {
 	// for now, hardcode to get last output
 	SimOutput output;
 	GoBattleSimApp::get().collect(output);
-
 	auto j_str = nlohmann::json(output).dump(4);
-	if (output_j_len != nullptr)
-	{
-		*output_j_len = j_str.size();
-	}
-	if (output_j != nullptr)
-	{
-		strcpy(output_j, j_str.c_str());
-	}
+	MessageCenter::get().set_msg(j_str);
+	return MessageCenter::get().get_msg();
 }
 
-void GBS_GameMaster_set(const char *gm_j)
+const char *GBS_config(const char *gm_j)
 {
-	GameMaster::get() = nlohmann::json::parse(gm_j);
-}
-
-void GBS_GameMaster_get(char *gm_j, int *gm_j_len)
-{
-	auto j_str = nlohmann::json(GameMaster::get()).dump(4);
-	if (gm_j_len != nullptr)
-	{
-		*gm_j_len = j_str.size();
-	}
 	if (gm_j != nullptr)
 	{
-		strcpy(gm_j, j_str.c_str());
+		GameMaster::get() = nlohmann::json::parse(gm_j);
 	}
+	auto j_str = nlohmann::json(GameMaster::get()).dump(4);
+	MessageCenter::get().set_msg(j_str);
+	return MessageCenter::get().get_msg();
 }

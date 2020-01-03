@@ -6,45 +6,54 @@
 #ifndef _GOBATTLESIM_EXTERN_H_
 #define _GOBATTLESIM_EXTERN_H_
 
+#ifdef __EMSCRIPTEN__
+// Forces LLVM to not dead-code-eliminate a function.
+#include <emscripten.h>
+#define FUNCTION_PREFIX EMSCRIPTEN_KEEPALIVE
+#else
+#define FUNCTION_PREFIX
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
 	/**
+	 * return the version string in the format "{major}.{minor}.{patch}".
+	 */
+	const char *FUNCTION_PREFIX GBS_version();
+
+	/**
+	 * get the last error message.
+	 */
+	const char *FUNCTION_PREFIX GBS_error();
+
+	/**
      * initialize new simulation. This will clear all output.
 	 * 
-	 * @param input_j input in JSON
+	 * @param input_j simulation input in JSON
      */
-	void GBS_prepare(const char *input_j);
+	void FUNCTION_PREFIX GBS_prepare(const char *input_j);
 
 	/**
      * run the new simulation configured by the latest GBS_prepare().
      */
-	void GBS_run();
+	void FUNCTION_PREFIX GBS_run();
 
 	/**
      * collect simulation output produced by the lastest GBS_run().
 	 * 
-	 * @param output_j if not NULL, will be copied into the output JSON.
-	 * @param output_j_len if not NULL, will be set to the length of the above-mentioned JSON.
+	 * @return simulation output in JSON
      */
-	void GBS_collect(char *output_j, int *output_j_len);
+	const char *FUNCTION_PREFIX GBS_collect();
 
 	/**
-	 * set game master parameters.
+	 * if @param gm_j is not NULL, set GBS game master parameters by it.
 	 * 
-	 * @param gm_j GBS-format game master in JSON
+	 * @return GBS-format game master in JSON
 	 */
-	void GBS_GameMaster_set(const char *gm_j);
-
-	/**
-	 * get game master parameters.
-	 * 
-	 * @param gm_j if not NULL, will be copied into the GBS game master in JSON.
-	 * @param gm_j_len if not NULL, will be set to the length of the above-mentioned JSON.
-	 */
-	void GBS_GameMaster_get(char *gm_j, int *gm_j_len);
+	const char *FUNCTION_PREFIX GBS_config(const char *gm_j);
 
 #ifdef __cplusplus
 }

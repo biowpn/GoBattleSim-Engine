@@ -35,21 +35,16 @@ int main(int argc, char **argv)
             std::cerr << "bad file: " << argv[2] << std::endl;
             return -1;
         }
-        GBS_GameMaster_set(get_file_contents(gm_ifs).c_str());
+        GBS_config(get_file_contents(gm_ifs).c_str());
     }
 
     GBS_prepare(get_file_contents(ifs).c_str());
 
     GBS_run();
 
-    int output_len;
-    GBS_collect(nullptr, &output_len);
-    auto buf = new char[output_len];
-    GBS_collect(buf, &output_len);
+    auto output = GBS_collect();
 
-    std::cout << buf << std::endl;
-
-    delete buf;
+    std::cout << output << std::endl;
 
     return 0;
 }
