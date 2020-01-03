@@ -53,11 +53,29 @@ const char *GBS_error()
 
 void GBS_prepare(const char *input_j)
 {
-	// TODO
-	PvESimInput input = nlohmann::json::parse(input_j);
-	// for now, hardcode to no aggregation
-	input.aggreation = AggregationMode::None;
-	GoBattleSimApp::get().prepare(input);
+	auto j = nlohmann::json::parse(input_j);
+	auto mode = j.at("mode").get<BattleMode>();
+	auto &app = GoBattleSimApp::get();
+
+	if (mode == BattleMode::PvE)
+	{
+		PvESimInput input = j;
+		app.prepare(input);
+	}
+	else if (mode == BattleMode::PvP)
+	{
+		PvPSimInput input = j;
+		app.prepare(input);
+	}
+	else if (mode == BattleMode::BattleMatrix)
+	{
+		BattleMatrixSimInput input = j;
+		app.prepare(input);
+	}
+	else
+	{
+		sprintf(err_msg, "impossible battle mode %d", (int)mode);
+	}
 }
 
 void GBS_run()
@@ -65,12 +83,51 @@ void GBS_run()
 	GoBattleSimApp::get().run();
 }
 
+template <class Output_t>
+void collect_and_set(GoBattleSimApp &app, nlohmann::json &j)
+{
+	Output_t output;
+	app.collect(output);
+	j = output;
+}
+
 const char *GBS_collect()
 {
-	// TODO
-	std::vector<PvEBattleOutcome> outputs;
-	GoBattleSimApp::get().collect(outputs);
-	auto j_str = nlohmann::json(outputs).dump(4);
+	auto &app = GoBattleSimApp::get();
+	nlohmann::json j;
+
+	if (app.battle_mode == BattleMode::PvE)
+	{
+		if (app.aggregation_mode == AggregationMode::None)
+		{
+			collect_and_set<std::vector<PvEBattleOutcome>>(app, j);
+		}
+		else
+		{
+			collect_and_set<PvEAverageBattleOutcome>(app, j);
+		}
+	}
+	else if (app.battle_mode == BattleMode::PvP)
+	{
+		if (app.aggregation_mode == AggregationMode::None)
+		{
+			collect_and_set<std::vector<SimplePvPBattleOutcome>>(app, j);
+		}
+		else
+		{
+			collect_and_set<SimplePvPBattleOutcome>(app, j);
+		}
+	}
+	else if (app.battle_mode == BattleMode::BattleMatrix)
+	{
+		collect_and_set<Matrix_t>(app, j);
+	}
+	else
+	{
+		sprintf(err_msg, "impossible battle mode %d", (int)app.battle_mode);
+	}
+
+	auto j_str = j.dump(4);
 	MessageCenter::get().set_msg(j_str);
 	return MessageCenter::get().get_msg();
 }
