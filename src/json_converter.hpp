@@ -376,25 +376,21 @@ void to_json(json &j, const PokemonState &pkm_st)
     j["num_cmoves_used"] = pkm_st.num_cmoves_used;
 }
 
-void to_json(json &j, const BattleOutcome &outcome)
-{
-    j["duration"] = outcome.duration;
-    j["win"] = outcome.win;
-    j["tdo"] = outcome.tdo;
-    j["tdo_percent"] = outcome.tdo_percent;
-    j["num_deaths"] = outcome.num_deaths;
-}
-
 void from_json(const json &j, BattleMode &mode)
 {
     auto mode_str = j.get<std::string>();
-    if (mode_str == "raid" || mode_str == "gym")
+    std::for_each(mode_str.begin(), mode_str.end(), ::tolower);
+    if (mode_str == "pve" || mode_str == "raid" || mode_str == "gym")
     {
         mode = BattleMode::PvE;
     }
     else if (mode_str == "pvp")
     {
         mode = BattleMode::PvP;
+    }
+    else if (mode_str == "battlematrix")
+    {
+        mode = BattleMode::BattleMatrix;
     }
     else
     {
@@ -403,14 +399,10 @@ void from_json(const json &j, BattleMode &mode)
     }
 }
 
-void from_json(const json &j, SimInput &input)
+void from_json(const json &j, PvESimInput &input)
 {
-    j.at("mode").get_to(input.mode);
     j.at("time_limit").get_to(input.time_limit);
     j.at("players").get_to(input.players);
-
-    try_get_to(j, "pokemon", input.pvp_pokemon, input.pvp_pokemon);
-    try_get_to(j, "num_shields", input.pvp_num_shields, input.pvp_num_shields);
     try_get_to(j, "weather", input.weather, input.weather);
     try_get_to(j, "num_sims", 1, input.num_sims);
     try_get_to(j, "enable_log", false, input.enable_log);
@@ -434,13 +426,17 @@ void from_json(const json &j, SimInput &input)
     }
 }
 
-void to_json(json &j, const SimOutput &output)
+void to_json(json &j, const PvEBattleOutcome &outcome)
 {
-    j["statistics"] = output.statistics;
-    j["battle_log"] = output.battle_log;
+    j["duration"] = outcome.duration;
+    j["win"] = outcome.win;
+    j["tdo"] = outcome.tdo;
+    j["tdo_percent"] = outcome.tdo_percent;
+    j["num_deaths"] = outcome.num_deaths;
+    j["battle_log"] = outcome.battle_log;
 }
 
-void to_json(json &j, const AverageBattleOutcome &outcome)
+void to_json(json &j, const PvEAverageBattleOutcome &outcome)
 {
     j["duration"] = outcome.duration;
     j["win"] = outcome.win;
@@ -449,9 +445,30 @@ void to_json(json &j, const AverageBattleOutcome &outcome)
     j["num_deaths"] = outcome.num_deaths;
 }
 
-void to_json(json &j, const AverageSimOutput &output)
+void from_json(const json &j, PvPSimInput &input)
 {
-    j["statistics"] = output.statistics;
+    j["pokemon"].get_to(input.pokemon);
+
+    try_get_to(j, "num_shields", {2, 2}, input.num_shields);
+    try_get_to(j, "turn_limit", 1800, input.turn_limit);
+    try_get_to(j, "num_sims", 1, input.num_sims);
+    try_get_to(j, "aggreation", AggregationMode::Branching, input.aggreation);
+    try_get_to(j, "enable_log", false, input.enable_log);
+}
+
+void to_json(json &j, const SimplePvPBattleOutcome &output)
+{
+    j["tdo_percent"] = output.tdo_percent;
+    j["turns"] = output.turns;
+    j["battle_log"] = output.battle_log;
+}
+
+void from_json(const json &j, BattleMatrixSimInput &input)
+{
+    j["row_pokemon"].get_to(input.row_pokemon);
+    j["col_pokemon"].get_to(input.col_pokemon);
+
+    try_get_to(j, "averge_by_shield", false, input.averge_by_shield);
 }
 
 }; // namespace GoBattleSim

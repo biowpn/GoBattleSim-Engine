@@ -1,24 +1,24 @@
 
 #include "SimplePvPBattle.h"
-
 #include "GameMaster.h"
+
+#include <cstdlib>
+#include <stdio.h>
+#include <stdexcept>
 
 namespace GoBattleSim
 {
 
-SimplePvPBattle::SimplePvPBattle(const PvPPokemon *t_pokemon_0, const PvPPokemon *t_pokemon_1)
-{
-	set_pokemon(t_pokemon_0, t_pokemon_1);
-}
-
 SimplePvPBattle::SimplePvPBattle(const SimplePvPBattle &other)
 {
-	m_pokemon[0] = other.m_pokemon[0];
-	m_pokemon[1] = other.m_pokemon[1];
-	m_own_pokemon = false;
-	m_pkms[0] = other.m_pkms[0];
-	m_pkms[1] = other.m_pkms[1];
+	m_pkm[0] = other.m_pkm[0];
+	m_pkm[1] = other.m_pkm[1];
+	m_pkm_states[0] = other.m_pkm_states[0];
+	m_pkm_states[1] = other.m_pkm_states[1];
 	m_ended = other.m_ended;
+	m_turn = other.m_turn;
+	m_enable_log = false;
+	m_enable_branching = other.m_enable_branching;
 
 	m_num_shields_max[0] = other.m_num_shields_max[0];
 	m_num_shields_max[1] = other.m_num_shields_max[1];
@@ -30,13 +30,6 @@ SimplePvPBattle::SimplePvPBattle(const SimplePvPBattle &other)
 
 SimplePvPBattle::~SimplePvPBattle()
 {
-	if (m_own_pokemon)
-	{
-		delete m_pokemon[0];
-		delete m_pokemon[1];
-		m_pokemon[0] = nullptr;
-		m_pokemon[1] = nullptr;
-	}
 	if (m_branch[0])
 	{
 		delete m_branch[0];
@@ -49,40 +42,54 @@ SimplePvPBattle::~SimplePvPBattle()
 	}
 }
 
-void SimplePvPBattle::set_pokemon(const PvPPokemon *t_pokemon_0, const PvPPokemon *t_pokemon_1)
+void SimplePvPBattle::set_pokemon(const PvPPokemon &pkm1, const PvPPokemon &pkm2)
 {
-	m_pokemon[0] = t_pokemon_0;
-	m_pokemon[1] = t_pokemon_1;
-	m_own_pokemon = false;
+	m_pkm[0] = pkm1;
+	m_pkm[1] = pkm2;
 
-	m_num_shields_max[0] = m_pokemon[0]->num_shields_max;
-	m_num_shields_max[1] = m_pokemon[1]->num_shields_max;
-	m_strategies[0] = m_pokemon[0]->cmoves_count > 1 ? pvp_advance : pvp_basic;
-	m_strategies[1] = m_pokemon[1]->cmoves_count > 1 ? pvp_advance : pvp_basic;
-	m_branch[0] = nullptr;
-	m_branch[1] = nullptr;
+	m_num_shields_max[0] = m_pkm[0].num_shields_max;
+	m_num_shields_max[1] = m_pkm[1].num_shields_max;
+	m_strategies[0] = m_pkm[0].cmoves_count > 1 ? pvp_advance : pvp_basic;
+	m_strategies[1] = m_pkm[1].cmoves_count > 1 ? pvp_advance : pvp_basic;
 }
 
-void SimplePvPBattle::set_num_shields_max(int t_num_0, int t_num_1)
+void SimplePvPBattle::set_num_shields_max(int shields_1, int shields_2)
 {
-	m_num_shields_max[0] = t_num_0;
-	m_num_shields_max[1] = t_num_1;
+	m_num_shields_max[0] = shields_1;
+	m_num_shields_max[1] = shields_2;
 }
 
-void SimplePvPBattle::set_strategy(int t_pkm_idx, const PvPStrategy &t_strategy)
+void SimplePvPBattle::set_strategy(const PvPStrategy &strategy1, const PvPStrategy &strategy2)
 {
-	m_strategies[t_pkm_idx] = t_strategy;
+	m_strategies[0] = strategy1;
+	m_strategies[1] = strategy2;
+}
+
+void SimplePvPBattle::set_enable_log(bool enable)
+{
+	if (enable && m_enable_branching)
+	{
+		sprintf(err_msg, "cannot enable logging when branching is enabled");
+		throw std::runtime_error(err_msg);
+	}
+	m_enable_log = enable;
+}
+
+void SimplePvPBattle::set_enable_branching(bool enable)
+{
+	m_enable_branching = enable;
+	m_enable_log = false;
 }
 
 void SimplePvPBattle::init()
 {
 	for (int i = 0; i < 2; ++i)
 	{
-		m_pkms[i].hp = m_pokemon[i]->max_hp;
-		m_pkms[i].energy = 0;
-		m_pkms[i].cooldown = 0;
-		m_pkms[i].shields = m_num_shields_max[i];
-		m_pkms[i].decision.type = ActionType::None;
+		m_pkm_states[i].hp = m_pkm[i].max_hp;
+		m_pkm_states[i].energy = 0;
+		m_pkm_states[i].cooldown = 0;
+		m_pkm_states[i].shields = m_num_shields_max[i];
+		m_pkm_states[i].decision.type = ActionType::None;
 	}
 	m_ended = false;
 }
@@ -93,57 +100,63 @@ void SimplePvPBattle::start()
 	{
 		for (int i = 0; i < 2; ++i)
 		{
-			if (m_pkms[i].decision.type == ActionType::None && m_pkms[i].cooldown <= 0)
+			if (m_pkm_states[i].decision.type == ActionType::None && m_pkm_states[i].cooldown <= 0)
 			{
-				m_strategies[i].on_free(generate_strat_input(i), &(m_pkms[i].decision));
+				m_strategies[i].on_free(generate_strat_input(i), &(m_pkm_states[i].decision));
 			}
 		}
 
-		switch (m_pkms[0].decision.type)
+		switch (m_pkm_states[0].decision.type)
 		{
 		case ActionType::None:
-			switch (m_pkms[1].decision.type)
+			switch (m_pkm_states[1].decision.type)
 			{
 			case ActionType::Fast:
-				register_action_fast(1, m_pkms[1].decision);
+				register_action_fast(1, m_pkm_states[1].decision);
 				break;
 			case ActionType::Charged:
-				register_action_charged(1, m_pkms[1].decision);
+				register_action_charged(1, m_pkm_states[1].decision);
 				break;
 			default:
 				break;
 			}
 			break;
 		case ActionType::Fast:
-			register_action_fast(0, m_pkms[0].decision);
-			switch (m_pkms[1].decision.type)
+			register_action_fast(0, m_pkm_states[0].decision);
+			switch (m_pkm_states[1].decision.type)
 			{
 			case ActionType::Fast:
-				register_action_fast(1, m_pkms[1].decision);
+				register_action_fast(1, m_pkm_states[1].decision);
 				break;
 			case ActionType::Charged:
 				if (!m_ended)
-					register_action_charged(1, m_pkms[1].decision);
+				{
+					register_action_charged(1, m_pkm_states[1].decision);
+				}
 				break;
 			default:
 				break;
 			}
 			break;
 		case ActionType::Charged:
-			switch (m_pkms[1].decision.type)
+			switch (m_pkm_states[1].decision.type)
 			{
 			case ActionType::Fast:
-				register_action_fast(1, m_pkms[1].decision);
+				register_action_fast(1, m_pkm_states[1].decision);
 				if (!m_ended)
-					register_action_charged(0, m_pkms[0].decision);
+				{
+					register_action_charged(0, m_pkm_states[0].decision);
+				}
 				break;
 			case ActionType::Charged:
-				register_action_charged(0, m_pkms[0].decision);
+				register_action_charged(0, m_pkm_states[0].decision);
 				if (!m_ended)
-					register_action_charged(1, m_pkms[1].decision);
+				{
+					register_action_charged(1, m_pkm_states[1].decision);
+				}
 				break;
 			default:
-				register_action_charged(0, m_pkms[0].decision);
+				register_action_charged(0, m_pkm_states[0].decision);
 				break;
 			}
 			break;
@@ -153,39 +166,41 @@ void SimplePvPBattle::start()
 
 		for (int i = 0; i < 2; ++i)
 		{
-			--m_pkms[i].cooldown;
+			--m_pkm_states[i].cooldown;
 		}
+
+		++m_turn;
 	}
 }
 
 void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 {
-	const Move *move = m_pokemon[i]->get_fmove(0);
-	m_pkms[i].energy += move->energy;
-	if (m_pkms[i].energy > GameMaster::get().max_energy)
+	const Move *move = m_pkm[i].get_fmove(0);
+	m_pkm_states[i].energy += move->energy;
+	if (m_pkm_states[i].energy > GameMaster::get().max_energy)
 	{
-		m_pkms[i].energy = GameMaster::get().max_energy;
+		m_pkm_states[i].energy = GameMaster::get().max_energy;
 	}
-	int damage = calc_damage_pvp_fmove(m_pokemon[i], move, m_pokemon[1 - i]);
-	m_pkms[1 - i].hp -= damage;
-	if (m_pkms[1 - i].hp <= 0)
+	int damage = calc_damage_pvp_fmove(&m_pkm[i], move, &m_pkm[1 - i]);
+	m_pkm_states[1 - i].hp -= damage;
+	if (m_pkm_states[1 - i].hp <= 0)
 	{
 		m_ended = true;
 	}
-	m_pkms[i].cooldown = move->duration;
-	m_pkms[i].decision.type = ActionType::None;
+	m_pkm_states[i].cooldown = move->duration;
+	m_pkm_states[i].decision.type = ActionType::None;
 }
 
 void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 {
 	int damage = 0;
-	auto move = m_pokemon[i]->get_cmove(t_action.value);
-	if (m_pkms[i].energy + move->energy < 0)
+	auto move = m_pkm[i].get_cmove(t_action.value);
+	if (m_pkm_states[i].energy + move->energy < 0)
 	{
 		return;
 	}
-	m_pkms[i].energy += move->energy;
-	if (m_pkms[1 - i].shields > 0)
+	m_pkm_states[i].energy += move->energy;
+	if (m_pkm_states[1 - i].shields > 0)
 	{
 		Action action{ActionType::Dodge}; // Default use shield, unless strategy decides otherwise
 		if (m_strategies[1 - i].on_attack)
@@ -195,46 +210,44 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 		if (action.type == ActionType::Dodge)
 		{
 			damage = 1;
-			--m_pkms[1 - i].shields;
+			--m_pkm_states[1 - i].shields;
 		}
 	}
 	if (damage == 0)
 	{
-		damage = calc_damage_pvp_cmove(m_pokemon[i], move, m_pokemon[1 - i]);
+		damage = calc_damage_pvp_cmove(&m_pkm[i], move, &m_pkm[1 - i]);
 	}
-	m_pkms[1 - i].hp -= damage;
-	if (m_pkms[1 - i].hp <= 0)
+	m_pkm_states[1 - i].hp -= damage;
+	if (m_pkm_states[1 - i].hp <= 0)
 	{
 		m_ended = true;
 	}
-	m_pkms[i].cooldown = 0;
-	m_pkms[1 - i].cooldown = 0;
-	m_pkms[i].decision.type = ActionType::None;
+	m_pkm_states[i].cooldown = 0;
+	m_pkm_states[1 - i].cooldown = 0;
+	m_pkm_states[i].decision.type = ActionType::None;
 
 	if (move->effect.activation_chance > 0)
 	{
-		handle_move_effect(i, move->effect);
+		decide_branch_move_effect(i, move->effect);
 	}
 }
 
-void SimplePvPBattle::handle_move_effect(int i, const MoveEffect &t_effect)
+void SimplePvPBattle::decide_branch_move_effect(int i, const MoveEffect &t_effect)
 {
-	PvPPokemon *m_pokemon_temp[2] = {
-		new PvPPokemon(*m_pokemon[0]),
-		new PvPPokemon(*m_pokemon[1])};
-	m_pokemon_temp[i]->buff(t_effect.self_attack_stage_delta, t_effect.self_defense_stage_delta);
-	m_pokemon_temp[1 - i]->buff(t_effect.target_attack_stage_delta, t_effect.target_defense_stage_delta);
+	if (t_effect.activation_chance >= 1)
+	{
+		handle_move_effect(i, t_effect);
+		return;
+	}
 
-	if (t_effect.activation_chance < 1)
+	if (m_enable_branching)
 	{
 		m_branch[0] = new SimplePvPBattle(*this);
 		m_branch_weight[0] = 1 - t_effect.activation_chance;
 
 		m_branch[1] = new SimplePvPBattle(*this);
 		m_branch_weight[1] = t_effect.activation_chance;
-		m_branch[1]->m_pokemon[0] = m_pokemon_temp[0];
-		m_branch[1]->m_pokemon[1] = m_pokemon_temp[1];
-		m_branch[1]->m_own_pokemon = true;
+		m_branch[1]->handle_move_effect(i, t_effect);
 
 		m_branch[0]->start();
 		m_branch[1]->start();
@@ -242,44 +255,63 @@ void SimplePvPBattle::handle_move_effect(int i, const MoveEffect &t_effect)
 	}
 	else
 	{
-		m_pokemon[0] = m_pokemon_temp[0];
-		m_pokemon[1] = m_pokemon_temp[1];
-		m_own_pokemon = true;
+		if ((double)(rand() % 10000) / 10000 < t_effect.activation_chance)
+		{
+			handle_move_effect(i, t_effect);
+		}
 	}
+}
+
+void SimplePvPBattle::handle_move_effect(int i, const MoveEffect &t_effect)
+{
+	m_pkm[i].buff(t_effect.self_attack_stage_delta, t_effect.self_defense_stage_delta);
+	m_pkm[1 - i].buff(t_effect.target_attack_stage_delta, t_effect.target_defense_stage_delta);
+}
+
+void SimplePvPBattle::append_log(const TimelineEvent &event)
+{
+	m_battle_log.push_back(event);
+}
+
+void SimplePvPBattle::erase_log()
+{
+	m_battle_log.clear();
 }
 
 PvPStrategyInput SimplePvPBattle::generate_strat_input(int i)
 {
 	return {
-		m_pokemon[i],
-		m_pokemon[1 - i],
-		m_pkms[i].hp,
-		m_pkms[1 - i].hp,
-		m_pkms[i].energy,
-		m_pkms[1 - i].energy,
-		m_pkms[i].shields,
-		m_pkms[1 - i].shields};
+		&m_pkm[i],
+		&m_pkm[1 - i],
+		m_pkm_states[i].hp,
+		m_pkm_states[1 - i].hp,
+		m_pkm_states[i].energy,
+		m_pkm_states[1 - i].energy,
+		m_pkm_states[i].shields,
+		m_pkm_states[1 - i].shields};
 }
 
 SimplePvPBattleOutcome SimplePvPBattle::get_outcome()
 {
-	if (m_branch[0] && m_branch[1])
+	if (m_enable_branching && m_branch[0] && m_branch[1])
 	{
-		SimplePvPBattleOutcome branch_outcomes[2] = {
+		SimplePvPBattleOutcome branch[2] = {
 			m_branch[0]->get_outcome(),
 			m_branch[1]->get_outcome()};
 		return {
-			{m_branch_weight[0] * branch_outcomes[0].tdo_percent[0] + m_branch_weight[1] * branch_outcomes[1].tdo_percent[0],
-			 m_branch_weight[0] * branch_outcomes[0].tdo_percent[1] + m_branch_weight[1] * branch_outcomes[1].tdo_percent[1]}};
+			{m_branch_weight[0] * branch[0].tdo_percent[0] + m_branch_weight[1] * branch[1].tdo_percent[0],
+			 m_branch_weight[0] * branch[0].tdo_percent[1] + m_branch_weight[1] * branch[1].tdo_percent[1]}};
 	}
 	else
 	{
 		double raw_tdos[2] = {
-			1 - (double)m_pkms[1].hp / m_pokemon[1]->max_hp,
-			1 - (double)m_pkms[0].hp / m_pokemon[0]->max_hp};
+			1 - (double)m_pkm_states[1].hp / m_pkm[1].max_hp,
+			1 - (double)m_pkm_states[0].hp / m_pkm[0].max_hp};
 		return {
-			{raw_tdos[0] < 1 ? raw_tdos[0] : 1,
-			 raw_tdos[1] < 1 ? raw_tdos[1] : 1}};
+			{std::min(raw_tdos[0], 1.0), std::min(raw_tdos[1], 1.0)},
+			m_turn,
+			{m_pkm_states[0], m_pkm_states[1]},
+			m_battle_log};
 	}
 }
 

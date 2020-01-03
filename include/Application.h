@@ -10,55 +10,57 @@
 namespace GoBattleSim
 {
 
-enum class BattleMode : char
+enum class BattleMode
 {
-    PvE = 'E',
-    PvP = 'P',
+    PvE,
+    PvP,
+    BattleMatrix,
 };
 
 enum class AggregationMode
 {
     None,
     Average,
+    Branching
 };
 
-struct SimInput
+struct PvESimInput
 {
-    BattleMode mode;
-
     std::vector<Player> players;
     int weather;
     int time_limit;
-
-    std::array<PvPPokemon, 2> pvp_pokemon;
-    std::array<int, 2> pvp_num_shields;
-    std::array<PvPStrategy, 2> pvp_strateies;
-
     int num_sims;
     AggregationMode aggreation;
     bool enable_log;
 };
 
-struct SimOutput
-{
-    BattleOutcome statistics;
-    std::vector<TimelineEvent> battle_log;
-    // TODO: by-player stats
-};
-
-struct AverageBattleOutcome
+struct PvEAverageBattleOutcome
 {
     double duration{0};
     double win{0};
     double tdo{0};
     double tdo_percent{0};
     double num_deaths{0};
+
+    // TODO: by-player stats
 };
 
-struct AverageSimOutput
+struct PvPSimInput
 {
-    AverageBattleOutcome statistics;
-    // TODO: by-player stats
+    std::array<PvPPokemon, 2> pokemon;
+    std::array<int, 2> num_shields;
+    std::array<PvPStrategy, 2> strateies;
+    int turn_limit;
+    int num_sims;
+    AggregationMode aggreation;
+    bool enable_log;
+};
+
+struct BattleMatrixSimInput
+{
+    std::vector<PvPPokemon> row_pokemon;
+    std::vector<PvPPokemon> col_pokemon;
+    bool averge_by_shield;
 };
 
 class GoBattleSimApp
@@ -69,35 +71,51 @@ public:
     /**
      * initialize new simulation. This will clear all output.
      */
-    void prepare(const SimInput &);
+    void prepare(const PvESimInput &);
+
+    void prepare(const PvPSimInput &);
+
+    void prepare(const BattleMatrixSimInput &);
 
     /**
-     * run the new simulation.
+     * run the simulation.
      */
     void run();
 
     /**
      * collect the latest output.
      */
-    void collect(SimOutput &);
+    void collect(std::vector<PvEBattleOutcome> &); // all
+    void collect(PvEAverageBattleOutcome &);       // average
+
+    void collect(std::vector<SimplePvPBattleOutcome> &); // all
+    void collect(SimplePvPBattleOutcome &);// average
+
+    void collect(Matrix_t &);
 
     /**
-     * collect all output.
+     * control which type of battle to run.
      */
-    void collect(std::vector<SimOutput> &);
+    BattleMode battle_mode;
 
     /**
-     * collect the average of all output.
+     * control type of aggregation
      */
-    void collect(AverageSimOutput &);
+    AggregationMode aggregation_mode;
 
 private:
     static GoBattleSimApp instance;
 
-    SimInput m_sim_input;
+    int m_num_sims{0};
+
     Battle m_pve_battle;
+    std::vector<PvEBattleOutcome> m_pve_output;
+
     SimplePvPBattle m_pvp_battle;
-    std::vector<SimOutput> m_sim_output;
+    std::vector<SimplePvPBattleOutcome> m_pvp_output;
+
+    BattleMatrix m_battle_matrix;
+    BattleMatrixSimInput m_matrix_input;
 };
 } // namespace GoBattleSim
 

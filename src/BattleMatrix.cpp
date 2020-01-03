@@ -6,9 +6,10 @@
 namespace GoBattleSim
 {
 
-double get_battle_score(const PvPPokemon *t_pkm_0, const PvPPokemon *t_pkm_1, int t_num_shields_0, int t_num_shields_1)
+double get_battle_score(const PvPPokemon &t_pkm_0, const PvPPokemon &t_pkm_1, int t_num_shields_0, int t_num_shields_1)
 {
-	SimplePvPBattle battle(t_pkm_0, t_pkm_1);
+	SimplePvPBattle battle;
+	battle.set_pokemon(t_pkm_0, t_pkm_1);
 	battle.set_num_shields_max(t_num_shields_0, t_num_shields_1);
 	battle.init();
 	battle.start();
@@ -17,61 +18,35 @@ double get_battle_score(const PvPPokemon *t_pkm_0, const PvPPokemon *t_pkm_1, in
 	return (tdo_0 < 1 ? tdo_0 : 1) - (tdo_1 < 1 ? tdo_1 : 1);
 }
 
-BattleMatrix::BattleMatrix(const PvPPokemon **t_row_pkm, int t_row_size, const PvPPokemon **t_col_pkm, int t_col_size, bool t_enum_shields)
+void BattleMatrix::set(const std::vector<PvPPokemon> &row_pokemon,
+					   const std::vector<PvPPokemon> &col_pokemon,
+					   bool average_by_shield)
 {
-	m_row_size = t_row_size;
-	m_row_pkm = new PvPPokemon *[m_row_size];
-	for (int i = 0; i < m_row_size; ++i)
-	{
-		m_row_pkm[i] = new PvPPokemon(*t_row_pkm[i]);
-	}
+	m_row_pkm = row_pokemon;
+	m_col_pkm = col_pokemon;
+	m_average_by_shield = average_by_shield;
 
-	m_col_size = t_col_size;
-	m_col_pkm = new PvPPokemon *[t_col_size];
-	for (int i = 0; i < t_col_size; ++i)
+	m_matrix.clear();
+	for (size_t i = 0; i < row_pokemon.size(); ++i)
 	{
-		m_col_pkm[i] = new PvPPokemon(*t_col_pkm[i]);
+		m_matrix.push_back(std::vector<double>(m_col_pkm.size()));
 	}
-
-	m_matrix = new double *[m_row_size];
-	for (int i = 0; i < m_row_size; ++i)
-	{
-		m_matrix[i] = new double[m_col_size];
-	}
-
-	m_enum_shields = t_enum_shields;
 }
 
-BattleMatrix::~BattleMatrix()
+void worker(Matrix_t &matrix,
+			const std::vector<PvPPokemon> &row_pkm,
+			const std::vector<PvPPokemon> &col_pkm,
+			unsigned row_first,
+			unsigned row_last,
+			unsigned col_first,
+			unsigned col_last,
+			bool averge_by_shield)
 {
-	for (int i = 0; i < m_row_size; ++i)
+	if (averge_by_shield)
 	{
-		delete m_row_pkm[i];
-		delete[] m_matrix[i];
-	}
-	for (int i = 0; i < m_col_size; ++i)
-	{
-		delete m_col_pkm[i];
-	}
-	delete[] m_row_pkm;
-	delete[] m_col_pkm;
-	delete[] m_matrix;
-}
-
-void worker(double **matrix,
-			PvPPokemon **row_pkm,
-			PvPPokemon **col_pkm,
-			int row_first,
-			int row_last,
-			int col_first,
-			int col_last,
-			bool enum_shields)
-{
-	if (enum_shields)
-	{
-		for (int i = row_first; i < row_last; ++i)
+		for (unsigned i = row_first; i < row_last; ++i)
 		{
-			for (int j = col_first; j < col_last; ++j)
+			for (unsigned j = col_first; j < col_last; ++j)
 			{
 				double score_0_0 = get_battle_score(row_pkm[i], col_pkm[j], 0, 0);
 				double score_0_1 = get_battle_score(row_pkm[i], col_pkm[j], 0, 1);
@@ -84,11 +59,11 @@ void worker(double **matrix,
 	}
 	else
 	{
-		for (int i = row_first; i < row_last; ++i)
+		for (unsigned i = row_first; i < row_last; ++i)
 		{
-			for (int j = col_first; j < col_last; ++j)
+			for (unsigned j = col_first; j < col_last; ++j)
 			{
-				matrix[i][j] = get_battle_score(row_pkm[i], col_pkm[j], row_pkm[i]->num_shields_max, col_pkm[j]->num_shields_max);
+				matrix[i][j] = get_battle_score(row_pkm[i], col_pkm[j], row_pkm[i].num_shields_max, col_pkm[j].num_shields_max);
 			}
 		}
 	}
@@ -96,59 +71,58 @@ void worker(double **matrix,
 
 void BattleMatrix::run()
 {
-	int cpu_count = std::thread::hardware_concurrency();
-	std::thread *threads = new std::thread[cpu_count];
+	auto cpu_count = std::thread::hardware_concurrency();
+	std::vector<std::thread> threads(cpu_count);
 
 	// Round-Robin distribute jobs
-	int total_job_count = 0;
-	if (m_row_size >= m_col_size)
+	unsigned total_job_count = 0;
+	unsigned row_size = m_row_pkm.size(), col_size = m_col_pkm.size();
+	if (row_size >= col_size)
 	{
 		// Divide in row
-		for (int i = 0; i < cpu_count; ++i)
+		for (unsigned i = 0; i < cpu_count; ++i)
 		{
-			int cur_job_count = (m_row_size / cpu_count) + ((m_row_size % cpu_count > i) ? 1 : 0);
-			threads[i] = std::thread(worker, m_matrix, m_row_pkm, m_col_pkm, total_job_count, total_job_count + cur_job_count, 0, m_col_size, m_enum_shields);
+			unsigned cur_job_count = (row_size / cpu_count) + ((row_size % cpu_count > i) ? 1 : 0);
+			threads[i] = std::thread(worker,
+									 std::ref(m_matrix),
+									 std::ref(m_row_pkm),
+									 std::ref(m_col_pkm),
+									 total_job_count,
+									 total_job_count + cur_job_count,
+									 (unsigned)0,
+									 col_size,
+									 m_average_by_shield);
 			total_job_count += cur_job_count;
 		}
 	}
 	else
 	{
 		// Divide in column
-		for (int i = 0; i < cpu_count; ++i)
+		for (unsigned i = 0; i < cpu_count; ++i)
 		{
-			int cur_job_count = (m_col_size / cpu_count) + ((m_col_size % cpu_count > i) ? 1 : 0);
-			threads[i] = std::thread(worker, m_matrix, m_row_pkm, m_col_pkm, 0, m_row_size, total_job_count, total_job_count + cur_job_count, m_enum_shields);
+			unsigned cur_job_count = (row_size / cpu_count) + ((col_size % cpu_count > i) ? 1 : 0);
+			threads[i] = std::thread(worker,
+									 std::ref(m_matrix),
+									 std::ref(m_row_pkm),
+									 std::ref(m_col_pkm),
+									 (unsigned)0,
+									 row_size,
+									 total_job_count,
+									 total_job_count + cur_job_count,
+									 m_average_by_shield);
 			total_job_count += cur_job_count;
 		}
 	}
 
-	for (int i = 0; i < cpu_count; ++i)
+	for (unsigned i = 0; i < cpu_count; ++i)
 	{
 		threads[i].join();
 	}
-	delete[] threads;
 }
 
-void BattleMatrix::get(double **r_matrix)
+const Matrix_t &BattleMatrix::get() const
 {
-	for (int i = 0; i < m_row_size; ++i)
-	{
-		for (int j = 0; j < m_col_size; ++j)
-		{
-			r_matrix[i][j] = m_matrix[i][j];
-		}
-	}
-}
-
-void BattleMatrix::get(double *r_matrix)
-{
-	for (int i = 0; i < m_row_size; ++i)
-	{
-		for (int j = 0; j < m_col_size; ++j)
-		{
-			r_matrix[i * m_col_size + j] = m_matrix[i][j];
-		}
-	}
+	return m_matrix;
 }
 
 } // namespace GoBattleSim

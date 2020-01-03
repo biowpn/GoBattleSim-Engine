@@ -3,6 +3,7 @@
 #define _BATTLE_H_
 
 #include "Player.h"
+#include "TimelineEvent.h"
 
 #include <vector>
 
@@ -11,34 +12,17 @@ namespace GoBattleSim
 
 constexpr unsigned MAX_NUM_PLAYERS = 32;
 
-enum class EventType
-{
-	None,
-	Announce,
-	Free,
-	Fast,
-	Charged,
-	Dodge,
-	Enter
-};
-
-struct TimelineEvent
-{
-	EventType type;
-	int time;
-	unsigned player;
-	int value;
-};
-
-bool operator<(const TimelineEvent &, const TimelineEvent &);
-
-struct BattleOutcome
+struct PvEBattleOutcome
 {
 	int duration;
 	bool win;
 	int tdo;
 	double tdo_percent;
 	int num_deaths;
+
+	// TODO: by-player stats
+
+	std::vector<TimelineEvent> battle_log;
 };
 
 class Battle
@@ -57,7 +41,7 @@ public:
 	void set_enable_log(bool);
 	void init();
 	void start();
-	BattleOutcome get_outcome(int);
+	PvEBattleOutcome get_outcome(int);
 	const std::vector<TimelineEvent> &get_log();
 
 protected:

@@ -12,11 +12,6 @@
 namespace GoBattleSim
 {
 
-bool operator<(const TimelineEvent &lhs, const TimelineEvent &rhs)
-{
-	return lhs.time > rhs.time || (lhs.time == rhs.time && lhs.player > rhs.player);
-}
-
 Battle::Battle()
 {
 	m_has_log = 0;
@@ -26,7 +21,6 @@ Battle::Battle()
 	m_defeated_team = -1;
 
 	m_players_count = 0;
-
 	m_pokemon_count = 0;
 }
 
@@ -235,10 +229,10 @@ void Battle::next(const TimelineEvent &t_event)
 	}
 }
 
-BattleOutcome Battle::get_outcome(int t_team)
+PvEBattleOutcome Battle::get_outcome(int t_team)
 {
 	// From team team {t_team}'s perspective
-	BattleOutcome outcome = {
+	PvEBattleOutcome outcome = {
 		m_time,
 		(m_defeated_team != t_team && m_time < m_time_limit)};
 
@@ -267,6 +261,7 @@ BattleOutcome Battle::get_outcome(int t_team)
 	outcome.tdo = sum_tdo;
 	outcome.tdo_percent = (double)sum_tdo / sum_rival_max_hp;
 	outcome.num_deaths = sum_deaths;
+	outcome.battle_log = m_event_history;
 	return outcome;
 }
 

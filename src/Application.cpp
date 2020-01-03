@@ -14,86 +14,143 @@ GoBattleSimApp &GoBattleSimApp::get()
     return instance;
 }
 
-void GoBattleSimApp::prepare(const SimInput &input)
+void GoBattleSimApp::prepare(const PvESimInput &input)
 {
-    m_sim_output.clear();
-    m_sim_input = input;
+    battle_mode = BattleMode::PvE;
+    aggregation_mode = input.aggreation;
+    m_num_sims = input.num_sims;
 
-    if (m_sim_input.time_limit <= 0)
+    if (input.time_limit <= 0)
     {
-        sprintf(err_msg, "timelimit must be positive (got %d)", m_sim_input.time_limit);
+        sprintf(err_msg, "timelimit must be positive (got %d)", input.time_limit);
         throw std::runtime_error(err_msg);
     }
-    m_pve_battle.set_time_limit(m_sim_input.time_limit);
+    m_pve_battle.erase_players();
+    for (const auto &player : input.players)
+    {
+        m_pve_battle.add(&player);
+    }
+    m_pve_battle.set_time_limit(input.time_limit);
+    m_pve_battle.set_weather(input.weather);
+    m_pve_battle.set_enable_log(input.enable_log);
 
-    if (m_sim_input.mode == BattleMode::PvE)
+    m_pve_output.clear();
+}
+
+void GoBattleSimApp::prepare(const PvPSimInput &input)
+{
+    battle_mode = BattleMode::PvP;
+    aggregation_mode = input.aggreation;
+    m_num_sims = input.num_sims;
+
+    m_pvp_battle.set_pokemon(input.pokemon[0], input.pokemon[1]);
+    m_pvp_battle.set_strategy(input.strateies[0], input.strateies[1]);
+    m_pvp_battle.set_num_shields_max(input.num_shields[0], input.num_shields[1]);
+    if (aggregation_mode == AggregationMode::Branching)
     {
-        m_pve_battle.set_weather(m_sim_input.weather);
-        m_pve_battle.set_enable_log(m_sim_input.enable_log);
-        m_pve_battle.erase_players();
-        for (const auto &player : m_sim_input.players)
-        {
-            m_pve_battle.add(&player);
-        }
+        m_pvp_battle.set_enable_branching(true);
     }
-    else if (m_sim_input.mode == BattleMode::PvP)
-    {
-        throw std::runtime_error("PvP not supported yet");
-    }
-    else
-    {
-        sprintf(err_msg, "unknown battle mode (%d)", (int)m_sim_input.mode);
-        throw std::runtime_error(err_msg);
-    }
+    m_pvp_battle.set_enable_log(input.enable_log);
+
+    m_pvp_output.clear();
+}
+
+void GoBattleSimApp::prepare(const BattleMatrixSimInput &input)
+{
+    battle_mode = BattleMode::BattleMatrix;
+    m_battle_matrix.set(input.row_pokemon, input.col_pokemon, input.averge_by_shield);
 }
 
 void GoBattleSimApp::run()
 {
-    if (m_sim_input.mode == BattleMode::PvE)
+    if (battle_mode == BattleMode::PvE)
     {
-        for (int i = 0; i < m_sim_input.num_sims; ++i)
+        for (int i = 0; i < m_num_sims; ++i)
         {
             m_pve_battle.init();
             m_pve_battle.start();
-            SimOutput output;
-            output.statistics = m_pve_battle.get_outcome(1);
-            output.battle_log = m_pve_battle.get_log();
-            m_sim_output.push_back(output);
+            auto output = m_pve_battle.get_outcome(1);
+            m_pve_output.push_back(output);
         }
     }
-}
-
-void GoBattleSimApp::collect(SimOutput &output)
-{
-    output = m_sim_output.back();
-}
-
-void GoBattleSimApp::collect(std::vector<SimOutput> &outputs)
-{
-    outputs.insert(outputs.end(), m_sim_output.begin(), m_sim_output.end());
-}
-
-void GoBattleSimApp::collect(AverageSimOutput &output)
-{
-    auto count = m_sim_output.size();
-    output.statistics.duration = 0;
-    output.statistics.win = 0;
-    output.statistics.tdo = 0;
-    output.statistics.tdo_percent = 0;
-    output.statistics.num_deaths = 0;
-    for (const auto &sim_output : m_sim_output)
+    else if (battle_mode == BattleMode::PvP)
     {
-        output.statistics.duration += sim_output.statistics.duration;
-        output.statistics.win += sim_output.statistics.win ? 1 : 0;
-        output.statistics.tdo += sim_output.statistics.tdo;
-        output.statistics.tdo_percent += sim_output.statistics.tdo_percent;
-        output.statistics.num_deaths += sim_output.statistics.num_deaths;
+        for (int i = 0; i < m_num_sims; ++i)
+        {
+            m_pvp_battle.init();
+            m_pvp_battle.start();
+            auto output = m_pvp_battle.get_outcome();
+            m_pvp_output.push_back(output);
+        }
     }
-    output.statistics.duration /= count;
-    output.statistics.win /= count;
-    output.statistics.tdo /= count;
-    output.statistics.tdo_percent /= count;
-    output.statistics.num_deaths /= count;
+    else if (battle_mode == BattleMode::BattleMatrix)
+    {
+        m_battle_matrix.run();
+    }
+    else
+    {
+        sprintf(err_msg, "unknown battle mode (%d)", (int)battle_mode);
+        throw std::runtime_error(err_msg);
+    }
+}
+
+void GoBattleSimApp::collect(std::vector<PvEBattleOutcome> &outputs)
+{
+    outputs.insert(outputs.end(), m_pve_output.begin(), m_pve_output.end());
+}
+
+void GoBattleSimApp::collect(PvEAverageBattleOutcome &output)
+{
+    output.duration = 0;
+    output.win = 0;
+    output.tdo = 0;
+    output.tdo_percent = 0;
+    output.num_deaths = 0;
+    for (const auto &sim_output : m_pve_output)
+    {
+        output.duration += sim_output.duration;
+        output.win += sim_output.win ? 1 : 0;
+        output.tdo += sim_output.tdo;
+        output.tdo_percent += sim_output.tdo_percent;
+        output.num_deaths += sim_output.num_deaths;
+    }
+    auto count = m_pve_output.size();
+    output.duration /= count;
+    output.win /= count;
+    output.tdo /= count;
+    output.tdo_percent /= count;
+    output.num_deaths /= count;
+}
+
+void GoBattleSimApp::collect(std::vector<SimplePvPBattleOutcome> &outputs)
+{
+    outputs.insert(outputs.end(), m_pvp_output.begin(), m_pvp_output.end());
+}
+
+void GoBattleSimApp::collect(SimplePvPBattleOutcome &output)
+{
+    if (aggregation_mode == AggregationMode::Branching)
+    {
+        output = m_pvp_output.back();
+    }
+    else
+    {
+        output.tdo_percent[0] = 0;
+        output.tdo_percent[0] = 1;
+        for (const auto &sim_output : m_pvp_output)
+        {
+            output.tdo_percent[0] += sim_output.tdo_percent[0];
+            output.tdo_percent[1] += sim_output.tdo_percent[1];
+        }
+        auto count = m_pvp_output.size();
+        output.tdo_percent[0] /= count;
+        output.tdo_percent[1] /= count;
+    }
+}
+
+void GoBattleSimApp::collect(Matrix_t &output)
+{
+    output = m_battle_matrix.get();
 }
 
 } // namespace GoBattleSim

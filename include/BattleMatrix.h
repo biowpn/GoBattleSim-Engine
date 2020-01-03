@@ -4,29 +4,36 @@
 
 #include "SimplePvPBattle.h"
 
+#include <vector>
+
 namespace GoBattleSim
 {
 
-double get_battle_score(const PvPPokemon *, const PvPPokemon *, int, int);
+typedef std::vector<std::vector<double>> Matrix_t;
+
+double get_battle_score(const PvPPokemon &pkm1,
+						const PvPPokemon &pkm2,
+						int num_shields_1,
+						int num_shields_2);
 
 class BattleMatrix
 {
 public:
-	BattleMatrix(const PvPPokemon **, int, const PvPPokemon **, int, bool = false);
-	~BattleMatrix();
+	void set(const std::vector<PvPPokemon> &row_pokemon,
+			 const std::vector<PvPPokemon> &col_pokemon,
+			 bool average_by_shield);
 
 	void run();
-	void get(double **);
-	void get(double *);
+
+	const Matrix_t &get() const;
 
 protected:
-	PvPPokemon **m_row_pkm;
-	int m_row_size;
-	PvPPokemon **m_col_pkm;
-	int m_col_size;
+	std::vector<PvPPokemon> m_row_pkm;
+	std::vector<PvPPokemon> m_col_pkm;
 
-	bool m_enum_shields;
-	double **m_matrix;
+	bool m_average_by_shield;
+
+	Matrix_t m_matrix;
 };
 
 } // namespace GoBattleSim

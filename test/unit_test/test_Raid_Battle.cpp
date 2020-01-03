@@ -30,7 +30,7 @@ int main()
 	Move move_zen_headbutt = Move{0, 12, 10, 1100, 850};
 	Move move_extrasensory = Move{0, 12, 12, 1100, 850};
 	Move move_counter = Move{1, 12, 8, 900, 700};
-	Move move_bullet_punch = Move{2, 9, 10, 900, 300};
+	// Move move_bullet_punch = Move{2, 9, 10, 900, 300};
 	Move move_dynamic_punch = Move{1, 90, -50, 2700, 1200};
 	Move move_psychic = Move{0, 100, -100, 2800, 1300};
 	Move move_sky_attack = Move{3, 80, -50, 2000, 1500};
@@ -81,7 +81,7 @@ int main()
 
 		battle.init();
 		battle.start();
-		BattleOutcome battle_outcome = battle.get_outcome(1);
+		PvEBattleOutcome battle_outcome = battle.get_outcome(1);
 
 		std::cout << "test#1 Duration: " << battle_outcome.duration << std::endl;
 		std::cout << "test#1 TDO%: " << battle_outcome.tdo_percent << std::endl;
@@ -123,7 +123,7 @@ int main()
 
 		battle.init();
 		battle.start();
-		BattleOutcome battle_outcome = battle.get_outcome(1);
+		PvEBattleOutcome battle_outcome = battle.get_outcome(1);
 
 		std::cout << "test#2 Duration: " << battle_outcome.duration << std::endl;
 		std::cout << "test#2 TDO%: " << battle_outcome.tdo_percent << std::endl;
@@ -212,7 +212,7 @@ int main()
 
 		battle.init();
 		battle.start();
-		BattleOutcome battle_outcome = battle.get_outcome(1);
+		PvEBattleOutcome battle_outcome = battle.get_outcome(1);
 
 		std::cout << "test#4 Duration: " << battle_outcome.duration << std::endl;
 		std::cout << "test#4 TDO%: " << battle_outcome.tdo_percent << std::endl;

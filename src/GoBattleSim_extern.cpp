@@ -53,7 +53,8 @@ const char *GBS_error()
 
 void GBS_prepare(const char *input_j)
 {
-	SimInput input = nlohmann::json::parse(input_j);
+	// TODO
+	PvESimInput input = nlohmann::json::parse(input_j);
 	// for now, hardcode to no aggregation
 	input.aggreation = AggregationMode::None;
 	GoBattleSimApp::get().prepare(input);
@@ -66,10 +67,10 @@ void GBS_run()
 
 const char *GBS_collect()
 {
-	// for now, hardcode to get last output
-	SimOutput output;
-	GoBattleSimApp::get().collect(output);
-	auto j_str = nlohmann::json(output).dump(4);
+	// TODO
+	std::vector<PvEBattleOutcome> outputs;
+	GoBattleSimApp::get().collect(outputs);
+	auto j_str = nlohmann::json(outputs).dump(4);
 	MessageCenter::get().set_msg(j_str);
 	return MessageCenter::get().get_msg();
 }

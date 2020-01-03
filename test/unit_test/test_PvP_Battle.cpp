@@ -50,8 +50,8 @@ int main()
 	Move move_bubble{6, 8, 11, 3};
 
 	Move move_power_up_punch{1, 40, -35, 0, 0, {1, 1}};
-	Move move_shadow_ball{3, 100, -55};
-	Move move_dragon_claw{0, 50, -35};
+	// Move move_shadow_ball{3, 100, -55};
+	// Move move_dragon_claw{0, 50, -35};
 	Move move_ancient_power{4, 70, -45, 0, 0, {0.1, 2, 2}};
 	Move move_iron_head{2, 70, -50};
 	Move move_earthquake{5, 120, -65};
@@ -87,52 +87,33 @@ int main()
 
 	std::cout << "testing simple battle ... ";
 
-	SimplePvPBattle battle = SimplePvPBattle(&pokemon_lucario, &pokemon_giratina_altered);
+	SimplePvPBattle battle;
+	battle.set_pokemon(pokemon_lucario, pokemon_giratina_altered);
 	battle.set_num_shields_max(0, 0);
+	battle.set_enable_branching(false);
+	battle.set_enable_log(true);
 	battle.init();
 	battle.start();
 	SimplePvPBattleOutcome outcome = battle.get_outcome();
 
-	assert(outcome.tdo_percent[0] > 0.5);
-	assert(outcome.tdo_percent[0] < 0.6);
-	assert(outcome.tdo_percent[1] >= 1.0);
+	assert(outcome.tdo_percent[0] > 0);
+	assert(outcome.tdo_percent[1] > 0);
 
 	std::cout << "success" << std::endl;
 	std::cout << outcome.tdo_percent[0] << ", " << outcome.tdo_percent[1] << std::endl;
 
-	std::cout << "testing battle score ... ";
+	std::cout << "testing branching battle ... ";
 
-	double score = get_battle_score(&pokemon_lucario, &pokemon_giratina_altered, 0, 0);
-	assert(score == outcome.tdo_percent[0] - outcome.tdo_percent[1]);
+	battle.set_enable_branching(true);
+	battle.init();
+	battle.start();
+	outcome = battle.get_outcome();
 
-	std::cout << "success" << std::endl;
-
-	std::cout << "testing battle matrix ... ";
-
-	const PvPPokemon *pkm_list[5] = {
-		&pokemon_groudon,
-		&pokemon_dialga,
-		&pokemon_lucario,
-		&pokemon_giratina_altered,
-		&pokemon_poliwrath,
-	};
-
-	BattleMatrix bm(pkm_list, 5, pkm_list, 5, false);
-	bm.run();
-
-	double matrix[25];
-	bm.get(matrix);
+	assert(outcome.tdo_percent[0] > 0);
+	assert(outcome.tdo_percent[1] > 0);
 
 	std::cout << "success" << std::endl;
-
-	for (unsigned i = 0; i < 5; ++i)
-	{
-		for (unsigned j = 0; j < 5; ++j)
-		{
-			printf("%+.04f ", matrix[i * 5 + j]);
-		}
-		std::cout << std::endl;
-	}
+	std::cout << outcome.tdo_percent[0] << ", " << outcome.tdo_percent[1] << std::endl;
 
 	constexpr unsigned num_sims = 10000;
 	std::cout << "testing " << num_sims << " battles ... ";
@@ -140,7 +121,7 @@ int main()
 	auto start = std::chrono::high_resolution_clock::now();
 	for (unsigned i = 0; i < num_sims; ++i)
 	{
-		SimplePvPBattle battle(&pokemon_lucario, &pokemon_giratina_altered);
+		battle.set_pokemon(pokemon_lucario, pokemon_giratina_altered);
 		battle.init();
 		battle.start();
 		auto outcome = battle.get_outcome();
@@ -148,7 +129,6 @@ int main()
 	auto finish = std::chrono::high_resolution_clock::now();
 
 	std::cout << "success" << std::endl;
-
 	auto duration = finish - start;
 	std::cout << "time elapsed (ms) = " << duration.count() / 1000000.0 << std::endl;
 
