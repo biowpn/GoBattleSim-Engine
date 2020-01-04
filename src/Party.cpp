@@ -12,8 +12,7 @@ namespace GoBattleSim
 
 Party::Party()
 {
-	m_revive_quota = 0;
-	m_revive_policy = 0;
+	m_revive_policy = false;
 }
 
 Party::Party(const Party &other)
@@ -30,7 +29,6 @@ Party &Party::operator=(const Party &other)
 	}
 	m_pokemon_head = m_pokemon + (other.m_pokemon_head - other.m_pokemon);
 	m_revive_policy = other.m_revive_policy;
-	m_revive_quota = other.m_revive_quota;
 	return *this;
 }
 
@@ -65,12 +63,12 @@ void Party::update(const Pokemon *t_pokemon)
 	}
 }
 
-void Party::set_revive_policy(int t_policy)
+bool Party::revive_policy(bool t_policy)
 {
-	m_revive_policy = t_policy;
+	return m_revive_policy = t_policy;
 }
 
-int Party::get_revive_policy() const
+bool Party::revive_policy() const
 {
 	return m_revive_policy;
 }
@@ -122,7 +120,6 @@ Pokemon **Party::get_all_pokemon(Pokemon **out_first)
 void Party::init()
 {
 	m_pokemon_head = m_pokemon;
-	m_revive_quota = m_revive_policy;
 }
 
 Pokemon *Party::get_head()
@@ -148,19 +145,6 @@ bool Party::set_head(int t_index)
 	if (0 <= t_index && t_index < m_pokemon_count)
 	{
 		m_pokemon_head = m_pokemon + t_index;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool Party::revive()
-{
-	if (m_revive_quota != 0)
-	{
-		--m_revive_quota;
 		return true;
 	}
 	else

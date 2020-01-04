@@ -33,17 +33,12 @@ public:
 
 	void init();
 
-	// number of times to revive
-	void set_revive_policy(int);
-	int get_revive_policy() const;
-
-	// this function only asks the party whether to revive (since it depends on the revive policy).
-	// the actual reviving is done in Battle::revive
-	bool revive();
+	// whether to revive or not
+	bool revive_policy(bool);
+	bool revive_policy() const;
 
 private:
-	int m_revive_quota;
-	int m_revive_policy;
+	bool m_revive_policy{false};
 
 	Pokemon *m_pokemon_head{nullptr};
 	Pokemon m_pokemon[MAX_NUM_POKEMON];
