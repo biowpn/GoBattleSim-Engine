@@ -193,13 +193,20 @@ void from_json(const json &j, Player &player)
         player.add(&party);
     }
     player.team = j.at("team");
+    bool strategy_matched = false;
     auto strategy_name = j["strategy"].get<std::string>();
     for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
     {
         if (strcmp(BUILT_IN_STRATEGIES[i].name, strategy_name.c_str()) == 0)
         {
             player.strategy = BUILT_IN_STRATEGIES[i];
+            strategy_matched = true;
         }
+    }
+    if (!strategy_matched)
+    {
+        sprintf(err_msg, "strategy %s not recognized", strategy_name.c_str());
+        throw std::runtime_error(err_msg);
     }
 
     if (j.find("attack_multiplier") != j.end())
@@ -275,6 +282,14 @@ void to_json(json &j, const GameMaster &gm)
     }
     j["PvPBattleSettings"]["attackBuffMultiplier"] = atk_stage_multipliers;
     j["PvPBattleSettings"]["defenseBuffMultiplier"] = def_stage_multipliers;
+
+    // List out supported strategies
+    std::vector<std::string> supported_strategies;
+    for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
+    {
+        supported_strategies.push_back(BUILT_IN_STRATEGIES[i].name);
+    }
+    j["PvPStrategies"] = supported_strategies;
 }
 
 void from_json(const json &j, GameMaster &gm)
