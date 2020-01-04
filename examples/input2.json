@@ -1,0 +1,129 @@
+{
+    "battleMode": "raid",
+    "timelimit": 300000,
+    "weather": "PARTLY_CLOUDY",
+    "numSims": 100,
+    "aggregation": "avrg",
+    "players": [
+        {
+            "team": 1,
+            "attack_multiplier": 1.07,
+            "strategy": "ATTACKER_NO_DODGE",
+            "parties": [
+                {
+                    "revive": true,
+                    "pokemon": [
+                        {
+                            "copies": 6,
+                            "name": "Tyranitar",
+                            "pokeType1": "dark",
+                            "pokeType2": "rock",
+                            "attack": 210.2198,
+                            "defense": 175.4466,
+                            "maxHP": 189,
+                            "fmove": {
+                                "name": "smack down",
+                                "pokeType": "rock",
+                                "power": 16,
+                                "duration": 1200,
+                                "energy": 8,
+                                "dws": 500
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "stone edge",
+                                    "pokeType": "rock",
+                                    "power": 100,
+                                    "duration": 2300,
+                                    "energy": -100,
+                                    "dws": 700
+                                }
+                            ],
+                            "immortal": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "team": 1,
+            "attack_multiplier": 1.07,
+            "strategy": "ATTACKER_NO_DODGE",
+            "parties": [
+                {
+                    "revive": true,
+                    "pokemon": [
+                        {
+                            "copies": 6,
+                            "name": "Tyranitar",
+                            "pokeType1": "dark",
+                            "pokeType2": "rock",
+                            "attack": 210.2198,
+                            "defense": 175.4466,
+                            "maxHP": 189,
+                            "fmove": {
+                                "name": "smack down",
+                                "pokeType": "rock",
+                                "power": 16,
+                                "duration": 1200,
+                                "energy": 8,
+                                "dws": 500
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "stone edge",
+                                    "pokeType": "rock",
+                                    "power": 100,
+                                    "duration": 2300,
+                                    "energy": -100,
+                                    "dws": 700
+                                }
+                            ],
+                            "immortal": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "team": 0,
+            "attack_multiplier": 1,
+            "strategy": "DEFENDER",
+            "parties": [
+                {
+                    "revive": false,
+                    "pokemon": [
+                        {
+                            "copies": 1,
+                            "name": "Ho-oh",
+                            "pokeType1": "fire",
+                            "pokeType2": "flying",
+                            "attack": 200.66000545024872,
+                            "defense": 204.61000555753708,
+                            "maxHP": 15000,
+                            "fmove": {
+                                "name": "steel wing",
+                                "pokeType": "steel",
+                                "power": 11,
+                                "duration": 800,
+                                "energy": 6,
+                                "dws": 500
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "solar beam",
+                                    "pokeType": "grass",
+                                    "power": 180,
+                                    "duration": 4900,
+                                    "energy": -100,
+                                    "dws": 2700
+                                }
+                            ],
+                            "immortal": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
