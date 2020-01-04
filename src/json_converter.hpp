@@ -74,7 +74,7 @@ void from_json(const json &j, MoveEffect &effect)
 
 void to_json(json &j, const Move &move)
 {
-    const auto& typemap = PokeTypeMapping::get();
+    const auto &typemap = PokeTypeMapping::get();
 
     j["pokeType"] = typemap.to_name(move.poketype);
     j["power"] = move.power;
@@ -86,7 +86,7 @@ void to_json(json &j, const Move &move)
 
 void from_json(const json &j, Move &move)
 {
-    const auto& typemap = PokeTypeMapping::get();
+    const auto &typemap = PokeTypeMapping::get();
 
     move.poketype = typemap.to_idx(j.at("pokeType").get<std::string>());
     j.at("power").get_to(move.power);
@@ -160,7 +160,12 @@ void from_json(const json &j, Party &party)
     for (const auto &pkm_j : j.at("pokemon"))
     {
         auto pkm = pkm_j.get<Pokemon>();
-        party.add(&pkm);
+        unsigned num_copies = 1;
+        try_get_to(pkm_j, "copies", num_copies);
+        for (unsigned i = 0; i < num_copies; ++i)
+        {
+            party.add(&pkm);
+        }
     }
     party.set_revive_policy(try_get(j, "revive_policy", 0));
 }
