@@ -17,7 +17,7 @@ GoBattleSimApp &GoBattleSimApp::get()
 void GoBattleSimApp::prepare(const PvESimInput &input)
 {
     battle_mode = BattleMode::PvE;
-    aggregation_mode = input.aggreation;
+    aggregation_mode = input.aggregation;
     m_num_sims = input.num_sims;
 
     if (input.time_limit <= 0)
@@ -40,7 +40,7 @@ void GoBattleSimApp::prepare(const PvESimInput &input)
 void GoBattleSimApp::prepare(const PvPSimInput &input)
 {
     battle_mode = BattleMode::PvP;
-    aggregation_mode = input.aggreation;
+    aggregation_mode = input.aggregation;
     m_num_sims = input.num_sims;
 
     m_pvp_battle.set_pokemon(input.pokemon[0], input.pokemon[1]);

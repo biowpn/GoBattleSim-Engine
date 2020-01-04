@@ -493,21 +493,26 @@ void from_json(const json &j, PvESimInput &input)
     try_get_to(j, "numSims", 1, input.num_sims);
     try_get_to(j, "enableLog", false, input.enable_log);
 
-    input.aggreation = AggregationMode::None;
-    if (j.find("aggreation") != j.end())
+    input.aggregation = AggregationMode::None;
+    if (j.find("aggregation") != j.end())
     {
-        auto agg_str = j.at("aggreation").get<std::string>();
-        if (agg_str == "avrg")
+        auto agg_str = j.at("aggregation").get<std::string>();
+        std::for_each(agg_str.begin(), agg_str.end(), ::tolower);
+        if (agg_str == "none" || agg_str == "enum")
         {
-            input.aggreation = AggregationMode::Average;
+            input.aggregation = AggregationMode::None;
         }
-        else if (agg_str == "none")
+        if (agg_str == "average" || agg_str == "avrg")
         {
-            input.aggreation = AggregationMode::None;
+            input.aggregation = AggregationMode::Average;
+        }
+        else if (agg_str == "branching" || agg_str == "tree")
+        {
+            input.aggregation = AggregationMode::Branching;
         }
         else
         {
-            sprintf(err_msg, "unknown aggreation ('%s')", agg_str.c_str());
+            sprintf(err_msg, "unknown aggregation ('%s')", agg_str.c_str());
         }
     }
 }
@@ -538,7 +543,7 @@ void from_json(const json &j, PvPSimInput &input)
     try_get_to(j, "numShields", {2, 2}, input.num_shields);
     try_get_to(j, "timelimit", 1800, input.turn_limit);
     try_get_to(j, "numSims", 1, input.num_sims);
-    try_get_to(j, "aggreation", AggregationMode::Branching, input.aggreation);
+    try_get_to(j, "aggregation", AggregationMode::Branching, input.aggregation);
     try_get_to(j, "enableLog", false, input.enable_log);
 }
 

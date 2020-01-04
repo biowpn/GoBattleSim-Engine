@@ -30,7 +30,7 @@ struct PvESimInput
     int weather;
     int time_limit;
     int num_sims;
-    AggregationMode aggreation;
+    AggregationMode aggregation;
     bool enable_log;
 };
 
@@ -52,7 +52,7 @@ struct PvPSimInput
     std::array<PvPStrategy, 2> strateies;
     int turn_limit;
     int num_sims;
-    AggregationMode aggreation;
+    AggregationMode aggregation;
     bool enable_log;
 };
 
