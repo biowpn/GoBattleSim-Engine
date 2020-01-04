@@ -113,7 +113,7 @@ void GameMaster::set_stage_bounds(int t_min_stage, int t_max_stage)
 		throw std::runtime_error(err_msg);
 	}
 	auto num_stages = t_max_stage - t_min_stage + 1;
-	if (m_num_types > MAX_NUM_STAGES)
+	if (num_stages > MAX_NUM_STAGES)
 	{
 		sprintf(err_msg, "too many stages (%d, max %d)", num_stages, MAX_NUM_STAGES);
 		throw std::runtime_error(err_msg);

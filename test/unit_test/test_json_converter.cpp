@@ -2,6 +2,7 @@
 #include "json_converter.hpp"
 
 #include <assert.h>
+#include <fstream>
 #include <iostream>
 #include <memory.h>
 
@@ -12,16 +13,19 @@ void test_two_way_conversion(T &&obj1)
 {
     T obj2(obj1);
 
-    std::cout << "testing to_json" << std::endl;
+    std::cout << "testing to_json ... ";
     json j1 = obj1;
+    std::cout << "success" << std::endl;
 
-    std::cout << "testing from_json" << std::endl;
+    std::cout << "testing from_json ... ";
     obj2 = j1;
+    std::cout << "success" << std::endl;
 
     json j2 = obj2;
 
-    std::cout << "testing two-way equality" << std::endl;
+    std::cout << "testing two-way equality ... ";
     assert(j1.dump() == j2.dump());
+    std::cout << "success" << std::endl;
 }
 
 int main()
