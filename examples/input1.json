@@ -15,7 +15,7 @@
                             "pokeType2": "none",
                             "attack": 181.7700047492981,
                             "defense": 127.02000331878662,
-                            "max_hp": 3600,
+                            "maxHP": 3600,
                             "fmove": {
                                 "name": "Counter",
                                 "pokeType": "fighting",
@@ -51,7 +51,7 @@
                             "pokeType2": "none",
                             "attack": 248.94450315,
                             "defense": 155.68910197000002,
-                            "max_hp": 180,
+                            "maxHP": 180,
                             "fmove": {
                                 "name": "Confusion",
                                 "pokeType": "psychic",
