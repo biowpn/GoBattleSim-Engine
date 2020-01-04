@@ -270,7 +270,7 @@ void to_json(json &j, const GameMaster &gm)
     j["PvPBattleSettings"]["chargeAttackBonusMultiplier"] = gm.charged_attack_bonus_multiplier;
     j["PvPBattleSettings"]["maxEnergy"] = gm.max_energy;
 
-    j["PvPBattleSettings"]["quickSwapCooldownDurationMs"] = gm.switching_cooldown;
+    j["PvPBattleSettings"]["quickSwapCooldownDurationSeconds"] = gm.switching_cooldown / 1000;
     j["PvPBattleSettings"]["minimumStatStage"] = gm.min_stage;
     j["PvPBattleSettings"]["maximumStatStage"] = gm.max_stage;
 
@@ -344,7 +344,7 @@ void from_json(const json &j, GameMaster &gm)
     {
         auto j_pve = j["PvEBattleSettings"];
         try_get_to(j_pve, "sameTypeAttackBonusMultiplier", gm.stab_multiplier);
-        try_get_to(j_pve, "maxEnergy", gm.max_energy);
+        try_get_to(j_pve, "maximumEnergy", gm.max_energy);
         try_get_to(j_pve, "energyDeltaPerHealthLost", gm.energy_delta_per_health_lost);
         try_get_to(j_pve, "dodgeDurationMs", gm.dodge_duration);
         try_get_to(j_pve, "dodgeDamageReductionPercent", gm.dodge_damage_reduction_percent);
@@ -364,7 +364,9 @@ void from_json(const json &j, GameMaster &gm)
     try_get_to(j_pvp, "fastAttackBonusMultiplier", gm.fast_attack_bonus_multiplier);
     try_get_to(j_pvp, "chargeAttackBonusMultiplier", gm.charged_attack_bonus_multiplier);
 
-    try_get_to(j_pvp, "quickSwapCooldownDurationMs", gm.switching_cooldown);
+    double swap_duration_seconds = gm.switching_cooldown / 1000;
+    try_get_to(j_pvp, "quickSwapCooldownDurationSeconds", swap_duration_seconds);
+    gm.switching_cooldown = swap_duration_seconds * 1000;
 
     try_get_to(j_pvp, "minimumStatStage", gm.min_stage);
     try_get_to(j_pvp, "maximumStatStage", gm.max_stage);
