@@ -17,11 +17,11 @@ int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_
 	double multiplier = t_attacker->attack_multiplier;
 	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
 	{
-		multiplier *= GameMaster::get().same_type_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().stab_multiplier;
 	}
 	if (GameMaster::get().boosted_weather(t_move->poketype) == t_weather)
 	{
-		multiplier *= GameMaster::get().weather_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().wab_multiplier;
 	}
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);

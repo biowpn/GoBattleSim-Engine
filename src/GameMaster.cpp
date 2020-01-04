@@ -20,7 +20,7 @@ GameMaster::GameMaster()
 {
 	for (unsigned i = 0; i < MAX_NUM_STAGES; ++i)
 	{
-		m_stage_multipliers[i] = 1.0;
+		m_atk_stage_multipliers[i] = 1.0;
 	}
 	for (unsigned i = 0; i < MAX_NUM_TYPES; ++i)
 	{
@@ -121,11 +121,11 @@ void GameMaster::set_stage_bounds(int t_min_stage, int t_max_stage)
 	max_stage = t_max_stage;
 }
 
-double GameMaster::stage_multiplier(int t_stage, double t_multiplier)
+double GameMaster::atk_stage_multiplier(int t_stage, double t_multiplier)
 {
 	if (min_stage <= t_stage && t_stage <= max_stage)
 	{
-		m_stage_multipliers[t_stage - min_stage] = t_multiplier;
+		m_atk_stage_multipliers[t_stage - min_stage] = t_multiplier;
 	}
 	else
 	{
@@ -135,14 +135,38 @@ double GameMaster::stage_multiplier(int t_stage, double t_multiplier)
 	return t_multiplier;
 }
 
-double GameMaster::stage_multiplier(int t_stage) const
+double GameMaster::def_stage_multiplier(int t_stage, double t_multiplier)
+{
+	if (min_stage <= t_stage && t_stage <= max_stage)
+	{
+		m_def_stage_multipliers[t_stage - min_stage] = t_multiplier;
+	}
+	else
+	{
+		sprintf(err_msg, "invalid stage (%d, min %d, max %d)", t_stage, min_stage, max_stage);
+		throw std::runtime_error(err_msg);
+	}
+	return t_multiplier;
+}
+
+double GameMaster::atk_stage_multiplier(int t_stage) const
 {
 	if (t_stage < min_stage || t_stage > max_stage)
 	{
 		sprintf(err_msg, "invalid stage (%d, min %d, max %d)", t_stage, min_stage, max_stage);
 		throw std::runtime_error(err_msg);
 	}
-	return m_stage_multipliers[t_stage - min_stage];
+	return m_atk_stage_multipliers[t_stage - min_stage];
+}
+
+double GameMaster::def_stage_multiplier(int t_stage) const
+{
+	if (t_stage < min_stage || t_stage > max_stage)
+	{
+		sprintf(err_msg, "invalid stage (%d, min %d, max %d)", t_stage, min_stage, max_stage);
+		throw std::runtime_error(err_msg);
+	}
+	return m_def_stage_multipliers[t_stage - min_stage];
 }
 
 } // namespace GoBattleSim

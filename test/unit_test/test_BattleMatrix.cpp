@@ -18,7 +18,8 @@ int main()
     GameMaster::get().set_stage_bounds(-4, 4);
     for (int i = -4; i <= 4; ++i)
     {
-        GameMaster::get().stage_multiplier(i, stage_multipliers[i + 4]);
+        GameMaster::get().atk_stage_multiplier(i, stage_multipliers[i + 4]);
+        GameMaster::get().def_stage_multiplier(i, stage_multipliers[i + 4]);
     }
 
     // In this demo, 0 = Dragon, 1 = Fighting, 2 = Steel, 3 = Ghost, 4 = Rock, 5 = Ground, 6 = Water

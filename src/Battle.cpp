@@ -286,7 +286,7 @@ void Battle::handle_fainted_pokemon(unsigned t_player_index, unsigned t_pokemon_
 	}
 	else if (revive_current_party(ps)) // Max revive current party and re-lobby
 	{
-		time_new_enter = m_time + GameMaster::get().rejoin_duration + GameMaster::get().item_menu_animation_time + party->get_pokemon_count() * GameMaster::get().max_revive_time_per_pokemon;
+		time_new_enter = m_time + GameMaster::get().rejoin_duration + GameMaster::get().item_menu_time + party->get_pokemon_count() * GameMaster::get().pokemon_revive_time;
 	}
 	else if (select_next_party(ps)) // Select next Party and re-lobby
 	{

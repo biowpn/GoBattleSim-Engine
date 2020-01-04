@@ -43,37 +43,21 @@ void PvPPokemon::buff(int t_attack_stage_delta, int t_defense_stage_delta)
 	attack_stage += t_attack_stage_delta;
 	attack_stage = attack_stage > GameMaster::get().max_stage ? GameMaster::get().max_stage : attack_stage;
 	attack_stage = attack_stage < GameMaster::get().min_stage ? GameMaster::get().min_stage : attack_stage;
-	attack = attack_init * GameMaster::get().stage_multiplier(attack_stage);
+	attack = attack_init * GameMaster::get().atk_stage_multiplier(attack_stage);
 
 	defense_stage += t_defense_stage_delta;
 	defense_stage = defense_stage > GameMaster::get().max_stage ? GameMaster::get().max_stage : defense_stage;
 	defense_stage = defense_stage < GameMaster::get().min_stage ? GameMaster::get().min_stage : defense_stage;
-	defense = defense_init * GameMaster::get().stage_multiplier(defense_stage);
+	defense = defense_init * GameMaster::get().def_stage_multiplier(defense_stage);
 }
-
-/*
-int* PvPPokemon::search_int_member(const char* t_name)
-{
-	int* int_member_ptr = Pokemon::search_int_member(t_name);
-	if (int_member_ptr)
-		return int_member_ptr;
-	
-	if (strcmp(t_name, "attack_stage") == 0)
-		return &attack_stage;
-	else if (strcmp(t_name, "defense_stage") == 0)
-		return &defense_stage;
-	else
-		return nullptr;
-}
-*/
 
 int calc_damage_pvp_fmove(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender)
 {
 
-	double multiplier = GameMaster::get().pvp_fast_attack_bonus_multiplier;
+	double multiplier = GameMaster::get().fast_attack_bonus_multiplier;
 	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
 	{
-		multiplier *= GameMaster::get().same_type_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().stab_multiplier;
 	}
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);
@@ -83,10 +67,10 @@ int calc_damage_pvp_fmove(const Pokemon *t_attacker, const Move *t_move, const P
 
 int calc_damage_pvp_cmove(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender)
 {
-	double multiplier = GameMaster::get().pvp_charged_attack_bonus_multiplier;
+	double multiplier = GameMaster::get().charged_attack_bonus_multiplier;
 	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
 	{
-		multiplier *= GameMaster::get().same_type_attack_bonus_multiplier;
+		multiplier *= GameMaster::get().stab_multiplier;
 	}
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
 	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);

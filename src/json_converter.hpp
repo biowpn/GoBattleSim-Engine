@@ -204,12 +204,12 @@ void to_json(json &j, const GameMaster &gm)
     j["swap_duration"] = gm.swap_duration;
     j["switching_cooldown"] = gm.switching_cooldown;
     j["rejoin_duration"] = gm.rejoin_duration;
-    j["item_menu_animation_time"] = gm.item_menu_animation_time;
-    j["max_revive_time_per_pokemon"] = gm.max_revive_time_per_pokemon;
-    j["same_type_attack_bonus_multiplier"] = gm.same_type_attack_bonus_multiplier;
-    j["weather_attack_bonus_multiplier"] = gm.weather_attack_bonus_multiplier;
-    j["pvp_fast_attack_bonus_multiplier"] = gm.pvp_fast_attack_bonus_multiplier;
-    j["pvp_charged_attack_bonus_multiplier"] = gm.pvp_charged_attack_bonus_multiplier;
+    j["item_menu_animation_time"] = gm.item_menu_time;
+    j["pokemon_revive_time"] = gm.pokemon_revive_time;
+    j["same_type_attack_bonus_multiplier"] = gm.stab_multiplier;
+    j["weather_attack_bonus_multiplier"] = gm.wab_multiplier;
+    j["fast_attack_bonus_multiplier"] = gm.fast_attack_bonus_multiplier;
+    j["charged_attack_bonus_multiplier"] = gm.charged_attack_bonus_multiplier;
     j["dodge_damage_reduction_percent"] = gm.dodge_damage_reduction_percent;
     j["energy_delta_per_health_lost"] = gm.energy_delta_per_health_lost;
 
@@ -229,7 +229,7 @@ void to_json(json &j, const GameMaster &gm)
     std::vector<double> stage_multipliers;
     for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        stage_multipliers.push_back(gm.stage_multiplier(s));
+        stage_multipliers.push_back(gm.atk_stage_multiplier(s));
     }
     j["stage_multipliers"] = stage_multipliers;
 
@@ -251,12 +251,12 @@ void from_json(const json &j, GameMaster &gm)
     gm.swap_duration = j["swap_duration"];
     gm.switching_cooldown = j["switching_cooldown"];
     gm.rejoin_duration = j["rejoin_duration"];
-    gm.item_menu_animation_time = j["item_menu_animation_time"];
-    gm.max_revive_time_per_pokemon = j["max_revive_time_per_pokemon"];
-    gm.same_type_attack_bonus_multiplier = j["same_type_attack_bonus_multiplier"];
-    gm.weather_attack_bonus_multiplier = j["weather_attack_bonus_multiplier"];
-    gm.pvp_fast_attack_bonus_multiplier = j["pvp_fast_attack_bonus_multiplier"];
-    gm.pvp_charged_attack_bonus_multiplier = j["pvp_charged_attack_bonus_multiplier"];
+    gm.item_menu_time = j["item_menu_animation_time"];
+    gm.pokemon_revive_time = j["pokemon_revive_time"];
+    gm.stab_multiplier = j["same_type_attack_bonus_multiplier"];
+    gm.wab_multiplier = j["weather_attack_bonus_multiplier"];
+    gm.fast_attack_bonus_multiplier = j["fast_attack_bonus_multiplier"];
+    gm.charged_attack_bonus_multiplier = j["charged_attack_bonus_multiplier"];
     gm.dodge_damage_reduction_percent = j["dodge_damage_reduction_percent"];
     gm.energy_delta_per_health_lost = j["energy_delta_per_health_lost"];
 
@@ -275,7 +275,7 @@ void from_json(const json &j, GameMaster &gm)
     gm.set_stage_bounds(gm.min_stage, gm.max_stage);
     for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        gm.stage_multiplier(s, stage_multipliers.at(s - gm.min_stage));
+        gm.atk_stage_multiplier(s, stage_multipliers.at(s - gm.min_stage));
     }
 
     auto type_boosted_weather = j["type_boosted_weather"].get<std::vector<int>>();
@@ -459,7 +459,7 @@ void from_json(const json &j, PvPSimInput &input)
 void to_json(json &j, const SimplePvPBattleOutcome &output)
 {
     j["tdo_percent"] = output.tdo_percent;
-    j["turns"] = output.turns;
+    j["duration"] = output.duration;
     j["battle_log"] = output.battle_log;
 }
 
