@@ -21,6 +21,7 @@ GameMaster::GameMaster()
 	for (unsigned i = 0; i < MAX_NUM_STAGES; ++i)
 	{
 		m_atk_stage_multipliers[i] = 1.0;
+		m_def_stage_multipliers[i] = 1.0;
 	}
 	for (unsigned i = 0; i < MAX_NUM_TYPES; ++i)
 	{

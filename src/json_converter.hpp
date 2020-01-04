@@ -5,6 +5,7 @@
 
 #include "GoBattleSim.h"
 #include "Application.h"
+#include "name_mapping.hpp"
 
 #include "json.hpp"
 
@@ -15,6 +16,9 @@
 namespace GoBattleSim
 {
 using nlohmann::json;
+
+typedef std::unordered_map<std::string, std::unordered_map<std::string, double>> Effectiveness_Matrix_t;
+typedef std::unordered_map<std::string, std::vector<std::string>> WeatherBoost_Map_t;
 
 template <class T>
 T try_get(const json &j, const std::string &key, const T &t_default)
@@ -44,6 +48,12 @@ bool try_get_to(const json &j, const std::string &key, const T &t_default, T &ds
     }
 }
 
+template <class T>
+bool try_get_to(const json &j, const std::string &key, T &dst)
+{
+    return try_get_to(j, key, dst, dst);
+}
+
 void to_json(json &j, const MoveEffect &effect)
 {
     j["activation_chance"] = effect.activation_chance;
@@ -64,7 +74,9 @@ void from_json(const json &j, MoveEffect &effect)
 
 void to_json(json &j, const Move &move)
 {
-    j["poketype"] = move.poketype;
+    const auto& typemap = PokeTypeMapping::get();
+
+    j["poketype"] = typemap.to_name(move.poketype);
     j["power"] = move.power;
     j["energy"] = move.energy;
     j["duration"] = move.duration;
@@ -74,19 +86,21 @@ void to_json(json &j, const Move &move)
 
 void from_json(const json &j, Move &move)
 {
-    j.at("poketype").get_to(move.poketype);
+    const auto& typemap = PokeTypeMapping::get();
+
+    move.poketype = typemap.to_idx(j.at("poketype").get<std::string>());
     j.at("power").get_to(move.power);
     j.at("energy").get_to(move.energy);
-    try_get_to(j, "duration", move.duration, move.duration);
-    try_get_to(j, "dws", move.dws, move.dws);
-    try_get_to(j, "effect", move.effect, move.effect);
+    try_get_to(j, "duration", move.duration);
+    try_get_to(j, "dws", move.dws);
+    try_get_to(j, "effect", move.effect);
 }
 
 void to_json(json &j, const Pokemon &pkm)
 {
-    j["id"] = pkm.id;
-    j["poketype1"] = pkm.poketype1;
-    j["poketype2"] = pkm.poketype2;
+    const auto &typemap = PokeTypeMapping::get();
+    j["poketype1"] = typemap.to_name(pkm.poketype1);
+    j["poketype2"] = typemap.to_name(pkm.poketype2);
     j["attack"] = pkm.attack;
     j["defense"] = pkm.defense;
     j["max_hp"] = pkm.max_hp;
@@ -99,8 +113,10 @@ void to_json(json &j, const Pokemon &pkm)
 
 void from_json(const json &j, Pokemon &pkm)
 {
-    j.at("poketype1").get_to(pkm.poketype1);
-    j.at("poketype2").get_to(pkm.poketype2);
+    const auto &typemap = PokeTypeMapping::get();
+    pkm.poketype1 = typemap.to_idx(j.at("poketype1").get<std::string>());
+    pkm.poketype2 = typemap.to_idx(j.at("poketype2").get<std::string>());
+
     j.at("attack").get_to(pkm.attack);
     j.at("defense").get_to(pkm.defense);
     j.at("max_hp").get_to(pkm.max_hp);
@@ -112,10 +128,9 @@ void from_json(const json &j, Pokemon &pkm)
         pkm.add_cmove(&cmove);
     }
 
-    try_get_to(j, "id", pkm.id, pkm.id);
-    try_get_to(j, "immortal", pkm.immortal, pkm.immortal);
-    try_get_to(j, "attack_multiplier", pkm.attack_multiplier, pkm.attack_multiplier);
-    try_get_to(j, "clone_multiplier", pkm.clone_multiplier, pkm.clone_multiplier);
+    try_get_to(j, "immortal", pkm.immortal);
+    try_get_to(j, "attack_multiplier", pkm.attack_multiplier);
+    try_get_to(j, "clone_multiplier", pkm.clone_multiplier);
 }
 
 void to_json(json &j, const PvPPokemon &pkm)
@@ -159,7 +174,6 @@ void to_json(json &j, const Player &player)
     }
     j["parties"] = parties;
     j["team"] = player.team;
-    j["id"] = player.id;
     j["strategy"] = player.strategy.name;
     j["attack_multiplier"] = player.get_attack_multiplier();
     j["clone_multiplier"] = player.get_clone_multiplier();
@@ -174,7 +188,6 @@ void from_json(const json &j, Player &player)
         player.add(&party);
     }
     player.team = j.at("team");
-    try_get_to(j, "id", player.id, player.id);
     auto strategy_name = j["strategy"].get<std::string>();
     for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
     {
@@ -196,92 +209,154 @@ void from_json(const json &j, Player &player)
 
 void to_json(json &j, const GameMaster &gm)
 {
-    j["max_energy"] = gm.max_energy;
-    j["min_stage"] = gm.min_stage;
-    j["max_stage"] = gm.max_stage;
-    j["dodge_duration"] = gm.dodge_duration;
-    j["dodge_window"] = gm.dodge_window;
-    j["swap_duration"] = gm.swap_duration;
-    j["switching_cooldown"] = gm.switching_cooldown;
-    j["rejoin_duration"] = gm.rejoin_duration;
-    j["item_menu_animation_time"] = gm.item_menu_time;
-    j["pokemon_revive_time"] = gm.pokemon_revive_time;
-    j["same_type_attack_bonus_multiplier"] = gm.stab_multiplier;
-    j["weather_attack_bonus_multiplier"] = gm.wab_multiplier;
-    j["fast_attack_bonus_multiplier"] = gm.fast_attack_bonus_multiplier;
-    j["charged_attack_bonus_multiplier"] = gm.charged_attack_bonus_multiplier;
-    j["dodge_damage_reduction_percent"] = gm.dodge_damage_reduction_percent;
-    j["energy_delta_per_health_lost"] = gm.energy_delta_per_health_lost;
+    const auto &typemap = PokeTypeMapping::get();
+    const auto &weathermap = WeatherMapping::get();
 
-    std::vector<std::vector<double>> matrix;
-    auto num_types = gm.num_types();
-    for (unsigned i = 0; i < num_types; ++i)
+    // Type Effectiveness
+    Effectiveness_Matrix_t effectiveness;
+    for (unsigned i = 0; i < gm.num_types(); ++i)
     {
-        std::vector<double> row;
-        for (unsigned j = 0; j < num_types; ++j)
+        std::unordered_map<std::string, double> sub_eff;
+        for (unsigned j = 0; j < gm.num_types(); ++j)
         {
-            row.push_back(gm.effectiveness(i, j));
+            sub_eff[typemap.to_name(j)] = gm.effectiveness(i, j);
         }
-        matrix.push_back(row);
+        effectiveness[typemap.to_name(i)] = sub_eff;
     }
-    j["type_effectiveness"] = matrix;
+    j["TypeEffectiveness"] = effectiveness;
 
-    std::vector<double> stage_multipliers;
+    // Weather Settings
+    WeatherBoost_Map_t weathers;
+    for (unsigned i = 0; i < gm.num_types(); ++i)
+    {
+        auto pkm_type = typemap.to_name(i);
+        auto weather = weathermap.to_name(gm.boosted_weather(i));
+        weathers.emplace(weather, std::vector<std::string>());
+        weathers[weather].push_back(pkm_type);
+    }
+    j["WeatherSettings"] = weathers;
+
+    // PvE Battle Settings
+    j["PvEBattleSettings"] = {};
+    j["PvEBattleSettings"]["sameTypeAttackBonusMultiplier"] = gm.stab_multiplier;
+    j["PvEBattleSettings"]["maxEnergy"] = gm.max_energy;
+    j["PvEBattleSettings"]["energyDeltaPerHealthLost"] = gm.energy_delta_per_health_lost;
+    j["PvEBattleSettings"]["dodgeDurationMs"] = gm.dodge_duration;
+    j["PvEBattleSettings"]["dodgeDamageReductionPercent"] = gm.dodge_damage_reduction_percent;
+    j["PvEBattleSettings"]["swapDurationMs"] = gm.swap_duration;
+    j["PvEBattleSettings"]["weatherAttackBonusMultiplier"] = gm.wab_multiplier;
+
+    j["PvEBattleSettings"]["dodgeWindowMs"] = gm.dodge_window;
+    j["PvEBattleSettings"]["rejoinDurationMs"] = gm.rejoin_duration;
+    j["PvEBattleSettings"]["itemMenuAnimationTimeMs"] = gm.item_menu_time;
+    j["PvEBattleSettings"]["maxReviveTimePerPokemonMs"] = gm.pokemon_revive_time;
+
+    // PvP Battle Settings
+    j["PvPBattleSettings"] = {};
+    j["PvPBattleSettings"]["sameTypeAttackBonusMultiplier"] = gm.stab_multiplier;
+    j["PvPBattleSettings"]["fastAttackBonusMultiplier"] = gm.fast_attack_bonus_multiplier;
+    j["PvPBattleSettings"]["chargeAttackBonusMultiplier"] = gm.charged_attack_bonus_multiplier;
+    j["PvPBattleSettings"]["maxEnergy"] = gm.max_energy;
+
+    j["PvPBattleSettings"]["quickSwapCooldownDurationMs"] = gm.switching_cooldown;
+    j["PvPBattleSettings"]["minimumStatStage"] = gm.min_stage;
+    j["PvPBattleSettings"]["maximumStatStage"] = gm.max_stage;
+
+    std::vector<double> atk_stage_multipliers, def_stage_multipliers;
     for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        stage_multipliers.push_back(gm.atk_stage_multiplier(s));
+        atk_stage_multipliers.push_back(gm.atk_stage_multiplier(s));
+        def_stage_multipliers.push_back(gm.def_stage_multiplier(s));
     }
-    j["stage_multipliers"] = stage_multipliers;
-
-    std::vector<int> type_boosted_weather;
-    for (unsigned i = 0; i < num_types; ++i)
-    {
-        type_boosted_weather.push_back(gm.boosted_weather(i));
-    }
-    j["type_boosted_weather"] = type_boosted_weather;
+    j["PvPBattleSettings"]["attackBuffMultiplier"] = atk_stage_multipliers;
+    j["PvPBattleSettings"]["defenseBuffMultiplier"] = def_stage_multipliers;
 }
 
 void from_json(const json &j, GameMaster &gm)
 {
-    gm.max_energy = j["max_energy"];
-    gm.min_stage = j["min_stage"];
-    gm.max_stage = j["max_stage"];
-    gm.dodge_duration = j["dodge_duration"];
-    gm.dodge_window = j["dodge_window"];
-    gm.swap_duration = j["swap_duration"];
-    gm.switching_cooldown = j["switching_cooldown"];
-    gm.rejoin_duration = j["rejoin_duration"];
-    gm.item_menu_time = j["item_menu_animation_time"];
-    gm.pokemon_revive_time = j["pokemon_revive_time"];
-    gm.stab_multiplier = j["same_type_attack_bonus_multiplier"];
-    gm.wab_multiplier = j["weather_attack_bonus_multiplier"];
-    gm.fast_attack_bonus_multiplier = j["fast_attack_bonus_multiplier"];
-    gm.charged_attack_bonus_multiplier = j["charged_attack_bonus_multiplier"];
-    gm.dodge_damage_reduction_percent = j["dodge_damage_reduction_percent"];
-    gm.energy_delta_per_health_lost = j["energy_delta_per_health_lost"];
+    auto &typemap = PokeTypeMapping::get();
+    auto &weathermap = WeatherMapping::get();
 
-    auto matrix = j["type_effectiveness"].get<std::vector<std::vector<double>>>();
-    auto num_types = matrix.size();
-    gm.num_types(num_types);
-    for (unsigned i = 0; i < num_types; ++i)
+    // Type Effectiveness
+    auto effectiveness = j.at("TypeEffectiveness").get<Effectiveness_Matrix_t>();
+
+    // set type map first
+    typemap.reset();
+    gm.num_types(effectiveness.size());
     {
-        for (unsigned j = 0; j < num_types; ++j)
+        unsigned i = 0;
+        for (const auto &kv : effectiveness)
         {
-            gm.effectiveness(i, j, matrix.at(i).at(j));
+            typemap.map(i, kv.first);
+            ++i;
         }
     }
 
-    auto stage_multipliers = j["stage_multipliers"].get<std::vector<double>>();
-    gm.set_stage_bounds(gm.min_stage, gm.max_stage);
-    for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
+    // then set effectiveness
+    for (const auto &kv : effectiveness)
     {
-        gm.atk_stage_multiplier(s, stage_multipliers.at(s - gm.min_stage));
+        auto atk_type = kv.first;
+        auto atk_type_i = typemap.to_idx(atk_type);
+        for (const auto &kv2 : kv.second)
+        {
+            auto def_type = kv2.first;
+            auto def_type_i = typemap.to_idx(def_type);
+            gm.effectiveness(atk_type_i, def_type_i, kv2.second);
+        }
     }
 
-    auto type_boosted_weather = j["type_boosted_weather"].get<std::vector<int>>();
-    for (unsigned i = 0; i < num_types; ++i)
+    // Weather Settings
+    auto weathers = j.at("WeatherSettings").get<WeatherBoost_Map_t>();
+    weathermap.reset();
+    unsigned weather_i = 0;
+    for (const auto &kv : weathers)
     {
-        gm.boosted_weather(i, type_boosted_weather.at(i));
+        weathermap.map(weather_i, kv.first);
+        for (const auto &pkm_type_name : kv.second)
+        {
+            auto pkm_type_i = typemap.to_idx(pkm_type_name);
+            gm.boosted_weather(pkm_type_i, weather_i);
+        }
+        ++weather_i;
+    }
+
+    // PvE Battle Settings
+    {
+        auto j_pve = j["PvEBattleSettings"];
+        try_get_to(j_pve, "sameTypeAttackBonusMultiplier", gm.stab_multiplier);
+        try_get_to(j_pve, "maxEnergy", gm.max_energy);
+        try_get_to(j_pve, "energyDeltaPerHealthLost", gm.energy_delta_per_health_lost);
+        try_get_to(j_pve, "dodgeDurationMs", gm.dodge_duration);
+        try_get_to(j_pve, "dodgeDamageReductionPercent", gm.dodge_damage_reduction_percent);
+        try_get_to(j_pve, "swapDurationMs", gm.swap_duration);
+        try_get_to(j_pve, "weatherAttackBonusMultiplier", gm.wab_multiplier);
+        try_get_to(j_pve, "dodgeWindowMs", gm.dodge_window);
+        try_get_to(j_pve, "rejoinDurationMs", gm.rejoin_duration);
+        try_get_to(j_pve, "itemMenuAnimationTimeMs", gm.item_menu_time);
+        try_get_to(j_pve, "maxReviveTimePerPokemonMs", gm.pokemon_revive_time);
+    }
+
+    // PvP Battle Settings
+    auto j_pvp = j["PvPBattleSettings"];
+
+    try_get_to(j_pvp, "sameTypeAttackBonusMultiplier", gm.stab_multiplier);
+    try_get_to(j_pvp, "maxEnergy", gm.max_energy);
+    try_get_to(j_pvp, "fastAttackBonusMultiplier", gm.fast_attack_bonus_multiplier);
+    try_get_to(j_pvp, "chargeAttackBonusMultiplier", gm.charged_attack_bonus_multiplier);
+
+    try_get_to(j_pvp, "quickSwapCooldownDurationMs", gm.switching_cooldown);
+
+    try_get_to(j_pvp, "minimumStatStage", gm.min_stage);
+    try_get_to(j_pvp, "maximumStatStage", gm.max_stage);
+    gm.set_stage_bounds(gm.min_stage, gm.max_stage);
+    auto num_stages = gm.max_stage - gm.min_stage + 1;
+    std::vector<double> atk_stage_multipliers(num_stages), def_stage_multipliers(num_stages);
+    try_get_to(j_pvp, "attackBuffMultiplier", atk_stage_multipliers);
+    try_get_to(j_pvp, "defenseBuffMultiplier", def_stage_multipliers);
+    for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
+    {
+        gm.atk_stage_multiplier(s, atk_stage_multipliers.at(s - gm.min_stage));
+        gm.def_stage_multiplier(s, def_stage_multipliers.at(s - gm.min_stage));
     }
 }
 
@@ -401,9 +476,15 @@ void from_json(const json &j, BattleMode &mode)
 
 void from_json(const json &j, PvESimInput &input)
 {
-    j.at("time_limit").get_to(input.time_limit);
+    const auto &weathermap = WeatherMapping::get();
+
     j.at("players").get_to(input.players);
-    try_get_to(j, "weather", input.weather, input.weather);
+    j.at("time_limit").get_to(input.time_limit);
+
+    std::string weather_name{""};
+    try_get_to(j, "weather", weather_name);
+    input.weather = weathermap.to_idx(weather_name);
+
     try_get_to(j, "num_sims", 1, input.num_sims);
     try_get_to(j, "enable_log", false, input.enable_log);
 
