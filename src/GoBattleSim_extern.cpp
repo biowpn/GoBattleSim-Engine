@@ -54,7 +54,7 @@ const char *GBS_error()
 void GBS_prepare(const char *input_j)
 {
 	auto j = nlohmann::json::parse(input_j);
-	auto mode = j.at("mode").get<BattleMode>();
+	auto mode = j.at("battleMode").get<BattleMode>();
 	auto &app = GoBattleSimApp::get();
 
 	if (mode == BattleMode::PvE)

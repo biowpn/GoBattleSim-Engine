@@ -484,14 +484,14 @@ void from_json(const json &j, PvESimInput &input)
     const auto &weathermap = WeatherMapping::get();
 
     j.at("players").get_to(input.players);
-    j.at("time_limit").get_to(input.time_limit);
+    j.at("timelimit").get_to(input.time_limit);
 
     std::string weather_name{""};
     try_get_to(j, "weather", weather_name);
     input.weather = weathermap.to_idx(weather_name);
 
-    try_get_to(j, "num_sims", 1, input.num_sims);
-    try_get_to(j, "enable_log", false, input.enable_log);
+    try_get_to(j, "numSims", 1, input.num_sims);
+    try_get_to(j, "enableLog", false, input.enable_log);
 
     input.aggreation = AggregationMode::None;
     if (j.find("aggreation") != j.end())
@@ -535,11 +535,11 @@ void from_json(const json &j, PvPSimInput &input)
 {
     j["pokemon"].get_to(input.pokemon);
 
-    try_get_to(j, "num_shields", {2, 2}, input.num_shields);
-    try_get_to(j, "turn_limit", 1800, input.turn_limit);
-    try_get_to(j, "num_sims", 1, input.num_sims);
+    try_get_to(j, "numShields", {2, 2}, input.num_shields);
+    try_get_to(j, "timelimit", 1800, input.turn_limit);
+    try_get_to(j, "numSims", 1, input.num_sims);
     try_get_to(j, "aggreation", AggregationMode::Branching, input.aggreation);
-    try_get_to(j, "enable_log", false, input.enable_log);
+    try_get_to(j, "enableLog", false, input.enable_log);
 }
 
 void to_json(json &j, const SimplePvPBattleOutcome &output)
@@ -551,8 +551,8 @@ void to_json(json &j, const SimplePvPBattleOutcome &output)
 
 void from_json(const json &j, BattleMatrixSimInput &input)
 {
-    j["row_pokemon"].get_to(input.row_pokemon);
-    j["col_pokemon"].get_to(input.col_pokemon);
+    j["rowPokemon"].get_to(input.row_pokemon);
+    j["colPokemon"].get_to(input.col_pokemon);
 
     try_get_to(j, "averge_by_shield", false, input.averge_by_shield);
 }
