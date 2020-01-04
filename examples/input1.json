@@ -11,14 +11,14 @@
                     "pokemon": [
                         {
                             "name": "Machamp",
-                            "poketype1": "fighting",
-                            "poketype2": "none",
+                            "pokeType1": "fighting",
+                            "pokeType2": "none",
                             "attack": 181.7700047492981,
                             "defense": 127.02000331878662,
                             "max_hp": 3600,
                             "fmove": {
                                 "name": "Counter",
-                                "poketype": "fighting",
+                                "pokeType": "fighting",
                                 "power": 12,
                                 "energy": 8,
                                 "duration": 900,
@@ -27,7 +27,7 @@
                             "cmoves": [
                                 {
                                     "name": "Dynamic Punch",
-                                    "poketype": "fighting",
+                                    "pokeType": "fighting",
                                     "power": 90,
                                     "energy": -50,
                                     "duration": 2700,
@@ -47,14 +47,14 @@
                     "pokemon": [
                         {
                             "name": "Mewtwo",
-                            "poketype1": "psychic",
-                            "poketype2": "none",
+                            "pokeType1": "psychic",
+                            "pokeType2": "none",
                             "attack": 248.94450315,
                             "defense": 155.68910197000002,
                             "max_hp": 180,
                             "fmove": {
                                 "name": "Confusion",
-                                "poketype": "psychic",
+                                "pokeType": "psychic",
                                 "power": 20,
                                 "energy": 15,
                                 "duration": 1600,
@@ -63,7 +63,7 @@
                             "cmoves": [
                                 {
                                     "name": "Psychic",
-                                    "poketype": "psychic",
+                                    "pokeType": "psychic",
                                     "power": 100,
                                     "energy": -100,
                                     "duration": 2800,

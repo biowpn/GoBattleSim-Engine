@@ -76,7 +76,7 @@ void to_json(json &j, const Move &move)
 {
     const auto& typemap = PokeTypeMapping::get();
 
-    j["poketype"] = typemap.to_name(move.poketype);
+    j["pokeType"] = typemap.to_name(move.poketype);
     j["power"] = move.power;
     j["energy"] = move.energy;
     j["duration"] = move.duration;
@@ -88,7 +88,7 @@ void from_json(const json &j, Move &move)
 {
     const auto& typemap = PokeTypeMapping::get();
 
-    move.poketype = typemap.to_idx(j.at("poketype").get<std::string>());
+    move.poketype = typemap.to_idx(j.at("pokeType").get<std::string>());
     j.at("power").get_to(move.power);
     j.at("energy").get_to(move.energy);
     try_get_to(j, "duration", move.duration);
@@ -99,8 +99,8 @@ void from_json(const json &j, Move &move)
 void to_json(json &j, const Pokemon &pkm)
 {
     const auto &typemap = PokeTypeMapping::get();
-    j["poketype1"] = typemap.to_name(pkm.poketype1);
-    j["poketype2"] = typemap.to_name(pkm.poketype2);
+    j["pokeType1"] = typemap.to_name(pkm.poketype1);
+    j["pokeType2"] = typemap.to_name(pkm.poketype2);
     j["attack"] = pkm.attack;
     j["defense"] = pkm.defense;
     j["max_hp"] = pkm.max_hp;
@@ -114,8 +114,8 @@ void to_json(json &j, const Pokemon &pkm)
 void from_json(const json &j, Pokemon &pkm)
 {
     const auto &typemap = PokeTypeMapping::get();
-    pkm.poketype1 = typemap.to_idx(j.at("poketype1").get<std::string>());
-    pkm.poketype2 = typemap.to_idx(j.at("poketype2").get<std::string>());
+    pkm.poketype1 = typemap.to_idx(j.at("pokeType1").get<std::string>());
+    pkm.poketype2 = typemap.to_idx(j.at("pokeType2").get<std::string>());
 
     j.at("attack").get_to(pkm.attack);
     j.at("defense").get_to(pkm.defense);
