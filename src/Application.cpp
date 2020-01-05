@@ -114,12 +114,12 @@ void GoBattleSimApp::collect(PvEAverageBattleOutcome &output)
         output.tdo_percent += sim_output.tdo_percent;
         output.num_deaths += sim_output.num_deaths;
     }
-    auto count = m_pve_output.size();
-    output.duration /= count;
-    output.win /= count;
-    output.tdo /= count;
-    output.tdo_percent /= count;
-    output.num_deaths /= count;
+    output.num_sims = m_pve_output.size();
+    output.duration /= output.num_sims;
+    output.win /= output.num_sims;
+    output.tdo /= output.num_sims;
+    output.tdo_percent /= output.num_sims;
+    output.num_deaths /= output.num_sims;
 }
 
 void GoBattleSimApp::collect(std::vector<SimplePvPBattleOutcome> &outputs)

@@ -36,6 +36,7 @@ struct PvESimInput
 
 struct PvEAverageBattleOutcome
 {
+    unsigned num_sims{0};
     double duration{0};
     double win{0};
     double tdo{0};

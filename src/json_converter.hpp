@@ -437,6 +437,9 @@ void to_json(json &j, const EventType &event_type)
     case EventType::Charged:
         j = "Charged";
         break;
+    case EventType::Damage:
+        j = "Damage";
+        break;
     case EventType::Dodge:
         j = "Dodge";
         break;
@@ -546,6 +549,7 @@ void to_json(json &j, const PvEBattleOutcome &outcome)
 
 void to_json(json &j, const PvEAverageBattleOutcome &outcome)
 {
+    j["num_sims"] = outcome.num_sims;
     j["duration"] = outcome.duration;
     j["win"] = outcome.win;
     j["tdo"] = outcome.tdo;
