@@ -539,22 +539,26 @@ void from_json(const json &j, PvESimInput &input)
 
 void to_json(json &j, const PvEBattleOutcome &outcome)
 {
-    j["duration"] = outcome.duration;
-    j["win"] = outcome.win;
-    j["tdo"] = outcome.tdo;
-    j["tdo_percent"] = outcome.tdo_percent;
-    j["num_deaths"] = outcome.num_deaths;
-    j["battle_log"] = outcome.battle_log;
+    j["statistics"] = {};
+    j["statistics"]["duration"] = outcome.duration / 1000.0;
+    j["statistics"]["win"] = outcome.win ? 1 : 0;
+    j["statistics"]["tdo"] = outcome.tdo;
+    j["statistics"]["tdoPercent"] = outcome.tdo_percent * 100;
+    j["statistics"]["dps"] = outcome.tdo / (outcome.duration / 1000.0);
+    j["statistics"]["numDeaths"] = outcome.num_deaths;
+    j["battleLog"] = outcome.battle_log;
 }
 
 void to_json(json &j, const PvEAverageBattleOutcome &outcome)
 {
-    j["num_sims"] = outcome.num_sims;
-    j["duration"] = outcome.duration;
-    j["win"] = outcome.win;
-    j["tdo"] = outcome.tdo;
-    j["tdo_percent"] = outcome.tdo_percent;
-    j["num_deaths"] = outcome.num_deaths;
+    j["statistics"] = {};
+    j["statistics"]["duration"] = outcome.duration / 1000.0;
+    j["statistics"]["win"] = outcome.win;
+    j["statistics"]["tdo"] = outcome.tdo;
+    j["statistics"]["tdoPercent"] = outcome.tdo_percent * 100;
+    j["statistics"]["dps"] = outcome.tdo / (outcome.duration / 1000.0);
+    j["statistics"]["numDeaths"] = outcome.num_deaths;
+    j["numSims"] = outcome.num_sims;
 }
 
 void from_json(const json &j, PvPSimInput &input)
