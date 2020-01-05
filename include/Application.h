@@ -34,6 +34,19 @@ struct PvESimInput
     bool enable_log;
 };
 
+struct AveragePokemonState
+{
+    int max_hp{0};
+    double hp{0.0};
+    double energy{0.0};
+    double tdo{0.0};
+    double tdo_fast{0.0};
+    double duration{0.0};
+    double num_deaths{0.0};
+    double num_fmoves_used{0.0};
+    double num_cmoves_used{0.0};
+};
+
 struct PvEAverageBattleOutcome
 {
     unsigned num_sims{0};
@@ -42,8 +55,7 @@ struct PvEAverageBattleOutcome
     double tdo{0};
     double tdo_percent{0};
     double num_deaths{0};
-
-    // TODO: by-player stats
+    std::vector<AveragePokemonState> pokemon_stats;
 };
 
 struct PvPSimInput
@@ -90,7 +102,7 @@ public:
     void collect(PvEAverageBattleOutcome &);       // average
 
     void collect(std::vector<SimplePvPBattleOutcome> &); // all
-    void collect(SimplePvPBattleOutcome &);// average
+    void collect(SimplePvPBattleOutcome &);              // average
 
     void collect(Matrix_t &);
 

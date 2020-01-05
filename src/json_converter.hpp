@@ -462,20 +462,6 @@ void to_json(json &j, const TimelineEvent &event)
     j["value"] = event.value;
 }
 
-void to_json(json &j, const PokemonState &pkm_st)
-{
-    j["hp"] = pkm_st.hp;
-    j["maxHP"] = pkm_st.max_hp;
-    j["energy"] = pkm_st.energy;
-    j["tdo"] = pkm_st.tdo;
-    j["tdoFast"] = pkm_st.tdo_fast;
-    j["numDeaths"] = pkm_st.num_deaths;
-    j["duration"] = pkm_st.duration / 1000.0;
-    j["dps"] = pkm_st.tdo / (pkm_st.duration / 1000.0);
-    j["numFastAttacks"] = pkm_st.num_fmoves_used;
-    j["numChargedAttacks"] = pkm_st.num_cmoves_used;
-}
-
 void from_json(const json &j, BattleMode &mode)
 {
     auto mode_str = j.get<std::string>();
@@ -537,6 +523,20 @@ void from_json(const json &j, PvESimInput &input)
     }
 }
 
+void to_json(json &j, const PokemonState &pkm_st)
+{
+    j["hp"] = pkm_st.hp;
+    j["maxHP"] = pkm_st.max_hp;
+    j["energy"] = pkm_st.energy;
+    j["tdo"] = pkm_st.tdo;
+    j["tdoFast"] = pkm_st.tdo_fast;
+    j["numDeaths"] = pkm_st.num_deaths;
+    j["duration"] = pkm_st.duration / 1000.0;
+    j["dps"] = pkm_st.tdo / (pkm_st.duration / 1000.0);
+    j["numFastAttacks"] = pkm_st.num_fmoves_used;
+    j["numChargedAttacks"] = pkm_st.num_cmoves_used;
+}
+
 void to_json(json &j, const PvEBattleOutcome &outcome)
 {
     j["statistics"] = {};
@@ -550,6 +550,20 @@ void to_json(json &j, const PvEBattleOutcome &outcome)
     j["battleLog"] = outcome.battle_log;
 }
 
+void to_json(json &j, const AveragePokemonState &pkm_st)
+{
+    j["hp"] = pkm_st.hp;
+    j["maxHP"] = pkm_st.max_hp;
+    j["energy"] = pkm_st.energy;
+    j["tdo"] = pkm_st.tdo;
+    j["tdoFast"] = pkm_st.tdo_fast;
+    j["numDeaths"] = pkm_st.num_deaths;
+    j["duration"] = pkm_st.duration / 1000.0;
+    j["dps"] = pkm_st.tdo / (pkm_st.duration / 1000.0);
+    j["numFastAttacks"] = pkm_st.num_fmoves_used;
+    j["numChargedAttacks"] = pkm_st.num_cmoves_used;
+}
+
 void to_json(json &j, const PvEAverageBattleOutcome &outcome)
 {
     j["statistics"] = {};
@@ -559,6 +573,7 @@ void to_json(json &j, const PvEAverageBattleOutcome &outcome)
     j["statistics"]["tdoPercent"] = outcome.tdo_percent * 100;
     j["statistics"]["dps"] = outcome.tdo / (outcome.duration / 1000.0);
     j["statistics"]["numDeaths"] = outcome.num_deaths;
+    j["pokemon"] = outcome.pokemon_stats;
     j["numSims"] = outcome.num_sims;
 }
 

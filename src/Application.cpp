@@ -101,6 +101,7 @@ void GoBattleSimApp::collect(std::vector<PvEBattleOutcome> &outputs)
 
 void GoBattleSimApp::collect(PvEAverageBattleOutcome &output)
 {
+    unsigned pokemon_count = 0;
     output.duration = 0;
     output.win = 0;
     output.tdo = 0;
@@ -113,6 +114,29 @@ void GoBattleSimApp::collect(PvEAverageBattleOutcome &output)
         output.tdo += sim_output.tdo;
         output.tdo_percent += sim_output.tdo_percent;
         output.num_deaths += sim_output.num_deaths;
+        if (pokemon_count == 0)
+        {
+            pokemon_count = sim_output.pokemon_stats.size();
+            output.pokemon_stats.resize(pokemon_count);
+        }
+        if (output.pokemon_stats.size() != pokemon_count)
+        {
+            sprintf(err_msg, "mismatch Pokemon count in averaging battle outcomes (expect %u, got %u)",
+                    pokemon_count, static_cast<unsigned>(output.pokemon_stats.size()));
+            throw std::runtime_error(err_msg);
+        }
+        for (size_t i = 0; i < pokemon_count; ++i)
+        {
+            output.pokemon_stats[i].max_hp = sim_output.pokemon_stats[i].max_hp;
+            output.pokemon_stats[i].hp += sim_output.pokemon_stats[i].hp;
+            output.pokemon_stats[i].energy += sim_output.pokemon_stats[i].energy;
+            output.pokemon_stats[i].tdo += sim_output.pokemon_stats[i].tdo;
+            output.pokemon_stats[i].tdo_fast += sim_output.pokemon_stats[i].tdo_fast;
+            output.pokemon_stats[i].duration += sim_output.pokemon_stats[i].duration;
+            output.pokemon_stats[i].num_deaths += sim_output.pokemon_stats[i].num_deaths;
+            output.pokemon_stats[i].num_fmoves_used += sim_output.pokemon_stats[i].num_fmoves_used;
+            output.pokemon_stats[i].num_cmoves_used += sim_output.pokemon_stats[i].num_cmoves_used;
+        }
     }
     output.num_sims = m_pve_output.size();
     output.duration /= output.num_sims;
@@ -120,6 +144,17 @@ void GoBattleSimApp::collect(PvEAverageBattleOutcome &output)
     output.tdo /= output.num_sims;
     output.tdo_percent /= output.num_sims;
     output.num_deaths /= output.num_sims;
+    for (size_t i = 0; i < pokemon_count; ++i)
+    {
+        output.pokemon_stats[i].hp /= output.num_sims;
+        output.pokemon_stats[i].energy /= output.num_sims;
+        output.pokemon_stats[i].tdo /= output.num_sims;
+        output.pokemon_stats[i].tdo_fast /= output.num_sims;
+        output.pokemon_stats[i].duration /= output.num_sims;
+        output.pokemon_stats[i].num_deaths /= output.num_sims;
+        output.pokemon_stats[i].num_fmoves_used /= output.num_sims;
+        output.pokemon_stats[i].num_cmoves_used /= output.num_sims;
+    }
 }
 
 void GoBattleSimApp::collect(std::vector<SimplePvPBattleOutcome> &outputs)
