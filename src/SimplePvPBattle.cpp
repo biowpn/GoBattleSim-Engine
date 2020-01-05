@@ -202,7 +202,7 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	m_pkm_states[i].energy += move->energy;
 	if (m_pkm_states[1 - i].shields > 0)
 	{
-		Action action{ActionType::Dodge}; // Default use shield, unless strategy decides otherwise
+		Action action{m_turn, ActionType::Dodge}; // Default use shield, unless strategy decides otherwise
 		if (m_strategies[1 - i].on_attack)
 		{
 			m_strategies[1 - i].on_attack(generate_strat_input(1 - i), &action);
