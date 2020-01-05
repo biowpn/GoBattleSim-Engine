@@ -166,10 +166,8 @@ void Battle::next(const TimelineEvent &event)
 		handle_event_announce(event);
 		break;
 	case EventType::Fast:
-		handle_event_fast(event);
-		break;
 	case EventType::Charged:
-		handle_event_charged(event);
+		handle_event_attack(event);
 		break;
 	case EventType::Dodge:
 		handle_event_dodge(event);
@@ -525,7 +523,7 @@ void Battle::handle_event_announce(const TimelineEvent &event)
 	}
 }
 
-void Battle::handle_event_fast(const TimelineEvent &event)
+void Battle::handle_event_attack(const TimelineEvent &event)
 {
 	auto &ps = m_player_states[event.player];
 	auto &subject_st = m_pokemon_states[ps.head_index];
@@ -534,11 +532,25 @@ void Battle::handle_event_fast(const TimelineEvent &event)
 	{
 		return;
 	}
-	auto move = subject->get_fmove(event.value);
-	++subject_st.num_fmoves_used;
+	const Move *move;
+	if (event.type == EventType::Fast)
+	{
+		move = subject->get_fmove(event.value);
+		++subject_st.num_fmoves_used;
+	}
+	else
+	{
+		move = subject->get_cmove(event.value);
+		++subject_st.num_cmoves_used;
+	}
 	subject_st.charge(move->energy);
 
-	for (unsigned i = 0; i < m_players_count; ++i)
+	if (m_has_log)
+	{
+		append_log(event);
+	}
+
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team == ps.player.team)
 		{
@@ -551,7 +563,7 @@ void Battle::handle_event_fast(const TimelineEvent &event)
 		{
 			continue;
 		}
-		int damage = calc_damage(subject, move, opponent, m_weather);
+		auto damage = calc_damage(subject, move, opponent, m_weather);
 		if (m_time < opponent_st.damage_reduction_expiry)
 		{
 			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;
@@ -560,61 +572,17 @@ void Battle::handle_event_fast(const TimelineEvent &event)
 		subject_st.attribute_damage(damage, true);
 		opponent_st.hurt(damage);
 		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
+		if (m_has_log)
+		{
+			append_log({m_time,
+						EventType::Damage,
+						i,
+						static_cast<short>(damage)});
+		}
 		if (!opponent_st.is_alive())
 		{
 			handle_fainted_pokemon(i);
 		}
-	}
-	if (m_has_log)
-	{
-		append_log(event);
-	}
-}
-
-void Battle::handle_event_charged(const TimelineEvent &event)
-{
-	int player_index = event.player;
-	auto &ps = m_player_states[player_index];
-	auto &subject_st = m_pokemon_states[ps.head_index];
-	auto subject = m_pokemon[ps.head_index];
-	if (!subject_st.active)
-	{
-		return;
-	}
-	auto move = subject->get_cmove(event.value);
-	++subject_st.num_cmoves_used;
-	subject_st.charge(move->energy);
-
-	for (unsigned i = 0; i < m_players_count; ++i)
-	{
-		if (m_player_states[i].player.team == ps.player.team)
-		{
-			continue;
-		}
-		auto opponent_idx = m_player_states[i].head_index;
-		auto opponent = m_pokemon[opponent_idx];
-		auto &opponent_st = m_pokemon_states[opponent_idx];
-		if (!opponent_st.active)
-		{
-			continue;
-		}
-		int damage = calc_damage(subject, move, opponent, m_weather);
-		if (m_time < opponent_st.damage_reduction_expiry)
-		{
-			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;
-			damage = damage > 0 ? damage : 1;
-		}
-		subject_st.attribute_damage(damage, false);
-		opponent_st.hurt(damage);
-		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
-		if (!opponent_st.is_alive())
-		{
-			handle_fainted_pokemon(i);
-		}
-	}
-	if (m_has_log)
-	{
-		append_log(event);
 	}
 }
 

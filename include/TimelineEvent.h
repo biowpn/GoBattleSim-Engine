@@ -5,7 +5,6 @@
 namespace GoBattleSim
 {
 
-// TODO: Add an event type for logging damage
 enum class EventType : unsigned char
 {
     None,
@@ -13,6 +12,7 @@ enum class EventType : unsigned char
     Free,
     Fast,
     Charged,
+    Damage,
     Dodge,
     Enter
 };

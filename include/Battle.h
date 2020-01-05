@@ -86,8 +86,7 @@ protected:
 
 	void handle_event_free(const TimelineEvent &);
 	void handle_event_announce(const TimelineEvent &);
-	void handle_event_fast(const TimelineEvent &);
-	void handle_event_charged(const TimelineEvent &);
+	void handle_event_attack(const TimelineEvent &); // Fast and Charged
 	void handle_event_dodge(const TimelineEvent &);
 	void handle_event_enter(const TimelineEvent &);
 
