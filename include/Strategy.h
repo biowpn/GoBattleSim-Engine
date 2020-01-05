@@ -8,7 +8,7 @@
 namespace GoBattleSim
 {
 
-enum class ActionType
+enum class ActionType : unsigned char
 {
 	None,
 	Wait,
@@ -20,10 +20,10 @@ enum class ActionType
 
 struct Action
 {
-	ActionType type;
-	int delay;
-	int value;
 	int time;
+	ActionType type;
+	short value;
+	int delay;
 };
 
 struct StrategyInput

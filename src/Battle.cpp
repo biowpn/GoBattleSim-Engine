@@ -30,44 +30,24 @@ Battle::~Battle()
 	erase_log();
 }
 
-Player *Battle::get_player(int t_index)
+Player *Battle::get_player(Player_Index_t idx)
 {
-	return &m_player_states[t_index].player;
+	return &m_player_states[idx].player;
 }
 
-void Battle::add(const Player *t_player)
+void Battle::add(const Player *player)
 {
 	if (m_players_count >= MAX_NUM_PLAYERS)
 	{
 		sprintf(err_msg, "too many players (max %d)", MAX_NUM_PLAYERS);
 		throw std::runtime_error("too many players");
 	}
-	m_player_states[m_players_count].player = *t_player;
+	m_player_states[m_players_count].player = *player;
 	++m_players_count;
 
 	fetch_pokemon();
 
-	m_player_states[m_players_count].head_index = search(t_player->get_head());
-}
-
-void Battle::update(const Player *t_player)
-{
-	for (unsigned i = 0; i < m_players_count; ++i)
-	{
-		if (m_player_states[i].player.id == t_player->id)
-		{
-			m_player_states[i].player = *t_player;
-		}
-	}
-	fetch_pokemon();
-}
-
-void Battle::update(const Pokemon *t_pokemon)
-{
-	for (unsigned i = 0; i < m_players_count; ++i)
-	{
-		m_player_states[i].player.update(t_pokemon);
-	}
+	m_player_states[m_players_count].head_index = search(player->get_head());
 }
 
 void Battle::erase_players()
@@ -106,9 +86,9 @@ void Battle::set_enable_log(bool enable_log)
 	m_has_log = enable_log;
 }
 
-int Battle::search(const Pokemon *t_pokemon)
+short Battle::search(const Pokemon *t_pokemon)
 {
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (short i = 0; i < m_pokemon_count; ++i)
 	{
 		if (m_pokemon[i] == t_pokemon)
 		{
@@ -118,17 +98,17 @@ int Battle::search(const Pokemon *t_pokemon)
 	return -1;
 }
 
-int Battle::search_rival(unsigned t_player_index)
+Player_Index_t Battle::search_rival(Player_Index_t player_idx)
 {
-	int team = m_player_states[t_player_index].player.team;
-	for (unsigned i = 0; i < m_players_count; ++i)
+	auto team = m_player_states[player_idx].player.team;
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team != team)
 		{
 			return i;
 		}
 	}
-	return -1;
+	return player_idx;
 }
 
 void Battle::enqueue(TimelineEvent &&e)
@@ -175,15 +155,15 @@ void Battle::init()
 
 void Battle::start()
 {
-	for (unsigned i = 0; i < m_players_count; ++i)
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
-		enqueue({EventType::Enter,
-				 m_time,
+		enqueue({m_time,
+				 EventType::Enter,
 				 i,
 				 m_player_states[i].head_index});
 	}
 	go();
-	for (unsigned i = 0; i < m_players_count; ++i)
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		auto &pkm_st = m_pokemon_states[m_player_states[i].head_index];
 		if (pkm_st.active)
@@ -201,40 +181,40 @@ void Battle::go()
 	}
 }
 
-void Battle::next(const TimelineEvent &t_event)
+void Battle::next(const TimelineEvent &event)
 {
-	m_time = t_event.time;
-	switch (t_event.type)
+	m_time = event.time;
+	switch (event.type)
 	{
 	case EventType::Free:
-		handle_event_free(t_event);
+		handle_event_free(event);
 		break;
 	case EventType::Announce:
-		handle_event_announce(t_event);
+		handle_event_announce(event);
 		break;
 	case EventType::Fast:
-		handle_event_fast(t_event);
+		handle_event_fast(event);
 		break;
 	case EventType::Charged:
-		handle_event_charged(t_event);
+		handle_event_charged(event);
 		break;
 	case EventType::Dodge:
-		handle_event_dodge(t_event);
+		handle_event_dodge(event);
 		break;
 	case EventType::Enter:
-		handle_event_enter(t_event);
+		handle_event_enter(event);
 		break;
 	default:
 		break;
 	}
 }
 
-PvEBattleOutcome Battle::get_outcome(int t_team)
+PvEBattleOutcome Battle::get_outcome(int team)
 {
-	// From team team {t_team}'s perspective
+	// From team team {team}'s perspective
 	PvEBattleOutcome outcome = {
 		m_time,
-		(m_defeated_team != t_team && m_time < m_time_limit)};
+		(m_defeated_team != team && m_time < m_time_limit)};
 
 	int sum_tdo = 0, sum_rival_max_hp = 0, sum_deaths = 0;
 	for (unsigned i = 0; i < m_players_count; ++i)
@@ -242,7 +222,7 @@ PvEBattleOutcome Battle::get_outcome(int t_team)
 		const auto &player = m_player_states[i].player;
 		auto count = player.get_pokemon_count();
 		auto first_idx = search(player.get_party(0)->get_pokemon(0));
-		if (m_player_states[i].player.team == t_team)
+		if (m_player_states[i].player.team == team)
 		{
 			for (int i = 0; i < count; ++i)
 			{
@@ -261,7 +241,7 @@ PvEBattleOutcome Battle::get_outcome(int t_team)
 	outcome.tdo = sum_tdo;
 	outcome.tdo_percent = (double)sum_tdo / sum_rival_max_hp;
 	outcome.num_deaths = sum_deaths;
-	outcome.battle_log = m_event_history;
+	outcome.battle_log = get_log();
 	return outcome;
 }
 
@@ -270,10 +250,10 @@ const std::vector<TimelineEvent> &Battle::get_log()
 	return m_event_history;
 }
 
-void Battle::handle_fainted_pokemon(unsigned t_player_index, unsigned t_pokemon_index)
+void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 {
-	auto &ps = m_player_states[t_player_index];
-	auto &pkm_st = m_pokemon_states[t_pokemon_index];
+	auto &ps = m_player_states[player_idx];
+	auto &pkm_st = m_pokemon_states[ps.head_index];
 	auto party = ps.player.get_head_party();
 	++pkm_st.num_deaths;
 	pkm_st.duration = m_time - pkm_st.duration;
@@ -295,9 +275,9 @@ void Battle::handle_fainted_pokemon(unsigned t_player_index, unsigned t_pokemon_
 
 	if (time_new_enter > 0) // Player chose a new head Pokemon
 	{
-		enqueue({EventType::Enter,
-				 time_new_enter,
-				 t_player_index,
+		enqueue({time_new_enter,
+				 EventType::Enter,
+				 player_idx,
 				 search(ps.player.get_head())});
 	}
 	else if (is_defeated(ps.player.team)) // Player is out of play. Check if his team is defeated
@@ -306,7 +286,7 @@ void Battle::handle_fainted_pokemon(unsigned t_player_index, unsigned t_pokemon_
 	}
 }
 
-bool Battle::select_next_pokemon(Battle::PlayerState &ps)
+bool Battle::select_next_pokemon(PlayerState &ps)
 {
 	auto party = ps.player.get_head_party();
 	auto first_index = search(party->get_pokemon(0));
@@ -331,7 +311,7 @@ bool Battle::select_next_pokemon(Battle::PlayerState &ps)
 	}
 }
 
-bool Battle::revive_current_party(Battle::PlayerState &ps)
+bool Battle::revive_current_party(PlayerState &ps)
 {
 	if (ps.player.get_head_party()->revive_policy())
 	{
@@ -351,7 +331,7 @@ bool Battle::revive_current_party(Battle::PlayerState &ps)
 	}
 }
 
-bool Battle::select_next_party(Battle::PlayerState &ps)
+bool Battle::select_next_party(PlayerState &ps)
 {
 	if (ps.player.set_head_party_to_next())
 	{
@@ -364,13 +344,13 @@ bool Battle::select_next_party(Battle::PlayerState &ps)
 	}
 }
 
-bool Battle::is_defeated(int t_team)
+bool Battle::is_defeated(int team)
 {
 	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		const auto &ps = m_player_states[i];
 		const auto &pkm_st = m_pokemon_states[ps.head_index];
-		if (ps.player.team == t_team && pkm_st.is_alive())
+		if (ps.player.team == team && pkm_st.is_alive())
 		{
 			return false;
 		}
@@ -383,59 +363,59 @@ bool Battle::is_end()
 	return m_defeated_team >= 0 || (m_time > m_time_limit && m_time_limit > 0);
 }
 
-void Battle::register_action(unsigned t_player_index, const Action &t_action)
+void Battle::register_action(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	ps.current_action = t_action;
 	ps.current_action.time = m_time + t_action.delay;
 	switch (t_action.type)
 	{
 	case ActionType::Fast:
-		register_action_fast(t_player_index, t_action);
+		register_action_fast(player_idx, t_action);
 		break;
 	case ActionType::Charged:
-		register_action_charged(t_player_index, t_action);
+		register_action_charged(player_idx, t_action);
 		break;
 	case ActionType::Dodge:
-		register_action_dodge(t_player_index, t_action);
+		register_action_dodge(player_idx, t_action);
 		break;
 	case ActionType::Switch:
-		register_action_switch(t_player_index, t_action);
+		register_action_switch(player_idx, t_action);
 		break;
 	case ActionType::Wait:
-		register_action_wait(t_player_index, t_action);
+		register_action_wait(player_idx, t_action);
 		break;
 	default:
 		break;
 	}
 }
 
-void Battle::register_action_fast(unsigned t_player_index, const Action &t_action)
+void Battle::register_action_fast(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	int time_action_start = m_time + t_action.delay;
 	auto move = m_pokemon[ps.head_index]->get_fmove(t_action.value);
-	enqueue({EventType::Fast,
-			 time_action_start + move->dws,
-			 t_player_index,
+	enqueue({time_action_start + move->dws,
+			 EventType::Fast,
+			 player_idx,
 			 t_action.value});
 	ps.time_free = time_action_start + move->duration;
 	if (ps.player.team == 0)
 	{
 		ps.time_free += (rand() % 1000 + 1500);
-		enqueue({EventType::Announce,
-				 time_action_start,
-				 t_player_index,
+		enqueue({time_action_start,
+				 EventType::Announce,
+				 player_idx,
 				 t_action.value});
 	}
-	enqueue({EventType::Free,
-			 ps.time_free,
-			 t_player_index});
+	enqueue({ps.time_free, EventType::Free,
+
+			 player_idx});
 }
 
-void Battle::register_action_charged(unsigned t_player_index, const Action &t_action)
+void Battle::register_action_charged(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
 	auto move = m_pokemon[ps.head_index]->get_cmove(t_action.value);
 	int time_action_start = m_time + t_action.delay;
@@ -444,67 +424,67 @@ void Battle::register_action_charged(unsigned t_player_index, const Action &t_ac
 		ps.time_free = time_action_start + 500;
 		return;
 	}
-	enqueue({EventType::Charged,
-			 time_action_start + move->dws,
-			 t_player_index,
+	enqueue({time_action_start + move->dws,
+			 EventType::Charged,
+			 player_idx,
 			 t_action.value});
 	ps.time_free = time_action_start + move->duration;
 	if (ps.player.team == 0)
 	{
 		ps.time_free += (rand() % 1000 + 1500);
-		enqueue({EventType::Announce,
-				 time_action_start,
-				 t_player_index,
+		enqueue({time_action_start, EventType::Announce,
+
+				 player_idx,
 				 t_action.value});
 	}
-	enqueue({EventType::Free,
-			 ps.time_free,
-			 t_player_index});
+	enqueue({ps.time_free, EventType::Free,
+
+			 player_idx});
 }
 
-void Battle::register_action_dodge(unsigned t_player_index, const Action &t_action)
+void Battle::register_action_dodge(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	int time_action_start = m_time + t_action.delay;
-	enqueue({EventType::Dodge,
-			 time_action_start,
-			 t_player_index});
+	enqueue({time_action_start,
+			 EventType::Dodge,
+			 player_idx});
 	ps.time_free = time_action_start + GameMaster::get().dodge_duration;
-	enqueue({EventType::Free,
-			 ps.time_free,
-			 t_player_index});
+	enqueue({ps.time_free,
+			 EventType::Free,
+			 player_idx});
 }
 
-void Battle::register_action_switch(unsigned t_player_index, const Action &t_action)
+void Battle::register_action_switch(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	int time_action_start = m_time + t_action.delay;
-	enqueue({EventType::Enter,
-			 time_action_start,
-			 t_player_index,
+	enqueue({time_action_start, EventType::Enter,
+
+			 player_idx,
 			 search(ps.player.get_head_party()->get_pokemon(t_action.value))});
 	ps.time_free = time_action_start + GameMaster::get().swap_duration;
-	enqueue({EventType::Free,
-			 ps.time_free,
-			 t_player_index});
+	enqueue({ps.time_free,
+			 EventType::Free,
+			 player_idx});
 }
 
-void Battle::register_action_wait(unsigned t_player_index, const Action &t_action)
+void Battle::register_action_wait(Player_Index_t player_idx, const Action &t_action)
 {
-	auto &ps = m_player_states[t_player_index];
+	auto &ps = m_player_states[player_idx];
 	ps.time_free = m_time;
 	if (t_action.value > 0) // Finite waiting
 	{
-		enqueue({EventType::Free,
-				 ps.time_free + t_action.value,
-				 t_player_index});
+		enqueue({ps.time_free + t_action.value,
+				 EventType::Free,
+				 player_idx});
 	}
 }
 
-StrategyInput Battle::generate_strat_input(unsigned t_player_index)
+StrategyInput Battle::generate_strat_input(Player_Index_t player_idx)
 {
-	auto &ps = m_player_states[t_player_index];
-	auto &enemy_ps = m_player_states[search_rival(t_player_index)];
+	auto &ps = m_player_states[player_idx];
+	auto &enemy_ps = m_player_states[search_rival(player_idx)];
 	if (ps.time_free < m_time)
 	{
 		ps.time_free = m_time;
@@ -522,9 +502,9 @@ StrategyInput Battle::generate_strat_input(unsigned t_player_index)
 	return strat_input;
 }
 
-void Battle::handle_event_free(const TimelineEvent &t_event)
+void Battle::handle_event_free(const TimelineEvent &event)
 {
-	int player_index = t_event.player;
+	int player_index = event.player;
 	auto &ps = m_player_states[player_index];
 	auto &subject_st = m_pokemon_states[ps.head_index];
 	if (!subject_st.active || ps.time_free > m_time)
@@ -548,9 +528,9 @@ void Battle::handle_event_free(const TimelineEvent &t_event)
 	}
 }
 
-void Battle::handle_event_announce(const TimelineEvent &t_event)
+void Battle::handle_event_announce(const TimelineEvent &event)
 {
-	int team = m_player_states[t_event.player].player.team;
+	int team = m_player_states[event.player].player.team;
 	for (unsigned i = 0; i < m_players_count; ++i)
 	{
 		auto &ps = m_player_states[i];
@@ -572,16 +552,16 @@ void Battle::handle_event_announce(const TimelineEvent &t_event)
 	}
 }
 
-void Battle::handle_event_fast(const TimelineEvent &t_event)
+void Battle::handle_event_fast(const TimelineEvent &event)
 {
-	auto &ps = m_player_states[t_event.player];
+	auto &ps = m_player_states[event.player];
 	auto &subject_st = m_pokemon_states[ps.head_index];
 	auto subject = m_pokemon[ps.head_index];
 	if (!subject_st.active)
 	{
 		return;
 	}
-	auto move = subject->get_fmove(t_event.value);
+	auto move = subject->get_fmove(event.value);
 	++subject_st.num_fmoves_used;
 	subject_st.charge(move->energy);
 
@@ -609,18 +589,18 @@ void Battle::handle_event_fast(const TimelineEvent &t_event)
 		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
 		if (!opponent_st.is_alive())
 		{
-			handle_fainted_pokemon(i, opponent_idx);
+			handle_fainted_pokemon(i);
 		}
 	}
 	if (m_has_log)
 	{
-		append_log(t_event);
+		append_log(event);
 	}
 }
 
-void Battle::handle_event_charged(const TimelineEvent &t_event)
+void Battle::handle_event_charged(const TimelineEvent &event)
 {
-	int player_index = t_event.player;
+	int player_index = event.player;
 	auto &ps = m_player_states[player_index];
 	auto &subject_st = m_pokemon_states[ps.head_index];
 	auto subject = m_pokemon[ps.head_index];
@@ -628,7 +608,7 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 	{
 		return;
 	}
-	auto move = subject->get_cmove(t_event.value);
+	auto move = subject->get_cmove(event.value);
 	++subject_st.num_cmoves_used;
 	subject_st.charge(move->energy);
 
@@ -656,50 +636,50 @@ void Battle::handle_event_charged(const TimelineEvent &t_event)
 		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
 		if (!opponent_st.is_alive())
 		{
-			handle_fainted_pokemon(i, opponent_idx);
+			handle_fainted_pokemon(i);
 		}
 	}
 	if (m_has_log)
 	{
-		append_log(t_event);
+		append_log(event);
 	}
 }
 
-void Battle::handle_event_dodge(const TimelineEvent &t_event)
+void Battle::handle_event_dodge(const TimelineEvent &event)
 {
-	auto &ps = m_player_states[t_event.player];
+	auto &ps = m_player_states[event.player];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
 	pkm_st.damage_reduction_expiry = m_time + GameMaster::get().dodge_window + 1;
 	if (m_has_log)
 	{
-		append_log(t_event);
+		append_log(event);
 	}
 }
 
-void Battle::handle_event_enter(const TimelineEvent &t_event)
+void Battle::handle_event_enter(const TimelineEvent &event)
 {
-	auto player_index = t_event.player;
+	auto player_index = event.player;
 	auto &ps = m_player_states[player_index];
 	auto &cur_head_st = m_pokemon_states[ps.head_index];
-	auto &new_head_st = m_pokemon_states[t_event.value];
+	auto &new_head_st = m_pokemon_states[event.value];
 	cur_head_st.active = false;
-	ps.player.set_head(m_pokemon[t_event.value]);
-	ps.head_index = t_event.value;
-	ps.current_action = {ActionType::Switch};
+	ps.player.set_head(m_pokemon[event.value]);
+	ps.head_index = event.value;
+	ps.current_action = {m_time, ActionType::Switch};
 	new_head_st.active = true;
 	new_head_st.duration = m_time;
-	enqueue({EventType::Free,
-			 m_time + 500,
+	enqueue({m_time + 500,
+			 EventType::Free,
 			 player_index});
 	if (m_has_log)
 	{
-		append_log(t_event);
+		append_log(event);
 	}
 }
 
-void Battle::append_log(const TimelineEvent &t_event)
+void Battle::append_log(const TimelineEvent &event)
 {
-	m_event_history.push_back(t_event);
+	m_event_history.push_back(event);
 }
 
 void Battle::erase_log()

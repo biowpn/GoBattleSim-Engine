@@ -24,7 +24,6 @@ public:
 	// get the internal addresses of Pokemon objects, avoid copying
 	Pokemon **get_all_pokemon(Pokemon **out_first);
 	void add(const Pokemon *);
-	void update(const Pokemon *);
 	void erase_pokemon();
 
 	Pokemon *get_head();

@@ -30,7 +30,6 @@ public:
 	void set_strategy(int);
 	void set_strategy(const Strategy &);
 
-	void update(const Pokemon *);
 	Party *get_head_party();
 	unsigned get_pokemon_count() const;
 	// same with Party::get_all_pokemon, get only the addresses

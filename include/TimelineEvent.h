@@ -4,7 +4,9 @@
 
 namespace GoBattleSim
 {
-enum class EventType
+
+// TODO: Add an event type for logging damage
+enum class EventType : unsigned char
 {
     None,
     Announce,
@@ -17,10 +19,10 @@ enum class EventType
 
 struct TimelineEvent
 {
-    EventType type;
     int time;
-    unsigned player;
-    int value;
+    EventType type;
+    unsigned char player;
+    short value;
 };
 
 inline bool operator<(const TimelineEvent &lhs, const TimelineEvent &rhs)

@@ -52,17 +52,6 @@ void Party::add(const Pokemon *t_pokemon)
 	++m_pokemon_count;
 }
 
-void Party::update(const Pokemon *t_pokemon)
-{
-	for (unsigned i = 0; i < m_pokemon_count; ++i)
-	{
-		if (m_pokemon[i].id == t_pokemon->id)
-		{
-			m_pokemon[i] = *t_pokemon;
-		}
-	}
-}
-
 bool Party::revive_policy(bool t_policy)
 {
 	return m_revive_policy = t_policy;

@@ -97,14 +97,6 @@ void Player::erase_parties()
 	m_party_head = nullptr;
 }
 
-void Player::update(const Pokemon *t_pokemon)
-{
-	for (int i = 0; i < m_parties_count; ++i)
-	{
-		m_parties[i].update(t_pokemon);
-	}
-}
-
 void Player::set_attack_multiplier(double t_attack_multiplier)
 {
 	for (int i = 0; i < m_parties_count; ++i)

@@ -10,7 +10,9 @@
 namespace GoBattleSim
 {
 
-constexpr unsigned MAX_NUM_PLAYERS = 32;
+typedef unsigned char Player_Index_t;
+
+constexpr Player_Index_t MAX_NUM_PLAYERS = 24;
 
 struct PvEBattleOutcome
 {
@@ -31,10 +33,8 @@ public:
 	Battle();
 	~Battle();
 
-	Player *get_player(int);
 	void add(const Player *);
-	void update(const Player *);
-	void update(const Pokemon *);
+	Player *get_player(Player_Index_t idx);
 	void erase_players();
 	void set_time_limit(int);
 	void set_weather(int);
@@ -48,7 +48,7 @@ protected:
 	struct PlayerState
 	{
 		Player player;
-		int head_index;
+		short head_index;
 		int time_free;
 		Action current_action;
 		Action buffer_action;
@@ -57,15 +57,15 @@ protected:
 	void fetch_pokemon();
 	void erase_pokemon();
 
-	int search(const Pokemon *);
-	int search_rival(unsigned);
+	short search(const Pokemon *);
+	Player_Index_t search_rival(Player_Index_t);
 
 	void enqueue(TimelineEvent &&);
 	TimelineEvent dequeue();
 
 	void go();
 
-	void handle_fainted_pokemon(unsigned, unsigned);
+	void handle_fainted_pokemon(Player_Index_t);
 
 	// three possible actions when a Pokemon faints
 	bool select_next_pokemon(PlayerState &);
@@ -75,15 +75,15 @@ protected:
 	bool is_defeated(int);
 	bool is_end();
 
-	void register_action(unsigned, const Action &);
+	void register_action(Player_Index_t player_idx, const Action &);
 
-	void register_action_fast(unsigned, const Action &);
-	void register_action_charged(unsigned, const Action &);
-	void register_action_dodge(unsigned, const Action &);
-	void register_action_switch(unsigned, const Action &);
-	void register_action_wait(unsigned, const Action &);
+	void register_action_fast(Player_Index_t player_idx, const Action &);
+	void register_action_charged(Player_Index_t player_idx, const Action &);
+	void register_action_dodge(Player_Index_t player_idx, const Action &);
+	void register_action_switch(Player_Index_t player_idx, const Action &);
+	void register_action_wait(Player_Index_t player_idx, const Action &);
 
-	inline StrategyInput generate_strat_input(unsigned);
+	inline StrategyInput generate_strat_input(Player_Index_t player_idx);
 
 	void next(const TimelineEvent &);
 
@@ -101,13 +101,13 @@ protected:
 	std::vector<TimelineEvent> m_event_history;
 
 	PlayerState m_player_states[MAX_NUM_PLAYERS];
-	unsigned m_players_count;
+	Player_Index_t m_players_count;
 
 	Pokemon *m_pokemon[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	PokemonState m_pokemon_states[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	unsigned m_pokemon_count;
 
-	int m_has_log;
+	bool m_has_log;
 	int m_time_limit;
 	int m_time;
 	int m_weather;

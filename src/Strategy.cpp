@@ -26,7 +26,7 @@ void defender_on_clear(const StrategyInput &si, Action *r_action)
 	r_action->type = ActionType::Fast;
 	r_action->value = 0;
 	int projected_energy = get_projected_energy(si);
-	for (int i = 0; i < si.subject->cmoves_count; ++i)
+	for (unsigned char i = 0; i < si.subject->cmoves_count; ++i)
 	{
 		auto cmove = si.subject->get_cmove(i);
 		if (projected_energy + cmove->energy >= 0 && ((si.random_number >> i) & 1))
