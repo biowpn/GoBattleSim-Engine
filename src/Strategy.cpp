@@ -73,7 +73,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
 		r_action->type = ActionType::Charged;
-		r_action->value = -1;
+		r_action->value = si.subject->cmove - si.subject->cmoves;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
@@ -111,7 +111,7 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
 		r_action->type = ActionType::Charged;
-		r_action->value = -1;
+		r_action->value = si.subject->cmove - si.subject->cmoves;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
@@ -149,7 +149,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
 		r_action->type = ActionType::Charged;
-		r_action->value = -1;
+		r_action->value = si.subject->cmove - si.subject->cmoves;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
@@ -185,7 +185,7 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
 		r_action->type = ActionType::Charged;
-		r_action->value = -1;
+		r_action->value = si.subject->cmove - si.subject->cmoves;
 	}
 	else if (time_till_damage > si.subject->get_fmove(0)->duration) // Can squeeze in one fast
 	{
