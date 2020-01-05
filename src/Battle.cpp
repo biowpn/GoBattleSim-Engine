@@ -212,6 +212,7 @@ PvEBattleOutcome Battle::get_outcome(int team)
 	outcome.tdo = sum_tdo;
 	outcome.tdo_percent = (double)sum_tdo / sum_rival_max_hp;
 	outcome.num_deaths = sum_deaths;
+	outcome.pokemon_stats = std::vector<PokemonState>(m_pokemon_states, m_pokemon_states + m_pokemon_count);
 	outcome.battle_log = get_log();
 	return outcome;
 }

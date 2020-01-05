@@ -357,28 +357,30 @@ void from_json(const json &j, GameMaster &gm)
     }
 
     // PvP Battle Settings
-    auto j_pvp = j["PvPBattleSettings"];
-
-    try_get_to(j_pvp, "sameTypeAttackBonusMultiplier", gm.stab_multiplier);
-    try_get_to(j_pvp, "maxEnergy", gm.max_energy);
-    try_get_to(j_pvp, "fastAttackBonusMultiplier", gm.fast_attack_bonus_multiplier);
-    try_get_to(j_pvp, "chargeAttackBonusMultiplier", gm.charged_attack_bonus_multiplier);
-
-    double swap_duration_seconds = gm.switching_cooldown / 1000;
-    try_get_to(j_pvp, "quickSwapCooldownDurationSeconds", swap_duration_seconds);
-    gm.switching_cooldown = swap_duration_seconds * 1000;
-
-    try_get_to(j_pvp, "minimumStatStage", gm.min_stage);
-    try_get_to(j_pvp, "maximumStatStage", gm.max_stage);
-    gm.set_stage_bounds(gm.min_stage, gm.max_stage);
-    auto num_stages = gm.max_stage - gm.min_stage + 1;
-    std::vector<double> atk_stage_multipliers(num_stages), def_stage_multipliers(num_stages);
-    try_get_to(j_pvp, "attackBuffMultiplier", atk_stage_multipliers);
-    try_get_to(j_pvp, "defenseBuffMultiplier", def_stage_multipliers);
-    for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
     {
-        gm.atk_stage_multiplier(s, atk_stage_multipliers.at(s - gm.min_stage));
-        gm.def_stage_multiplier(s, def_stage_multipliers.at(s - gm.min_stage));
+        auto j_pvp = j["PvPBattleSettings"];
+
+        try_get_to(j_pvp, "sameTypeAttackBonusMultiplier", gm.stab_multiplier);
+        try_get_to(j_pvp, "maxEnergy", gm.max_energy);
+        try_get_to(j_pvp, "fastAttackBonusMultiplier", gm.fast_attack_bonus_multiplier);
+        try_get_to(j_pvp, "chargeAttackBonusMultiplier", gm.charged_attack_bonus_multiplier);
+
+        double swap_duration_seconds = gm.switching_cooldown / 1000;
+        try_get_to(j_pvp, "quickSwapCooldownDurationSeconds", swap_duration_seconds);
+        gm.switching_cooldown = swap_duration_seconds * 1000;
+
+        try_get_to(j_pvp, "minimumStatStage", gm.min_stage);
+        try_get_to(j_pvp, "maximumStatStage", gm.max_stage);
+        gm.set_stage_bounds(gm.min_stage, gm.max_stage);
+        auto num_stages = gm.max_stage - gm.min_stage + 1;
+        std::vector<double> atk_stage_multipliers(num_stages), def_stage_multipliers(num_stages);
+        try_get_to(j_pvp, "attackBuffMultiplier", atk_stage_multipliers);
+        try_get_to(j_pvp, "defenseBuffMultiplier", def_stage_multipliers);
+        for (auto s = gm.min_stage; s <= gm.max_stage; ++s)
+        {
+            gm.atk_stage_multiplier(s, atk_stage_multipliers.at(s - gm.min_stage));
+            gm.def_stage_multiplier(s, def_stage_multipliers.at(s - gm.min_stage));
+        }
     }
 }
 
@@ -462,18 +464,16 @@ void to_json(json &j, const TimelineEvent &event)
 
 void to_json(json &j, const PokemonState &pkm_st)
 {
-    j["active"] = pkm_st.active;
-    j["immortal"] = pkm_st.immortal;
-    j["maxHP"] = pkm_st.max_hp;
     j["hp"] = pkm_st.hp;
+    j["maxHP"] = pkm_st.max_hp;
     j["energy"] = pkm_st.energy;
-    j["damage_reduction_expiry"] = pkm_st.damage_reduction_expiry;
     j["tdo"] = pkm_st.tdo;
-    j["tdo_fast"] = pkm_st.tdo_fast;
-    j["duration"] = pkm_st.duration;
-    j["num_deaths"] = pkm_st.num_deaths;
-    j["num_fmoves_used"] = pkm_st.num_fmoves_used;
-    j["num_cmoves_used"] = pkm_st.num_cmoves_used;
+    j["tdoFast"] = pkm_st.tdo_fast;
+    j["numDeaths"] = pkm_st.num_deaths;
+    j["duration"] = pkm_st.duration / 1000.0;
+    j["dps"] = pkm_st.tdo / (pkm_st.duration / 1000.0);
+    j["numFastAttacks"] = pkm_st.num_fmoves_used;
+    j["numChargedAttacks"] = pkm_st.num_cmoves_used;
 }
 
 void from_json(const json &j, BattleMode &mode)
@@ -546,6 +546,7 @@ void to_json(json &j, const PvEBattleOutcome &outcome)
     j["statistics"]["tdoPercent"] = outcome.tdo_percent * 100;
     j["statistics"]["dps"] = outcome.tdo / (outcome.duration / 1000.0);
     j["statistics"]["numDeaths"] = outcome.num_deaths;
+    j["pokemon"] = outcome.pokemon_stats;
     j["battleLog"] = outcome.battle_log;
 }
 

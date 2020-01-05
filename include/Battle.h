@@ -21,9 +21,7 @@ struct PvEBattleOutcome
 	int tdo;
 	double tdo_percent;
 	int num_deaths;
-
-	// TODO: by-player stats
-
+	std::vector<PokemonState> pokemon_stats;
 	std::vector<TimelineEvent> battle_log;
 };
 

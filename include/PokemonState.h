@@ -2,6 +2,9 @@
 #ifndef _POKEMON_STATE_H_
 #define _POKEMON_STATE_H_
 
+namespace GoBattleSim
+{
+
 struct PokemonState
 {
 	bool active{false};
@@ -24,5 +27,7 @@ struct PokemonState
 	void hurt(int);
 	void attribute_damage(int, bool);
 };
+
+} // namespace GoBattleSim
 
 #endif
