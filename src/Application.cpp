@@ -28,7 +28,7 @@ void GoBattleSimApp::prepare(const PvESimInput &input)
     m_pve_battle.erase_players();
     for (const auto &player : input.players)
     {
-        m_pve_battle.add(&player);
+        m_pve_battle.add_player(&player);
     }
     m_pve_battle.set_time_limit(input.time_limit);
     m_pve_battle.set_weather(input.weather);

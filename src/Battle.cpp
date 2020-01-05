@@ -12,30 +12,12 @@
 namespace GoBattleSim
 {
 
-Battle::Battle()
-{
-	m_has_log = 0;
-	m_time_limit = 0;
-	m_time = 0;
-	m_weather = -1;
-	m_defeated_team = -1;
-
-	m_players_count = 0;
-	m_pokemon_count = 0;
-}
-
-Battle::~Battle()
-{
-	erase_players();
-	erase_log();
-}
-
 Player *Battle::get_player(Player_Index_t idx)
 {
 	return &m_player_states[idx].player;
 }
 
-void Battle::add(const Player *player)
+void Battle::add_player(const Player *player)
 {
 	if (m_players_count >= MAX_NUM_PLAYERS)
 	{
@@ -43,11 +25,8 @@ void Battle::add(const Player *player)
 		throw std::runtime_error("too many players");
 	}
 	m_player_states[m_players_count].player = *player;
+	fetch_pokemon(m_player_states[m_players_count].player);
 	++m_players_count;
-
-	fetch_pokemon();
-
-	m_player_states[m_players_count].head_index = search(player->get_head());
 }
 
 void Battle::erase_players()
@@ -61,13 +40,10 @@ void Battle::erase_pokemon()
 	m_pokemon_count = 0;
 }
 
-void Battle::fetch_pokemon()
+void Battle::fetch_pokemon(Player &player)
 {
-	auto out_first = m_pokemon;
-	for (unsigned i = 0; i < m_players_count; ++i)
-	{
-		out_first = m_player_states[i].player.get_all_pokemon(out_first);
-	}
+	auto out_first = m_pokemon + m_pokemon_count;
+	out_first = player.get_all_pokemon(out_first);
 	m_pokemon_count = out_first - m_pokemon;
 }
 
@@ -131,10 +107,7 @@ void Battle::init()
 	m_event_queue.clear();
 	m_defeated_team = -1;
 
-	if (m_has_log)
-	{
-		erase_log();
-	}
+	erase_log();
 
 	for (unsigned i = 0; i < m_players_count; ++i)
 	{

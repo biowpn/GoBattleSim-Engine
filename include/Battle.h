@@ -30,10 +30,7 @@ struct PvEBattleOutcome
 class Battle
 {
 public:
-	Battle();
-	~Battle();
-
-	void add(const Player *);
+	void add_player(const Player *);
 	Player *get_player(Player_Index_t idx);
 	void erase_players();
 	void set_time_limit(int);
@@ -54,7 +51,7 @@ protected:
 		Action buffer_action;
 	};
 
-	void fetch_pokemon();
+	void fetch_pokemon(Player &);
 	void erase_pokemon();
 
 	short search(const Pokemon *);
@@ -97,24 +94,22 @@ protected:
 	inline void append_log(const TimelineEvent &);
 	void erase_log();
 
+private:
 	std::vector<TimelineEvent> m_event_queue;
 	std::vector<TimelineEvent> m_event_history;
 
 	PlayerState m_player_states[MAX_NUM_PLAYERS];
-	Player_Index_t m_players_count;
+	Player_Index_t m_players_count{0};
 
 	Pokemon *m_pokemon[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	PokemonState m_pokemon_states[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
-	unsigned m_pokemon_count;
+	unsigned short m_pokemon_count{0};
 
-	bool m_has_log;
-	int m_time_limit;
-	int m_time;
+	bool m_has_log{false};
+	int m_time_limit{0};
+	int m_time{0};
 	int m_weather;
-	int m_defeated_team;
-
-private:
-	int *search_int_member(const char *);
+	int m_defeated_team{-1};
 };
 
 } // namespace GoBattleSim

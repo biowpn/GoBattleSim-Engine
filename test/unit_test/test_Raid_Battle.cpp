@@ -74,8 +74,8 @@ int main()
 		raid_boss.set_strategy(STRATEGY_DEFENDER);
 
 		Battle battle;
-		battle.add(&raid_boss);
-		battle.add(&attacker);
+		battle.add_player(&raid_boss);
+		battle.add_player(&attacker);
 		battle.set_time_limit(180000);
 		battle.set_weather(1);
 
@@ -116,8 +116,8 @@ int main()
 		raid_boss.set_strategy(STRATEGY_DEFENDER);
 
 		Battle battle;
-		battle.add(&raid_boss);
-		battle.add(&attacker);
+		battle.add_player(&raid_boss);
+		battle.add_player(&attacker);
 		battle.set_time_limit(180000);
 		battle.set_weather(1);
 
@@ -158,8 +158,8 @@ int main()
 		raid_boss.set_strategy(STRATEGY_DEFENDER);
 
 		Battle battle;
-		battle.add(&raid_boss);
-		battle.add(&attacker);
+		battle.add_player(&raid_boss);
+		battle.add_player(&attacker);
 		battle.set_time_limit(180000);
 		battle.set_weather(1);
 
@@ -204,9 +204,9 @@ int main()
 		raid_boss.set_strategy(STRATEGY_DEFENDER);
 
 		Battle battle;
-		battle.add(&raid_boss);
-		battle.add(&attacker_1);
-		battle.add(&attacker_2);
+		battle.add_player(&raid_boss);
+		battle.add_player(&attacker_1);
+		battle.add_player(&attacker_2);
 		battle.set_time_limit(180000);
 		battle.set_weather(1);
 
