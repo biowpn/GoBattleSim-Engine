@@ -118,7 +118,7 @@ void Battle::init()
 		m_player_states[i].buffer_action = Action();
 	}
 
-	for (int i = 0; i < m_pokemon_count; ++i)
+	for (unsigned short i = 0; i < m_pokemon_count; ++i)
 	{
 		m_pokemon_states[i].max_hp = m_pokemon[i]->max_hp;
 		m_pokemon_states[i].immortal = m_pokemon[i]->immortal;
@@ -195,7 +195,7 @@ PvEBattleOutcome Battle::get_outcome(int team)
 		auto first_idx = search(player.get_party(0)->get_pokemon(0));
 		if (m_player_states[i].player.team == team)
 		{
-			for (int i = 0; i < count; ++i)
+			for (unsigned i = 0; i < count; ++i)
 			{
 				sum_tdo += m_pokemon_states[first_idx + i].tdo;
 				sum_deaths += m_pokemon_states[first_idx + i].num_deaths;
@@ -203,7 +203,7 @@ PvEBattleOutcome Battle::get_outcome(int team)
 		}
 		else
 		{
-			for (int i = 0; i < count; ++i)
+			for (unsigned i = 0; i < count; ++i)
 			{
 				sum_rival_max_hp += m_pokemon_states[first_idx + i].max_hp;
 			}
@@ -250,7 +250,7 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 		enqueue({time_new_enter,
 				 EventType::Enter,
 				 player_idx,
-				 search(ps.player.get_head())});
+				 ps.head_index});
 	}
 	else if (is_defeated(ps.player.team)) // Player is out of play. Check if his team is defeated
 	{
@@ -476,7 +476,7 @@ StrategyInput Battle::generate_strat_input(Player_Index_t player_idx)
 
 void Battle::handle_event_free(const TimelineEvent &event)
 {
-	int player_index = event.player;
+	auto player_index = event.player;
 	auto &ps = m_player_states[player_index];
 	auto &subject_st = m_pokemon_states[ps.head_index];
 	if (!subject_st.active || ps.time_free > m_time)

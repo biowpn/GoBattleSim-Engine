@@ -50,6 +50,10 @@ int main(int argc, const char **argv)
 
     if (positional_args.size() == 0 || positional_args.size() >= 3)
     {
+        if (positional_args.size() == 0)
+        {
+            print_version();
+        }
         print_usage();
         return -1;
     }

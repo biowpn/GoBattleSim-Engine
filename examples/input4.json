@@ -1,0 +1,90 @@
+{
+    "battleMode": "raid",
+    "timelimit": 180000,
+    "weather": "EXTREME",
+    "numSims": 1,
+    "aggregation": "enum",
+    "players": [
+        {
+            "team": 1,
+            "attack_multiplier": 1,
+            "strategy": "ATTACKER_NO_DODGE",
+            "parties": [
+                {
+                    "revive": false,
+                    "pokemon": [
+                        {
+                            "copies": 6,
+                            "name": "Moltres",
+                            "pokeType1": "fire",
+                            "pokeType2": "flying",
+                            "attack": 210.2198,
+                            "defense": 154.8988,
+                            "maxHP": 175,
+                            "fmove": {
+                                "name": "fire spin",
+                                "pokeType": "fire",
+                                "power": 14,
+                                "duration": 1100,
+                                "energy": 10,
+                                "dws": 850
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "sky attack",
+                                    "pokeType": "flying",
+                                    "power": 80,
+                                    "duration": 2000,
+                                    "energy": -50,
+                                    "dws": 1500
+                                }
+                            ],
+                            "immortal": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "team": 0,
+            "attack_multiplier": 1,
+            "strategy": "DEFENDER",
+            "parties": [
+                {
+                    "revive": false,
+                    "pokemon": [
+                        {
+                            "copies": 1,
+                            "name": "Machamp",
+                            "pokeType1": "fighting",
+                            "pokeType2": "none",
+                            "attack": 181.7700047492981,
+                            "defense": 127.02000331878662,
+                            "maxHP": 3600,
+                            "fmove": {
+                                "name": "bullet punch",
+                                "pokeType": "steel",
+                                "power": 9,
+                                "duration": 900,
+                                "energy": 10,
+                                "dws": 300
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "heavy slam",
+                                    "pokeType": "steel",
+                                    "power": 70,
+                                    "duration": 2100,
+                                    "energy": -50,
+                                    "dws": 1500
+                                }
+                            ],
+                            "immortal": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "enableLog": true
+}
