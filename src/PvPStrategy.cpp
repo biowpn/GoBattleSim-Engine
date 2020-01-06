@@ -38,7 +38,7 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	double higher_dpe = 0;
 	int lower_energy_cost = -1;
 	bool cheaper_move_ko = false;
-	for (int i = 0; i < si.subject->cmoves_count; ++i)
+	for (unsigned i = 0; i < si.subject->cmoves_count; ++i)
 	{
 		auto move = si.subject->get_cmove(i);
 		int damage = calc_damage_pvp_cmove(si.subject, move, si.enemy);

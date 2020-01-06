@@ -146,7 +146,7 @@ void from_json(const json &j, PvPPokemon &pkm)
 void to_json(json &j, const Party &party)
 {
     std::vector<Pokemon> pkm;
-    for (int i = 0; i < party.get_pokemon_count(); ++i)
+    for (unsigned i = 0; i < party.get_pokemon_count(); ++i)
     {
         pkm.push_back(*party.get_pokemon(i));
     }
@@ -173,7 +173,7 @@ void from_json(const json &j, Party &party)
 void to_json(json &j, const Player &player)
 {
     std::vector<Party> parties;
-    for (int i = 0; i < player.get_parties_count(); ++i)
+    for (unsigned i = 0; i < player.get_parties_count(); ++i)
     {
         parties.push_back(*player.get_party(i));
     }

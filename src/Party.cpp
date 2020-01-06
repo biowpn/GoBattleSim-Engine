@@ -73,9 +73,9 @@ unsigned Party::get_pokemon_count() const
 	return m_pokemon_count;
 }
 
-Pokemon *Party::get_pokemon(int t_index)
+Pokemon *Party::get_pokemon(unsigned t_index)
 {
-	if (0 <= t_index && t_index < m_pokemon_count)
+	if (t_index < m_pokemon_count)
 	{
 		return m_pokemon + t_index;
 	}
@@ -85,9 +85,9 @@ Pokemon *Party::get_pokemon(int t_index)
 	}
 }
 
-const Pokemon *Party::get_pokemon(int t_index) const
+const Pokemon *Party::get_pokemon(unsigned t_index) const
 {
-	if (0 <= t_index && t_index < m_pokemon_count)
+	if (t_index < m_pokemon_count)
 	{
 		return m_pokemon + t_index;
 	}
@@ -127,19 +127,6 @@ bool Party::set_head(const Pokemon *t_pokemon)
 		}
 	}
 	return false;
-}
-
-bool Party::set_head(int t_index)
-{
-	if (0 <= t_index && t_index < m_pokemon_count)
-	{
-		m_pokemon_head = m_pokemon + t_index;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 } // namespace GoBattleSim

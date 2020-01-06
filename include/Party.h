@@ -17,8 +17,8 @@ public:
 	Party(const Party &);
 	~Party();
 
-	Pokemon *get_pokemon(int);
-	const Pokemon *get_pokemon(int) const;
+	Pokemon *get_pokemon(unsigned);
+	const Pokemon *get_pokemon(unsigned) const;
 	unsigned get_pokemon_count() const;
 
 	// get the internal addresses of Pokemon objects, avoid copying
@@ -28,7 +28,6 @@ public:
 
 	Pokemon *get_head();
 	bool set_head(const Pokemon *);
-	bool set_head(int);
 
 	void init();
 

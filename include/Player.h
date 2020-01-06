@@ -18,8 +18,8 @@ public:
 	Player& operator=(const Player &);
 	~Player();
 
-	Party *get_party(int);
-	const Party *get_party(int) const;
+	Party *get_party(unsigned);
+	const Party *get_party(unsigned) const;
 	unsigned get_parties_count() const;
 	void add(const Party *);
 	void erase_parties();
@@ -27,7 +27,6 @@ public:
 	double get_attack_multiplier() const;
 	void set_clone_multiplier(int);
 	int get_clone_multiplier() const;
-	void set_strategy(int);
 	void set_strategy(const Strategy &);
 
 	Party *get_head_party();
@@ -57,7 +56,7 @@ public:
 private:
 	static int instance_count;
 
-	int m_parties_count{0};
+	unsigned m_parties_count{0};
 	Party m_parties[MAX_NUM_PARTIES];
 	Party *m_party_head{nullptr};
 

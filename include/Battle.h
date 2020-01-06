@@ -43,7 +43,7 @@ protected:
 	struct PlayerState
 	{
 		Player player;
-		short head_index;
+		unsigned short head_index;
 		int time_free;
 		Action current_action;
 		Action buffer_action;

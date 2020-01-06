@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.1)
 project (GoBattleSim)
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(CMAKE_CXX_FLAGS "--std=c++11 -Wall -Wno-sign-compare")
+SET(CMAKE_CXX_FLAGS "--std=c++11 -Wall")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include

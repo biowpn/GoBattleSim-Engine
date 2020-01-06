@@ -94,7 +94,7 @@ int main(int argc, const char **argv)
 
     auto output = GBS_collect();
 
-    if (parser.exists("out"))
+    if (parser.exists("out") || parser.exists("o"))
     {
         auto out_fpath = parser.get<std::string>("out");
         std::ofstream ofs(out_fpath);

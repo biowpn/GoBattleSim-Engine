@@ -29,7 +29,7 @@ Player::Player(const Player &other)
 Player &Player::operator=(const Player &other)
 {
 	m_parties_count = other.m_parties_count;
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
 		m_parties[i] = other.m_parties[i];
 	}
@@ -47,9 +47,9 @@ Player::~Player()
 	erase_parties();
 }
 
-Party *Player::get_party(int t_index)
+Party *Player::get_party(unsigned t_index)
 {
-	if (0 <= t_index && t_index < m_parties_count)
+	if (t_index < m_parties_count)
 	{
 		return m_parties + t_index;
 	}
@@ -59,9 +59,9 @@ Party *Player::get_party(int t_index)
 	}
 }
 
-const Party *Player::get_party(int t_index) const
+const Party *Player::get_party(unsigned t_index) const
 {
-	if (0 <= t_index && t_index < m_parties_count)
+	if (t_index < m_parties_count)
 	{
 		return m_parties + t_index;
 	}
@@ -99,9 +99,9 @@ void Player::erase_parties()
 
 void Player::set_attack_multiplier(double t_attack_multiplier)
 {
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
-		for (int j = 0; j < m_parties[i].get_pokemon_count(); ++j)
+		for (unsigned j = 0; j < m_parties[i].get_pokemon_count(); ++j)
 		{
 			m_parties[i].get_pokemon(j)->attack_multiplier = t_attack_multiplier;
 		}
@@ -116,9 +116,9 @@ double Player::get_attack_multiplier() const
 
 void Player::set_clone_multiplier(int t_clone_multiplier)
 {
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
-		for (int j = 0; j < m_parties[i].get_pokemon_count(); ++j)
+		for (unsigned j = 0; j < m_parties[i].get_pokemon_count(); ++j)
 		{
 			m_parties[i].get_pokemon(j)->clone_multiplier = t_clone_multiplier;
 		}
@@ -131,14 +131,6 @@ int Player::get_clone_multiplier() const
 	return m_clone_multiplier;
 }
 
-void Player::set_strategy(int t_strategy_index)
-{
-	if (0 <= t_strategy_index && t_strategy_index < NUM_STRATEGIES)
-	{
-		set_strategy(BUILT_IN_STRATEGIES[t_strategy_index]);
-	}
-}
-
 void Player::set_strategy(const Strategy &t_strategy)
 {
 	strategy = t_strategy;
@@ -146,7 +138,7 @@ void Player::set_strategy(const Strategy &t_strategy)
 
 unsigned Player::get_pokemon_count() const
 {
-	int count = 0;
+	unsigned count = 0;
 	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
 		count += m_parties[i].get_pokemon_count();
@@ -156,7 +148,7 @@ unsigned Player::get_pokemon_count() const
 
 Pokemon **Player::get_all_pokemon(Pokemon **out_first)
 {
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
 		out_first = m_parties[i].get_all_pokemon(out_first);
 	}
@@ -170,7 +162,7 @@ Party *Player::get_head_party()
 
 void Player::init()
 {
-	for (int i = 0; i < m_parties_count; ++i)
+	for (unsigned i = 0; i < m_parties_count; ++i)
 	{
 		m_parties[i].init();
 	}

@@ -69,7 +69,8 @@ unsigned GameMaster::num_types() const
 
 double GameMaster::effectiveness(int t_type_i, int t_type_j) const
 {
-	if (t_type_i < 0 || t_type_j < 0 || t_type_i > m_num_types || t_type_j > m_num_types)
+	if (t_type_i < 0 || t_type_j < 0 || 
+		static_cast<unsigned>(t_type_i) > m_num_types || static_cast<unsigned>(t_type_j) > m_num_types)
 	{
 		return 1;
 	}
@@ -95,7 +96,7 @@ int GameMaster::boosted_weather(unsigned t_type, int t_weather)
 
 int GameMaster::boosted_weather(int t_type) const
 {
-	if (0 <= t_type && t_type < m_num_types)
+	if (0 <= t_type && static_cast<unsigned>(t_type) < m_num_types)
 	{
 		return m_type_boosted_weathers[t_type];
 	}
@@ -112,7 +113,7 @@ void GameMaster::set_stage_bounds(int t_min_stage, int t_max_stage)
 		sprintf(err_msg, "min_stage (%d) > max_stage (%d)", t_min_stage, t_max_stage);
 		throw std::runtime_error(err_msg);
 	}
-	auto num_stages = t_max_stage - t_min_stage + 1;
+	unsigned num_stages = t_max_stage - t_min_stage + 1;
 	if (num_stages > MAX_NUM_STAGES)
 	{
 		sprintf(err_msg, "too many stages (%d, max %d)", num_stages, MAX_NUM_STAGES);

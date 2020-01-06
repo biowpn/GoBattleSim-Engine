@@ -72,7 +72,7 @@ void Pokemon::add_fmove(const Move *t_move)
 
 const Move *Pokemon::get_cmove(int t_index) const
 {
-	if (0 <= t_index && t_index < cmoves_count)
+	if (0 <= t_index && static_cast<unsigned>(t_index) < cmoves_count)
 	{
 		return cmoves + t_index;
 	}
