@@ -10,17 +10,15 @@
 namespace GoBattleSim
 {
 
-typedef unsigned char Player_Index_t;
-
 constexpr Player_Index_t MAX_NUM_PLAYERS = 24;
 
 struct PvEBattleOutcome
 {
-	int duration;
-	bool win;
-	int tdo;
-	double tdo_percent;
-	int num_deaths;
+	int duration{0};
+	bool win{false};
+	int tdo{0};
+	double tdo_percent{0.0};
+	int num_deaths{0};
 	std::vector<PokemonState> pokemon_stats;
 	std::vector<TimelineEvent> battle_log;
 };
@@ -105,7 +103,7 @@ private:
 	bool m_has_log{false};
 	int m_time_limit{0};
 	int m_time{0};
-	int m_weather;
+	int m_weather{-1};
 	int m_defeated_team{-1};
 };
 

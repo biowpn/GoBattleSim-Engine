@@ -27,11 +27,11 @@ enum class AggregationMode
 struct PvESimInput
 {
     std::vector<Player> players;
-    int weather;
-    int time_limit;
-    int num_sims;
-    AggregationMode aggregation;
-    bool enable_log;
+    int weather{-1};
+    int time_limit{0};
+    int num_sims{0};
+    AggregationMode aggregation{AggregationMode::None};
+    bool enable_log{false};
 };
 
 struct AveragePokemonState
@@ -63,17 +63,17 @@ struct PvPSimInput
     std::array<PvPPokemon, 2> pokemon;
     std::array<int, 2> num_shields;
     std::array<PvPStrategy, 2> strateies;
-    int turn_limit;
-    int num_sims;
+    int turn_limit{0};
+    int num_sims{0};
     AggregationMode aggregation;
-    bool enable_log;
+    bool enable_log{false};
 };
 
 struct BattleMatrixSimInput
 {
     std::vector<PvPPokemon> row_pokemon;
     std::vector<PvPPokemon> col_pokemon;
-    bool averge_by_shield;
+    bool averge_by_shield{false};
 };
 
 class GoBattleSimApp

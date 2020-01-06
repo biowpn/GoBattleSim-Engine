@@ -114,8 +114,8 @@ void Battle::init()
 		m_player_states[i].player.init();
 		m_player_states[i].head_index = search(m_player_states[i].player.get_head());
 		m_player_states[i].time_free = 0;
-		m_player_states[i].current_action = Action();
-		m_player_states[i].buffer_action = Action();
+		m_player_states[i].current_action = {};
+		m_player_states[i].buffer_action = {};
 	}
 
 	for (unsigned short i = 0; i < m_pokemon_count; ++i)
@@ -156,11 +156,6 @@ void Battle::go()
 
 void Battle::next(const TimelineEvent &event)
 {
-	if (m_has_log)
-	{
-		append_log(event);
-	}
-	
 	m_time = event.time;
 	switch (event.type)
 	{
@@ -172,12 +167,24 @@ void Battle::next(const TimelineEvent &event)
 		break;
 	case EventType::Fast:
 	case EventType::Charged:
+		if (m_has_log)
+		{
+			append_log(event);
+		}
 		handle_event_attack(event);
 		break;
 	case EventType::Dodge:
+		if (m_has_log)
+		{
+			append_log(event);
+		}
 		handle_event_dodge(event);
 		break;
 	case EventType::Enter:
+		if (m_has_log)
+		{
+			append_log(event);
+		}
 		handle_event_enter(event);
 		break;
 	default:
@@ -188,9 +195,9 @@ void Battle::next(const TimelineEvent &event)
 PvEBattleOutcome Battle::get_outcome(int team)
 {
 	// From team team {team}'s perspective
-	PvEBattleOutcome outcome = {
-		m_time,
-		(m_defeated_team != team && m_time < m_time_limit)};
+	PvEBattleOutcome outcome;
+	outcome.duration = m_time;
+	outcome.win = (m_defeated_team != team && m_time < m_time_limit);
 
 	int sum_tdo = 0, sum_rival_max_hp = 0, sum_deaths = 0;
 	for (unsigned i = 0; i < m_players_count; ++i)

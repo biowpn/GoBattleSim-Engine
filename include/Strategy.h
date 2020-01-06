@@ -20,10 +20,13 @@ enum class ActionType : unsigned char
 
 struct Action
 {
-	int time;
-	ActionType type;
-	short value;
-	int delay;
+	int time{0};
+	ActionType type{ActionType::None};
+	short value{0};
+	int delay{0};
+
+	// workaround for C++ 11
+	Action(int _time = 0, ActionType _type = ActionType::None, short _value = 0, int _delay = 0) : time(_time), type(_type), value(_value), delay(_delay) {}
 };
 
 struct StrategyInput
