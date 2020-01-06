@@ -508,7 +508,7 @@ void from_json(const json &j, PvESimInput &input)
         {
             input.aggregation = AggregationMode::None;
         }
-        if (agg_str == "average" || agg_str == "avrg")
+        else if (agg_str == "average" || agg_str == "avrg")
         {
             input.aggregation = AggregationMode::Average;
         }
@@ -519,6 +519,7 @@ void from_json(const json &j, PvESimInput &input)
         else
         {
             sprintf(err_msg, "unknown aggregation ('%s')", agg_str.c_str());
+            throw std::runtime_error(err_msg);
         }
     }
 }

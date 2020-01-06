@@ -42,6 +42,18 @@ int main(int argc, const char **argv)
 
     if (parser.exists("config") || parser.exists("c"))
     {
+        auto cfg_fpath = parser.get<std::string>("config");
+        if (cfg_fpath.size() > 0)
+        {
+            std::ifstream ifs(cfg_fpath);
+            if (!ifs.good())
+            {
+                std::cerr << "bad file: " << cfg_fpath << std::endl;
+                return -5;
+            }
+            auto content = get_file_contents(ifs);
+            GBS_config(content.c_str());
+        }
         std::cout << GBS_config(NULL) << std::endl;
         return 0;
     }

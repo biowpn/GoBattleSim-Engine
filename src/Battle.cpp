@@ -366,11 +366,11 @@ void Battle::register_action_fast(Player_Index_t player_idx, const Action &t_act
 {
 	auto &ps = m_player_states[player_idx];
 	int time_action_start = m_time + t_action.delay;
-	auto move = m_pokemon[ps.head_index]->get_fmove(t_action.value);
+	auto move = &m_pokemon[ps.head_index]->fmove;
 	enqueue({time_action_start + move->dws,
 			 EventType::Fast,
 			 player_idx,
-			 t_action.value});
+			 0});
 	ps.time_free = time_action_start + move->duration;
 	if (ps.player.team == 0)
 	{

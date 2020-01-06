@@ -31,7 +31,7 @@ public:
 
 	int dodge_duration{500};
 	int dodge_window{700};
-	int swap_duration{100};
+	int swap_duration{1000};
 	int switching_cooldown{60000};
 	int rejoin_duration{10000};
 	int item_menu_time{2000};
