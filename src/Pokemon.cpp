@@ -10,8 +10,6 @@
 namespace GoBattleSim
 {
 
-int Pokemon::instance_count = 0;
-
 int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender, int t_weather)
 {
 	double multiplier = t_attacker->attack_multiplier;
@@ -29,15 +27,9 @@ int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_
 	return (int)(0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1) * t_attacker->clone_multiplier;
 }
 
-Pokemon::Pokemon()
-{
-	id = instance_count++;
-}
-
 Pokemon::Pokemon(int t_poketype1, int t_poketype2, double t_attack, double t_defense, int t_max_hp)
 	: poketype1(t_poketype1), poketype2(t_poketype2), attack(t_attack), defense(t_defense), max_hp(t_max_hp)
 {
-	id = instance_count++;
 }
 
 Pokemon::Pokemon(const Pokemon &other)

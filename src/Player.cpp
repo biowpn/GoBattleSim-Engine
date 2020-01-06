@@ -10,17 +10,6 @@
 namespace GoBattleSim
 {
 
-int Player::instance_count = 0;
-
-Player::Player()
-{
-	id = instance_count++;
-	team = 0;
-
-	m_parties_count = 0;
-	m_party_head = nullptr;
-}
-
 Player::Player(const Player &other)
 {
 	*this = other;
@@ -34,7 +23,6 @@ Player &Player::operator=(const Player &other)
 		m_parties[i] = other.m_parties[i];
 	}
 	m_party_head = m_parties + (other.m_party_head - other.m_parties);
-	id = other.id;
 	team = other.team;
 	memcpy(&strategy, &other.strategy, sizeof(Strategy));
 	m_attack_multiplier = other.m_attack_multiplier;

@@ -12,7 +12,7 @@ constexpr unsigned MAX_NUM_CMOVES = 3;
 class Pokemon
 {
 public:
-	Pokemon();
+	Pokemon() = default;
 	Pokemon(int, int, double, double, int);
 	Pokemon(const Pokemon &);
 	Pokemon &operator=(const Pokemon &);
@@ -26,7 +26,6 @@ public:
 	void erase_cmoves();
 
 	// Members
-	int id;
 	int poketype1{0};
 	int poketype2{0};
 	double attack{0};
@@ -43,9 +42,6 @@ public:
 	// but leaving them here would make codes a lot easier
 	double attack_multiplier{1};
 	int clone_multiplier{1};
-
-protected:
-	static int instance_count;
 };
 
 // Damage calculation as a public function

@@ -13,9 +13,9 @@ constexpr unsigned MAX_NUM_PARTIES = 5;
 class Player
 {
 public:
-	Player();
+	Player() = default;
 	Player(const Player &);
-	Player& operator=(const Player &);
+	Player &operator=(const Player &);
 	~Player();
 
 	Party *get_party(unsigned);
@@ -49,13 +49,10 @@ public:
 	bool set_head_party_to_next();
 
 	// Battle state variables
-	int id;
-	int team;
+	int team{0};
 	Strategy strategy{STRATEGY_ATTACKER_NO_DODGE};
 
 private:
-	static int instance_count;
-
 	unsigned m_parties_count{0};
 	Party m_parties[MAX_NUM_PARTIES];
 	Party *m_party_head{nullptr};
