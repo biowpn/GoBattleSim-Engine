@@ -23,7 +23,7 @@ def main():
             continue
         src_path = os.path.join(SourceDir, src)
         bin_path = os.path.join(BinDir, src_name + ".bc")
-        cmd = f"em++ --std=c++11 -Iinclude -Ithirdparty -O3 -c {src_path} -o {bin_path}"
+        cmd = f"em++ --std=c++11 -Iinclude -Ithirdparty -O3 -s ALLOW_MEMORY_GROWTH=1 -c {src_path} -o {bin_path}"
         bin_paths.append(bin_path)
         print(cmd)
         p = subprocess.Popen(cmd, shell=True)
@@ -36,7 +36,7 @@ def main():
             exit()
 
     bin_paths_str = ' '.join(bin_paths)
-    cmd = f"emcc -O3 {bin_paths_str} -o {BinDir}/GBS_Engine.html -s EXTRA_EXPORTED_RUNTIME_METHODS=[ccall,cwrap]"
+    cmd = f"emcc -O3 {bin_paths_str} -o {BinDir}/GBS_Engine.html -s ALLOW_MEMORY_GROWTH=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=[ccall,cwrap]"
     print(cmd)
     p = subprocess.Popen(cmd, shell=True)
     p.wait()

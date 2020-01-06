@@ -29,7 +29,7 @@ struct PvESimInput
     std::vector<Player> players;
     int weather{-1};
     int time_limit{0};
-    int num_sims{0};
+    unsigned num_sims{0};
     AggregationMode aggregation{AggregationMode::None};
     bool enable_log{false};
 };
@@ -119,10 +119,14 @@ public:
 private:
     static GoBattleSimApp instance;
 
-    int m_num_sims{0};
+    static void add_to(PvEAverageBattleOutcome &, PvEBattleOutcome);
+    static void div_by(PvEAverageBattleOutcome &, unsigned);
+
+    unsigned m_num_sims{0};
 
     Battle m_pve_battle;
     std::vector<PvEBattleOutcome> m_pve_output;
+    PvEAverageBattleOutcome m_pve_output_avg;
 
     SimplePvPBattle m_pvp_battle;
     std::vector<SimplePvPBattleOutcome> m_pvp_output;

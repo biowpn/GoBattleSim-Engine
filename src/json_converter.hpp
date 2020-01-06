@@ -496,7 +496,7 @@ void from_json(const json &j, PvESimInput &input)
     try_get_to(j, "weather", weather_name);
     input.weather = weathermap.to_idx(weather_name);
 
-    try_get_to(j, "numSims", 1, input.num_sims);
+    try_get_to(j, "numSims", 1u, input.num_sims);
     try_get_to(j, "enableLog", false, input.enable_log);
 
     input.aggregation = AggregationMode::None;
