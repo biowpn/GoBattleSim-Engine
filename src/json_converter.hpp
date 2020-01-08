@@ -591,17 +591,26 @@ void from_json(const json &j, PvPSimInput &input)
 
 void to_json(json &j, const SimplePvPBattleOutcome &output)
 {
-    j["tdo_percent"] = output.tdo_percent;
-    j["duration"] = output.duration;
-    j["battle_log"] = output.battle_log;
+    j["statistics"] = {};
+    j["statistics"]["tdoPercent"] = output.tdo_percent;
+    j["statistics"]["duration"] = output.duration;
+    j["battleLog"] = output.battle_log;
 }
 
 void from_json(const json &j, BattleMatrixSimInput &input)
 {
     j["rowPokemon"].get_to(input.row_pokemon);
     j["colPokemon"].get_to(input.col_pokemon);
+    if (input.col_pokemon.empty())
+    {
+        input.col_pokemon = input.row_pokemon;
+    }
+    if (input.row_pokemon.empty())
+    {
+        input.row_pokemon = input.col_pokemon;
+    }
 
-    try_get_to(j, "averge_by_shield", false, input.averge_by_shield);
+    try_get_to(j, "avergeByShield", false, input.averge_by_shield);
 }
 
 }; // namespace GoBattleSim
