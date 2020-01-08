@@ -1,0 +1,547 @@
+{
+    "battleMode": "battlematrix",
+    "rowPokemon": [
+        {
+            "name": "venusaur",
+            "pokeType1": "grass",
+            "pokeType2": "poison",
+            "copies": 1,
+            "immortal": false,
+            "attack": 125.64612423359999,
+            "defense": 117.97758144,
+            "maxHP": 120,
+            "fmove": {
+                "name": "vine whip",
+                "pokeType": "grass",
+                "power": 5,
+                "energy": 8,
+                "duration": 2,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "frenzy plant",
+                    "pokeType": "grass",
+                    "power": 100,
+                    "energy": -45,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "sludge bomb",
+                    "pokeType": "poison",
+                    "power": 80,
+                    "energy": -50,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "charizard",
+            "pokeType1": "fire",
+            "pokeType2": "flying",
+            "copies": 1,
+            "immortal": false,
+            "attack": 135.0237463255,
+            "defense": 106.8698587938,
+            "maxHP": 115,
+            "fmove": {
+                "name": "air slash",
+                "pokeType": "flying",
+                "power": 9,
+                "energy": 9,
+                "duration": 3,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "blast burn",
+                    "pokeType": "fire",
+                    "power": 110,
+                    "energy": -50,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "dragon claw",
+                    "pokeType": "dragon",
+                    "power": 50,
+                    "energy": -35,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "charizard",
+            "pokeType1": "fire",
+            "pokeType2": "flying",
+            "copies": 1,
+            "immortal": false,
+            "attack": 135.0237463255,
+            "defense": 106.8698587938,
+            "maxHP": 115,
+            "fmove": {
+                "name": "ember",
+                "pokeType": "fire",
+                "power": 6,
+                "energy": 6,
+                "duration": 2,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "blast burn",
+                    "pokeType": "fire",
+                    "power": 110,
+                    "energy": -50,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "dragon claw",
+                    "pokeType": "dragon",
+                    "power": 50,
+                    "energy": -35,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "charizard",
+            "pokeType1": "fire",
+            "pokeType2": "flying",
+            "copies": 1,
+            "immortal": false,
+            "attack": 135.0237463255,
+            "defense": 106.8698587938,
+            "maxHP": 115,
+            "fmove": {
+                "name": "fire spin",
+                "pokeType": "fire",
+                "power": 9,
+                "energy": 10,
+                "duration": 3,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "blast burn",
+                    "pokeType": "fire",
+                    "power": 110,
+                    "energy": -50,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "dragon claw",
+                    "pokeType": "dragon",
+                    "power": 50,
+                    "energy": -35,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "charizard",
+            "pokeType1": "fire",
+            "pokeType2": "flying",
+            "copies": 1,
+            "immortal": false,
+            "attack": 135.0237463255,
+            "defense": 106.8698587938,
+            "maxHP": 115,
+            "fmove": {
+                "name": "wing attack",
+                "pokeType": "flying",
+                "power": 5,
+                "energy": 7,
+                "duration": 2,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "blast burn",
+                    "pokeType": "fire",
+                    "power": 110,
+                    "energy": -50,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "dragon claw",
+                    "pokeType": "dragon",
+                    "power": 50,
+                    "energy": -35,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "bite",
+                "pokeType": "dark",
+                "power": 4,
+                "energy": 2,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "flash cannon",
+                    "pokeType": "steel",
+                    "power": 110,
+                    "energy": -65,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "bite",
+                "pokeType": "dark",
+                "power": 4,
+                "energy": 2,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "hydro pump",
+                    "pokeType": "water",
+                    "power": 130,
+                    "energy": -75,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "bite",
+                "pokeType": "dark",
+                "power": 4,
+                "energy": 2,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "ice beam",
+                    "pokeType": "ice",
+                    "power": 90,
+                    "energy": -55,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "bite",
+                "pokeType": "dark",
+                "power": 4,
+                "energy": 2,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "return",
+                    "pokeType": "normal",
+                    "power": 130,
+                    "energy": -70,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "bite",
+                "pokeType": "dark",
+                "power": 4,
+                "energy": 2,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "skull bash",
+                    "pokeType": "normal",
+                    "power": 130,
+                    "energy": -75,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "water gun",
+                "pokeType": "water",
+                "power": 3,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "flash cannon",
+                    "pokeType": "steel",
+                    "power": 110,
+                    "energy": -65,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "water gun",
+                "pokeType": "water",
+                "power": 3,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "hydro pump",
+                    "pokeType": "water",
+                    "power": 130,
+                    "energy": -75,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "water gun",
+                "pokeType": "water",
+                "power": 3,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "ice beam",
+                    "pokeType": "ice",
+                    "power": 90,
+                    "energy": -55,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "water gun",
+                "pokeType": "water",
+                "power": 3,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "return",
+                    "pokeType": "normal",
+                    "power": 130,
+                    "energy": -70,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "blastoise",
+            "pokeType1": "water",
+            "pokeType2": "none",
+            "copies": 1,
+            "immortal": false,
+            "attack": 115.2091666176,
+            "defense": 135.6495026304,
+            "maxHP": 125,
+            "fmove": {
+                "name": "water gun",
+                "pokeType": "water",
+                "power": 3,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "hydro cannon",
+                    "pokeType": "water",
+                    "power": 80,
+                    "energy": -40,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "skull bash",
+                    "pokeType": "normal",
+                    "power": 130,
+                    "energy": -75,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        }
+    ],
+    "colPokemon": [],
+    "avergeByShield": false
+}
