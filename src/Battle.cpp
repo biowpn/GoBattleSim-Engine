@@ -448,9 +448,6 @@ void Battle::register_action_switch(Player_Index_t player_idx, const Action &t_a
 			 player_idx,
 			 search(ps.player.get_head_party()->get_pokemon(t_action.value))});
 	ps.time_free = time_action_start + GameMaster::get().swap_duration;
-	enqueue({ps.time_free,
-			 EventType::Free,
-			 player_idx});
 }
 
 void Battle::register_action_wait(Player_Index_t player_idx, const Action &t_action)
@@ -577,7 +574,7 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;
 			damage = damage > 0 ? damage : 1;
 		}
-		subject_st.attribute_damage(damage, true);
+		subject_st.attribute_damage(damage, event.type == EventType::Fast);
 		opponent_st.hurt(damage);
 		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
 		if (m_has_log)
@@ -610,12 +607,14 @@ void Battle::handle_event_enter(const TimelineEvent &event)
 	cur_head_st.active = false;
 	ps.player.set_head(m_pokemon[event.value]);
 	ps.head_index = event.value;
-	ps.current_action = {m_time, ActionType::Switch};
+	ps.current_action.type = ActionType::None;
+	ps.buffer_action.type = ActionType::None;
 	new_head_st.active = true;
 	new_head_st.duration = m_time;
 	enqueue({m_time + 500,
 			 EventType::Free,
-			 player_index});
+			 player_index,
+			 event.value});
 }
 
 void Battle::append_log(const TimelineEvent &event)

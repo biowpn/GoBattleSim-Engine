@@ -6,6 +6,7 @@
     "aggregation": "enum",
     "players": [
         {
+            "name": "Player 1",
             "team": 1,
             "attack_multiplier": 1,
             "strategy": "ATTACKER_NO_DODGE",
@@ -14,6 +15,7 @@
                     "revive": false,
                     "pokemon": [
                         {
+                            "copies": 6,
                             "name": "Machamp",
                             "pokeType1": "fighting",
                             "pokeType2": "none",
@@ -45,6 +47,7 @@
             ]
         },
         {
+            "name": "Player 2",
             "team": 0,
             "attack_multiplier": 1,
             "strategy": "DEFENDER",
@@ -53,6 +56,7 @@
                     "revive": false,
                     "pokemon": [
                         {
+                            "copies": 1,
                             "name": "Blissey",
                             "pokeType1": "normal",
                             "pokeType2": "none",
@@ -80,6 +84,7 @@
                             "immortal": false
                         },
                         {
+                            "copies": 1,
                             "name": "Chansey",
                             "pokeType1": "normal",
                             "pokeType2": "none",
@@ -107,6 +112,7 @@
                             "immortal": false
                         },
                         {
+                            "copies": 1,
                             "name": "Snorlax",
                             "pokeType1": "normal",
                             "pokeType2": "none",
@@ -134,6 +140,7 @@
                             "immortal": false
                         },
                         {
+                            "copies": 1,
                             "name": "Tyranitar",
                             "pokeType1": "dark",
                             "pokeType2": "rock",
@@ -161,6 +168,7 @@
                             "immortal": false
                         },
                         {
+                            "copies": 1,
                             "name": "Lapras",
                             "pokeType1": "ice",
                             "pokeType2": "water",
@@ -188,6 +196,7 @@
                             "immortal": false
                         },
                         {
+                            "copies": 1,
                             "name": "Milotic",
                             "pokeType1": "water",
                             "pokeType2": "none",
@@ -218,5 +227,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "enableLog": true
 }
