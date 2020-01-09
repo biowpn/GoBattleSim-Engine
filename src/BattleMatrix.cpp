@@ -1,7 +1,19 @@
 
 #include "BattleMatrix.h"
 
+/**
+ * Emscripten does not support multi-threading well,
+ * or at least I couldn't get it working with the compile flags:
+ * 
+ * 		-s ALLOW_MEMORY_GROWTH=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=2
+ * 
+ * The compiler will emit strange error, duh.
+ * 
+ * When compiled with Emscripten, fallback to no multi-threading
+ */
+#ifndef __EMSCRIPTEN__
 #include <thread>
+#endif
 
 namespace GoBattleSim
 {
@@ -69,6 +81,8 @@ void worker(Matrix_t &matrix,
 	}
 }
 
+#ifndef __EMSCRIPTEN__
+
 void BattleMatrix::run()
 {
 	auto cpu_count = std::thread::hardware_concurrency();
@@ -119,6 +133,22 @@ void BattleMatrix::run()
 		threads[i].join();
 	}
 }
+
+#else
+
+void BattleMatrix::run()
+{
+	worker(m_matrix,
+		   m_row_pkm,
+		   m_col_pkm,
+		   0,
+		   m_row_pkm.size(),
+		   0,
+		   m_col_pkm.size(),
+		   m_average_by_shield);
+}
+
+#endif
 
 const Matrix_t &BattleMatrix::get() const
 {

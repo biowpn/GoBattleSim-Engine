@@ -159,7 +159,7 @@ void GoBattleSimApp::add_to(PvEAverageBattleOutcome &sum, PvEBattleOutcome cur)
     }
     if (sum.pokemon_stats.size() != pokemon_count)
     {
-        sprintf(err_msg, "mismatch Pokemon count when averaging battle outcomes (expect %lld, got %lld)",
+        sprintf(err_msg, "mismatch Pokemon count when averaging battle outcomes (expect %zu, got %zu)",
                 pokemon_count, sum.pokemon_stats.size());
         throw std::runtime_error(err_msg);
     }
