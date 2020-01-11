@@ -109,6 +109,10 @@ void to_json(json &j, const Pokemon &pkm)
     j["cmoves"] = std::vector<Move>(pkm.cmoves, pkm.cmoves + pkm.cmoves_count);
     j["attack_multiplier"] = pkm.attack_multiplier;
     j["clone_multiplier"] = pkm.clone_multiplier;
+    if (pkm.strategy != nullptr)
+    {
+        j["strategy"] = pkm.strategy->name;
+    }
 }
 
 void from_json(const json &j, Pokemon &pkm)
@@ -131,6 +135,28 @@ void from_json(const json &j, Pokemon &pkm)
     try_get_to(j, "immortal", pkm.immortal);
     try_get_to(j, "attack_multiplier", pkm.attack_multiplier);
     try_get_to(j, "clone_multiplier", pkm.clone_multiplier);
+
+    std::string strategy_name;
+    try_get_to(j, "strategy", strategy_name);
+    if (pkm.strategy == nullptr)
+    {
+        pkm.strategy = &STRATEGY_ATTACKER_DODGE_ALL;
+    }
+    if (strategy_name.size() > 0)
+    {
+        for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
+        {
+            if (BUILT_IN_STRATEGIES[i].name == strategy_name)
+            {
+                pkm.strategy = &BUILT_IN_STRATEGIES[i];
+            }
+        }
+        if (pkm.strategy == nullptr)
+        {
+            sprintf(err_msg, "strategy not found: %s", strategy_name.c_str());
+            throw std::runtime_error(err_msg);
+        }
+    }
 }
 
 void to_json(json &j, const PvPPokemon &pkm)
@@ -193,21 +219,6 @@ void from_json(const json &j, Player &player)
         player.add(&party);
     }
     player.team = j.at("team");
-    bool strategy_matched = false;
-    auto strategy_name = j["strategy"].get<std::string>();
-    for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
-    {
-        if (strcmp(BUILT_IN_STRATEGIES[i].name, strategy_name.c_str()) == 0)
-        {
-            player.strategy = BUILT_IN_STRATEGIES[i];
-            strategy_matched = true;
-        }
-    }
-    if (!strategy_matched)
-    {
-        sprintf(err_msg, "strategy %s not recognized", strategy_name.c_str());
-        throw std::runtime_error(err_msg);
-    }
 
     if (j.find("attack_multiplier") != j.end())
     {

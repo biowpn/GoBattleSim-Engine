@@ -192,9 +192,17 @@ bool Player::set_head(const Pokemon *t_pokemon)
 	{
 		return false;
 	}
+	else if (m_party_head->set_head(t_pokemon))
+	{
+		if (t_pokemon->strategy != nullptr)
+		{
+			strategy = *t_pokemon->strategy;
+		}
+		return true;
+	}
 	else
 	{
-		return m_party_head->set_head(t_pokemon);
+		return false;
 	}
 }
 

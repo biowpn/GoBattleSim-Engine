@@ -9,6 +9,9 @@ namespace GoBattleSim
 
 constexpr unsigned MAX_NUM_CMOVES = 3;
 
+// forward declaration
+class Strategy;
+
 class Pokemon
 {
 public:
@@ -42,6 +45,8 @@ public:
 	// but leaving them here would make codes a lot easier
 	double attack_multiplier{1};
 	int clone_multiplier{1};
+
+	const Strategy *strategy{nullptr};
 };
 
 // Damage calculation as a public function
