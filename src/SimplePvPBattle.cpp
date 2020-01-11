@@ -49,8 +49,8 @@ void SimplePvPBattle::set_pokemon(const PvPPokemon &pkm1, const PvPPokemon &pkm2
 
 	m_num_shields_max[0] = m_pkm[0].num_shields_max;
 	m_num_shields_max[1] = m_pkm[1].num_shields_max;
-	m_strategies[0] = m_pkm[0].cmoves_count > 1 ? pvp_advance : pvp_basic;
-	m_strategies[1] = m_pkm[1].cmoves_count > 1 ? pvp_advance : pvp_basic;
+	m_strategies[0] = m_pkm[0].cmoves_count > 1 ? STRATEGY_PVP_ADVANCE : STRATEGY_PVP_BASIC;
+	m_strategies[1] = m_pkm[1].cmoves_count > 1 ? STRATEGY_PVP_ADVANCE : STRATEGY_PVP_BASIC;
 }
 
 void SimplePvPBattle::set_num_shields_max(int shields_1, int shields_2)

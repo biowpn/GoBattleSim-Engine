@@ -136,11 +136,11 @@ void from_json(const json &j, Pokemon &pkm)
     try_get_to(j, "strategy", strategy_name);
     if (strategy_name.size() > 0)
     {
-        for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
+        for (unsigned i = 0; i < NUM_PVE_STRATEGIES; ++i)
         {
-            if (BUILT_IN_STRATEGIES[i].name == strategy_name)
+            if (PVE_STRATEGIES[i].name == strategy_name)
             {
-                pkm.strategy = &BUILT_IN_STRATEGIES[i];
+                pkm.strategy = &PVE_STRATEGIES[i];
             }
         }
         if (pkm.strategy == nullptr)
@@ -197,7 +197,6 @@ void to_json(json &j, const Player &player)
     }
     j["parties"] = parties;
     j["team"] = player.team;
-    j["strategy"] = player.strategy.name;
     j["attack_multiplier"] = player.attack_multiplier;
     j["clone_multiplier"] = player.clone_multiplier;
 }
@@ -214,6 +213,21 @@ void from_json(const json &j, Player &player)
 
     try_get_to(j, "attack_multiplier", player.attack_multiplier);
     try_get_to(j, "clone_multiplier", player.clone_multiplier);
+}
+
+void from_json(const json &j, PvPStrategy &strategy)
+{
+    std::string strategy_name = j.get<std::string>();
+    for (unsigned i = 0; i < NUM_PVP_STRATEGIES; ++i)
+    {
+        if (PVP_STRATEGIES[i].name == strategy_name)
+        {
+            strategy = PVP_STRATEGIES[i];
+            return;
+        }
+    }
+    sprintf(err_msg, "unknown strategy: %s", strategy_name.c_str());
+    throw std::runtime_error(err_msg);
 }
 
 void to_json(json &j, const GameMaster &gm)
@@ -283,12 +297,19 @@ void to_json(json &j, const GameMaster &gm)
     j["PvPBattleSettings"]["defenseBuffMultiplier"] = def_stage_multipliers;
 
     // List out supported strategies
-    std::vector<std::string> supported_strategies;
-    for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
+    std::vector<std::string> pve_strategies;
+    for (unsigned i = 0; i < NUM_PVE_STRATEGIES; ++i)
     {
-        supported_strategies.push_back(BUILT_IN_STRATEGIES[i].name);
+        pve_strategies.push_back(PVE_STRATEGIES[i].name);
     }
-    j["PvPStrategies"] = supported_strategies;
+    j["PvPStrategies"] = pve_strategies;
+
+    std::vector<std::string> pvp_strategies;
+    for (unsigned i = 0; i < NUM_PVP_STRATEGIES; ++i)
+    {
+        pvp_strategies.push_back(PVP_STRATEGIES[i].name);
+    }
+    j["PvEStrategies"] = pvp_strategies;
 }
 
 void from_json(const json &j, GameMaster &gm)
@@ -582,6 +603,7 @@ void to_json(json &j, const PvEAverageBattleOutcome &outcome)
 void from_json(const json &j, PvPSimpleSimInput &input)
 {
     j["pokemon"].get_to(input.pokemon);
+    j["strategies"].get_to(input.strateies);
 
     try_get_to(j, "numShields", {2, 2}, input.num_shields);
     try_get_to(j, "timelimit", 1800, input.turn_limit);

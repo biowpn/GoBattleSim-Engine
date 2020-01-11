@@ -109,13 +109,13 @@ const Strategy STRATEGY_ATTACKER_DODGE_ALL{
 	nullptr,
 	attacker_dodge_all_on_attack};
 
-const Strategy BUILT_IN_STRATEGIES[] = {
+const Strategy PVE_STRATEGIES[] = {
 	STRATEGY_DEFENDER,
 	STRATEGY_ATTACKER_NO_DODGE,
 	STRATEGY_ATTACKER_DODGE_CHARGED,
 	STRATEGY_ATTACKER_DODGE_ALL};
 
-const unsigned NUM_STRATEGIES = sizeof(BUILT_IN_STRATEGIES) / sizeof(BUILT_IN_STRATEGIES[0]);
+const unsigned NUM_PVE_STRATEGIES = sizeof(PVE_STRATEGIES) / sizeof(PVE_STRATEGIES[0]);
 
 } // namespace GoBattleSim
 

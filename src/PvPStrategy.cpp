@@ -1,6 +1,8 @@
 
 #include "PvPStrategy.h"
 
+#include "GameMaster.h"
+
 namespace GoBattleSim
 {
 
@@ -26,7 +28,7 @@ void pvp_basic_on_free(const PvPStrategyInput &si, Action *r_action)
  */
 void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 {
-	int my_fmove_damage = calc_damage_pvp_cmove(si.subject, si.subject->get_fmove(0), si.enemy);
+	int my_fmove_damage = calc_damage(si.subject, si.subject->get_fmove(0), si.enemy, GameMaster::get().fast_attack_bonus_multiplier);
 	if (my_fmove_damage >= si.enemy_hp)
 	{
 		r_action->type = ActionType::Fast;
@@ -41,7 +43,7 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	for (unsigned i = 0; i < si.subject->cmoves_count; ++i)
 	{
 		auto move = si.subject->get_cmove(i);
-		int damage = calc_damage_pvp_cmove(si.subject, move, si.enemy);
+		int damage = calc_damage(si.subject, move, si.enemy, GameMaster::get().charged_attack_bonus_multiplier);
 		double dpe = (double)damage / (-move->energy);
 		if (dpe > higher_dpe)
 		{
@@ -71,7 +73,7 @@ void pvp_advance_on_free(const PvPStrategyInput &si, Action *r_action)
 	}
 	else if (si.subject_energy + si.subject->get_cmove(cheaper_move_idx)->energy >= 0)
 	{
-		if (cheaper_move_ko || calc_damage_pvp_fmove(si.enemy, si.enemy->get_fmove(0), si.subject) >= si.subject_hp)
+		if (cheaper_move_ko || calc_damage(si.enemy, &si.enemy->fmove, si.subject, GameMaster::get().fast_attack_bonus_multiplier) >= si.subject_hp)
 		{
 			r_action->type = ActionType::Charged;
 			r_action->value = cheaper_move_idx;
