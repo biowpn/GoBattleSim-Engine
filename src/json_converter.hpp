@@ -57,19 +57,19 @@ bool try_get_to(const json &j, const std::string &key, T &dst)
 void to_json(json &j, const MoveEffect &effect)
 {
     j["activation_chance"] = effect.activation_chance;
-    j["self_attack_stage_delta"] = effect.self_attack_stage_delta;
-    j["self_defense_stage_delta"] = effect.self_defense_stage_delta;
-    j["target_attack_stage_delta"] = effect.target_attack_stage_delta;
-    j["target_defense_stage_delta"] = effect.target_defense_stage_delta;
+    j["self_attack_stage_delta"] = effect.self_atk_delta;
+    j["self_defense_stage_delta"] = effect.self_def_delta;
+    j["target_attack_stage_delta"] = effect.target_atk_delta;
+    j["target_defense_stage_delta"] = effect.target_def_delta;
 }
 
 void from_json(const json &j, MoveEffect &effect)
 {
     effect.activation_chance = j["activation_chance"];
-    effect.self_attack_stage_delta = j["self_attack_stage_delta"];
-    effect.self_defense_stage_delta = j["self_defense_stage_delta"];
-    effect.target_attack_stage_delta = j["target_attack_stage_delta"];
-    effect.target_defense_stage_delta = j["target_defense_stage_delta"];
+    effect.self_atk_delta = j["self_attack_stage_delta"];
+    effect.self_def_delta = j["self_defense_stage_delta"];
+    effect.target_atk_delta = j["target_attack_stage_delta"];
+    effect.target_def_delta = j["target_defense_stage_delta"];
 }
 
 void to_json(json &j, const Move &move)
@@ -107,8 +107,6 @@ void to_json(json &j, const Pokemon &pkm)
     j["immortal"] = pkm.immortal;
     j["fmove"] = pkm.fmove;
     j["cmoves"] = std::vector<Move>(pkm.cmoves, pkm.cmoves + pkm.cmoves_count);
-    j["attack_multiplier"] = pkm.attack_multiplier;
-    j["clone_multiplier"] = pkm.clone_multiplier;
     if (pkm.strategy != nullptr)
     {
         j["strategy"] = pkm.strategy->name;
@@ -133,8 +131,6 @@ void from_json(const json &j, Pokemon &pkm)
     }
 
     try_get_to(j, "immortal", pkm.immortal);
-    try_get_to(j, "attack_multiplier", pkm.attack_multiplier);
-    try_get_to(j, "clone_multiplier", pkm.clone_multiplier);
 
     std::string strategy_name;
     try_get_to(j, "strategy", strategy_name);
@@ -202,8 +198,8 @@ void to_json(json &j, const Player &player)
     j["parties"] = parties;
     j["team"] = player.team;
     j["strategy"] = player.strategy.name;
-    j["attack_multiplier"] = player.get_attack_multiplier();
-    j["clone_multiplier"] = player.get_clone_multiplier();
+    j["attack_multiplier"] = player.attack_multiplier;
+    j["clone_multiplier"] = player.clone_multiplier;
 }
 
 void from_json(const json &j, Player &player)
@@ -216,14 +212,8 @@ void from_json(const json &j, Player &player)
     }
     player.team = j.at("team");
 
-    if (j.find("attack_multiplier") != j.end())
-    {
-        player.set_attack_multiplier(j.at("attack_multiplier"));
-    }
-    if (j.find("clone_multiplier") != j.end())
-    {
-        player.set_clone_multiplier(j.at("clone_multiplier"));
-    }
+    try_get_to(j, "attack_multiplier", player.attack_multiplier);
+    try_get_to(j, "clone_multiplier", player.clone_multiplier);
 }
 
 void to_json(json &j, const GameMaster &gm)

@@ -264,8 +264,8 @@ void SimplePvPBattle::decide_branch_move_effect(int i, const MoveEffect &t_effec
 
 void SimplePvPBattle::handle_move_effect(int i, const MoveEffect &t_effect)
 {
-	m_pkm[i].buff(t_effect.self_attack_stage_delta, t_effect.self_defense_stage_delta);
-	m_pkm[1 - i].buff(t_effect.target_attack_stage_delta, t_effect.target_defense_stage_delta);
+	m_pkm[i].buff(t_effect.self_atk_delta, t_effect.self_def_delta);
+	m_pkm[1 - i].buff(t_effect.target_atk_delta, t_effect.target_def_delta);
 }
 
 void SimplePvPBattle::append_log(const TimelineEvent &event)
