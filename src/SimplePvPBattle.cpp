@@ -177,7 +177,7 @@ void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 {
 	const Move *move = m_pkm[i].get_fmove(0);
 	m_pkm_states[i].energy += move->energy;
-	if (m_pkm_states[i].energy > GameMaster::get().max_energy)
+	if (m_pkm_states[i].energy > static_cast<int>(GameMaster::get().max_energy))
 	{
 		m_pkm_states[i].energy = GameMaster::get().max_energy;
 	}

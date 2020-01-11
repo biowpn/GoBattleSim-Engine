@@ -262,6 +262,8 @@ void to_json(json &j, const GameMaster &gm)
     j["PvEBattleSettings"]["rejoinDurationMs"] = gm.rejoin_duration;
     j["PvEBattleSettings"]["itemMenuAnimationTimeMs"] = gm.item_menu_time;
     j["PvEBattleSettings"]["maxReviveTimePerPokemonMs"] = gm.pokemon_revive_time;
+    j["PvEBattleSettings"]["fastMoveLagMs"] = gm.fast_attack_lag;
+    j["PvEBattleSettings"]["chargedMoveLagMs"] = gm.charged_attack_lag;
 
     // PvP Battle Settings
     j["PvPBattleSettings"] = {};
@@ -354,6 +356,8 @@ void from_json(const json &j, GameMaster &gm)
         try_get_to(j_pve, "rejoinDurationMs", gm.rejoin_duration);
         try_get_to(j_pve, "itemMenuAnimationTimeMs", gm.item_menu_time);
         try_get_to(j_pve, "maxReviveTimePerPokemonMs", gm.pokemon_revive_time);
+        try_get_to(j_pve, "fastMoveLagMs", gm.fast_attack_lag);
+        try_get_to(j_pve, "chargedMoveLagMs", gm.charged_attack_lag);
     }
 
     // PvP Battle Settings

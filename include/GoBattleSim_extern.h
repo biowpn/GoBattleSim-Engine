@@ -20,36 +20,36 @@ extern "C"
 #endif
 
 	/**
-	 * return the version string in the format "{major}.{minor}.{patch}".
+	 * Return the version string in the format "{major}.{minor}.{patch}".
 	 */
 	const char *FUNCTION_PREFIX GBS_version();
 
 	/**
-	 * get the last error message.
+	 * Get the error message since the last call to GBS_error().
 	 */
 	const char *FUNCTION_PREFIX GBS_error();
 
 	/**
-     * initialize new simulation. This will clear all output.
+     * Initialize new simulation. This will clear all output.
 	 * 
 	 * @param input_j simulation input in JSON
      */
 	void FUNCTION_PREFIX GBS_prepare(const char *input_j);
 
 	/**
-     * run the new simulation configured by the latest GBS_prepare().
+     * Run the new simulation configured by the latest GBS_prepare().
      */
 	void FUNCTION_PREFIX GBS_run();
 
 	/**
-     * collect simulation output produced by the lastest GBS_run().
+     * Collect simulation output produced by the lastest GBS_run().
 	 * 
 	 * @return simulation output in JSON
      */
 	const char *FUNCTION_PREFIX GBS_collect();
 
 	/**
-	 * if @param gm_j is not NULL, set GBS game master parameters by it.
+	 * If @param gm_j is not NULL, set GBS game master parameters by it.
 	 * 
 	 * @return GBS-format game master in JSON
 	 */

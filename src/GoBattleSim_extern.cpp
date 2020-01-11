@@ -48,7 +48,9 @@ const char *GBS_version()
 
 const char *GBS_error()
 {
-	return err_msg;
+	MessageCenter::get().set_msg(err_msg);
+	strcpy(err_msg, "");
+	return MessageCenter::get().get_msg();
 }
 
 void GBS_prepare(const char *input_j)
@@ -75,6 +77,7 @@ void GBS_prepare(const char *input_j)
 	else
 	{
 		sprintf(err_msg, "impossible battle mode %d", (int)mode);
+		throw std::runtime_error(err_msg);
 	}
 }
 
@@ -125,6 +128,7 @@ const char *GBS_collect()
 	else
 	{
 		sprintf(err_msg, "impossible battle mode %d", (int)app.battle_mode);
+		throw std::runtime_error(err_msg);
 	}
 
 	auto j_str = j.dump(4);

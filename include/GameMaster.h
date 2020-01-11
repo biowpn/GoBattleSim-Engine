@@ -22,20 +22,22 @@ public:
 	double effectiveness(int, int) const;
 	double effectiveness(unsigned, unsigned, double);
 
-	int max_energy{100};
+	unsigned max_energy{100};
 	double stab_multiplier{1.2};
 
-	// PvE Settings
+	// PvE Settings (all time units are in milliseconds)
 	int boosted_weather(unsigned, int);
 	int boosted_weather(int) const;
 
-	int dodge_duration{500};
-	int dodge_window{700};
-	int swap_duration{1000};
-	int switching_cooldown{60000};
-	int rejoin_duration{10000};
-	int item_menu_time{2000};
-	int pokemon_revive_time{1000};
+	unsigned dodge_duration{500};
+	unsigned dodge_window{700};
+	unsigned swap_duration{1000};
+	unsigned switching_cooldown{60000};
+	unsigned rejoin_duration{10000};
+	unsigned item_menu_time{2000};
+	unsigned pokemon_revive_time{1000};
+	unsigned fast_attack_lag{25};
+	unsigned charged_attack_lag{100};
 	double wab_multiplier{1.2};
 	double dodge_damage_reduction_percent{0.75};
 	double energy_delta_per_health_lost{0.5};

@@ -34,7 +34,7 @@ bool PokemonState::is_alive() const
 void PokemonState::charge(int t_energy_delta)
 {
     energy += t_energy_delta;
-    if (energy > GameMaster::get().max_energy)
+    if (energy > static_cast<int>(GameMaster::get().max_energy))
     {
         energy = GameMaster::get().max_energy;
     }
