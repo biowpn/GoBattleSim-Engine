@@ -4,29 +4,33 @@
     "weather": "PARTLY_CLOUDY",
     "numSims": 100,
     "aggregation": "avrg",
+    "enableLog": false,
     "players": [
         {
+            "name": "Player 1",
             "team": 1,
             "attack_multiplier": 1.07,
-            "strategy": "ATTACKER_NO_DODGE",
             "parties": [
                 {
                     "revive": true,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 6,
-                            "name": "Tyranitar",
+                            "name": "tyranitar",
                             "pokeType1": "dark",
                             "pokeType2": "rock",
+                            "copies": 6,
+                            "immortal": false,
                             "attack": 210.2198,
                             "defense": 175.4466,
                             "maxHP": 189,
+                            "strategy": "ATTACKER_NO_DODGE",
                             "fmove": {
                                 "name": "smack down",
                                 "pokeType": "rock",
                                 "power": 16,
-                                "duration": 1200,
                                 "energy": 8,
+                                "duration": 1200,
                                 "dws": 500
                             },
                             "cmoves": [
@@ -34,39 +38,41 @@
                                     "name": "stone edge",
                                     "pokeType": "rock",
                                     "power": 100,
-                                    "duration": 2300,
                                     "energy": -100,
+                                    "duration": 2300,
                                     "dws": 700
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }
             ]
         },
         {
+            "name": "Player 2",
             "team": 1,
             "attack_multiplier": 1.07,
-            "strategy": "ATTACKER_NO_DODGE",
             "parties": [
                 {
                     "revive": true,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 6,
-                            "name": "Tyranitar",
+                            "name": "tyranitar",
                             "pokeType1": "dark",
                             "pokeType2": "rock",
+                            "copies": 6,
+                            "immortal": false,
                             "attack": 210.2198,
                             "defense": 175.4466,
                             "maxHP": 189,
+                            "strategy": "ATTACKER_NO_DODGE",
                             "fmove": {
                                 "name": "smack down",
                                 "pokeType": "rock",
                                 "power": 16,
-                                "duration": 1200,
                                 "energy": 8,
+                                "duration": 1200,
                                 "dws": 500
                             },
                             "cmoves": [
@@ -74,39 +80,41 @@
                                     "name": "stone edge",
                                     "pokeType": "rock",
                                     "power": 100,
-                                    "duration": 2300,
                                     "energy": -100,
+                                    "duration": 2300,
                                     "dws": 700
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }
             ]
         },
         {
+            "name": "Player 3",
             "team": 0,
             "attack_multiplier": 1,
-            "strategy": "DEFENDER",
             "parties": [
                 {
                     "revive": false,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 1,
-                            "name": "Ho-oh",
+                            "name": "ho-oh",
                             "pokeType1": "fire",
                             "pokeType2": "flying",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 200.66000545024872,
                             "defense": 204.61000555753708,
                             "maxHP": 15000,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "steel wing",
                                 "pokeType": "steel",
                                 "power": 11,
-                                "duration": 800,
                                 "energy": 6,
+                                "duration": 800,
                                 "dws": 500
                             },
                             "cmoves": [
@@ -114,12 +122,11 @@
                                     "name": "solar beam",
                                     "pokeType": "grass",
                                     "power": 180,
-                                    "duration": 4900,
                                     "energy": -100,
+                                    "duration": 4900,
                                     "dws": 2700
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }

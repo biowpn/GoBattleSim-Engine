@@ -4,30 +4,33 @@
     "weather": "EXTREME",
     "numSims": 1,
     "aggregation": "enum",
+    "enableLog": true,
     "players": [
         {
             "name": "Player 1",
             "team": 1,
             "attack_multiplier": 1,
-            "strategy": "ATTACKER_NO_DODGE",
             "parties": [
                 {
                     "revive": false,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 6,
-                            "name": "Machamp",
+                            "name": "machamp",
                             "pokeType1": "fighting",
                             "pokeType2": "none",
+                            "copies": 6,
+                            "immortal": false,
                             "attack": 196.7847,
                             "defense": 137.5122,
                             "maxHP": 175,
+                            "strategy": "ATTACKER_NO_DODGE",
                             "fmove": {
                                 "name": "counter",
                                 "pokeType": "fighting",
                                 "power": 12,
-                                "duration": 900,
                                 "energy": 8,
+                                "duration": 900,
                                 "dws": 700
                             },
                             "cmoves": [
@@ -35,12 +38,11 @@
                                     "name": "dynamic punch",
                                     "pokeType": "fighting",
                                     "power": 90,
-                                    "duration": 2700,
                                     "energy": -50,
+                                    "duration": 2700,
                                     "dws": 1200
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }
@@ -50,25 +52,27 @@
             "name": "Player 2",
             "team": 0,
             "attack_multiplier": 1,
-            "strategy": "DEFENDER",
             "parties": [
                 {
                     "revive": false,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 1,
-                            "name": "Blissey",
+                            "name": "blissey",
                             "pokeType1": "normal",
                             "pokeType2": "none",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 113.8032,
                             "defense": 145.4152,
                             "maxHP": 806,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "zen headbutt",
                                 "pokeType": "psychic",
                                 "power": 12,
-                                "duration": 1100,
                                 "energy": 10,
+                                "duration": 1100,
                                 "dws": 850
                             },
                             "cmoves": [
@@ -76,27 +80,28 @@
                                     "name": "dazzling gleam",
                                     "pokeType": "fairy",
                                     "power": 100,
-                                    "duration": 3500,
                                     "energy": -50,
+                                    "duration": 3500,
                                     "dws": 2100
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         },
                         {
-                            "copies": 1,
-                            "name": "Chansey",
+                            "name": "chansey",
                             "pokeType1": "normal",
                             "pokeType2": "none",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 59.2725,
                             "defense": 113.0129,
                             "maxHP": 792,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "zen headbutt",
                                 "pokeType": "psychic",
                                 "power": 12,
-                                "duration": 1100,
                                 "energy": 10,
+                                "duration": 1100,
                                 "dws": 850
                             },
                             "cmoves": [
@@ -104,27 +109,28 @@
                                     "name": "dazzling gleam",
                                     "pokeType": "fairy",
                                     "power": 100,
-                                    "duration": 3500,
                                     "energy": -50,
+                                    "duration": 3500,
                                     "dws": 2100
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         },
                         {
-                            "copies": 1,
-                            "name": "Snorlax",
+                            "name": "snorlax",
                             "pokeType1": "normal",
                             "pokeType2": "none",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 162.0115,
                             "defense": 145.4152,
                             "maxHP": 544,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "zen headbutt",
                                 "pokeType": "psychic",
                                 "power": 12,
-                                "duration": 1100,
                                 "energy": 10,
+                                "duration": 1100,
                                 "dws": 850
                             },
                             "cmoves": [
@@ -132,27 +138,28 @@
                                     "name": "body slam",
                                     "pokeType": "normal",
                                     "power": 50,
-                                    "duration": 1900,
                                     "energy": -33,
+                                    "duration": 1900,
                                     "dws": 1200
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         },
                         {
-                            "copies": 1,
-                            "name": "Tyranitar",
+                            "name": "tyranitar",
                             "pokeType1": "dark",
                             "pokeType2": "rock",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 210.2198,
                             "defense": 175.4466,
                             "maxHP": 378,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "smack down",
                                 "pokeType": "rock",
                                 "power": 16,
-                                "duration": 1200,
                                 "energy": 8,
+                                "duration": 1200,
                                 "dws": 500
                             },
                             "cmoves": [
@@ -160,27 +167,28 @@
                                     "name": "stone edge",
                                     "pokeType": "rock",
                                     "power": 100,
-                                    "duration": 2300,
                                     "energy": -100,
+                                    "duration": 2300,
                                     "dws": 700
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         },
                         {
-                            "copies": 1,
-                            "name": "Lapras",
+                            "name": "lapras",
                             "pokeType1": "ice",
                             "pokeType2": "water",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 142.254,
                             "defense": 149.3667,
                             "maxHP": 460,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "frost breath",
                                 "pokeType": "ice",
                                 "power": 10,
-                                "duration": 900,
                                 "energy": 8,
+                                "duration": 900,
                                 "dws": 450
                             },
                             "cmoves": [
@@ -188,27 +196,28 @@
                                     "name": "ice beam",
                                     "pokeType": "ice",
                                     "power": 90,
-                                    "duration": 3300,
                                     "energy": -50,
+                                    "duration": 3300,
                                     "dws": 1300
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         },
                         {
-                            "copies": 1,
-                            "name": "Milotic",
+                            "name": "milotic",
                             "pokeType1": "water",
                             "pokeType2": "none",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 163.5921,
                             "defense": 184.9302,
                             "maxHP": 364,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "waterfall",
                                 "pokeType": "water",
                                 "power": 16,
-                                "duration": 1200,
                                 "energy": 8,
+                                "duration": 1200,
                                 "dws": 950
                             },
                             "cmoves": [
@@ -216,17 +225,15 @@
                                     "name": "surf",
                                     "pokeType": "water",
                                     "power": 65,
-                                    "duration": 1700,
                                     "energy": -50,
+                                    "duration": 1700,
                                     "dws": 1400
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }
             ]
         }
-    ],
-    "enableLog": true
+    ]
 }

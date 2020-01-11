@@ -4,29 +4,33 @@
     "weather": "EXTREME",
     "numSims": 1,
     "aggregation": "enum",
+    "enableLog": true,
     "players": [
         {
+            "name": "Player 1",
             "team": 1,
             "attack_multiplier": 1,
-            "strategy": "ATTACKER_NO_DODGE",
             "parties": [
                 {
                     "revive": false,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 6,
-                            "name": "Moltres",
+                            "name": "moltres",
                             "pokeType1": "fire",
                             "pokeType2": "flying",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 210.2198,
                             "defense": 154.8988,
                             "maxHP": 175,
+                            "strategy": "ATTACKER_NO_DODGE",
                             "fmove": {
                                 "name": "fire spin",
                                 "pokeType": "fire",
                                 "power": 14,
-                                "duration": 1100,
                                 "energy": 10,
+                                "duration": 1100,
                                 "dws": 850
                             },
                             "cmoves": [
@@ -34,57 +38,115 @@
                                     "name": "sky attack",
                                     "pokeType": "flying",
                                     "power": 80,
-                                    "duration": 2000,
                                     "energy": -50,
+                                    "duration": 2000,
                                     "dws": 1500
                                 }
-                            ],
-                            "immortal": false
+                            ]
+                        },
+                        {
+                            "name": "moltres",
+                            "pokeType1": "fire",
+                            "pokeType2": "flying",
+                            "copies": 1,
+                            "immortal": false,
+                            "attack": 210.2198,
+                            "defense": 154.8988,
+                            "maxHP": 175,
+                            "strategy": "ATTACKER_DODGE_CHARGED",
+                            "fmove": {
+                                "name": "fire spin",
+                                "pokeType": "fire",
+                                "power": 14,
+                                "energy": 10,
+                                "duration": 1100,
+                                "dws": 850
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "sky attack",
+                                    "pokeType": "flying",
+                                    "power": 80,
+                                    "energy": -50,
+                                    "duration": 2000,
+                                    "dws": 1500
+                                }
+                            ]
+                        },
+                        {
+                            "name": "moltres",
+                            "pokeType1": "fire",
+                            "pokeType2": "flying",
+                            "copies": 1,
+                            "immortal": false,
+                            "attack": 210.2198,
+                            "defense": 154.8988,
+                            "maxHP": 175,
+                            "strategy": "ATTACKER_DODGE_ALL",
+                            "fmove": {
+                                "name": "fire spin",
+                                "pokeType": "fire",
+                                "power": 14,
+                                "energy": 10,
+                                "duration": 1100,
+                                "dws": 850
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "sky attack",
+                                    "pokeType": "flying",
+                                    "power": 80,
+                                    "energy": -50,
+                                    "duration": 2000,
+                                    "dws": 1500
+                                }
+                            ]
                         }
                     ]
                 }
             ]
         },
         {
+            "name": "Player 2",
             "team": 0,
             "attack_multiplier": 1,
-            "strategy": "DEFENDER",
             "parties": [
                 {
                     "revive": false,
+                    "delay": 0,
                     "pokemon": [
                         {
-                            "copies": 1,
-                            "name": "Machamp",
+                            "name": "machamp",
                             "pokeType1": "fighting",
                             "pokeType2": "none",
+                            "copies": 1,
+                            "immortal": false,
                             "attack": 181.7700047492981,
                             "defense": 127.02000331878662,
                             "maxHP": 3600,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "bullet punch",
                                 "pokeType": "steel",
                                 "power": 9,
-                                "duration": 900,
                                 "energy": 10,
+                                "duration": 900,
                                 "dws": 300
                             },
                             "cmoves": [
                                 {
-                                    "name": "heavy slam",
-                                    "pokeType": "steel",
-                                    "power": 70,
-                                    "duration": 2100,
+                                    "name": "rock slide",
+                                    "pokeType": "rock",
+                                    "power": 80,
                                     "energy": -50,
+                                    "duration": 2700,
                                     "dws": 1500
                                 }
-                            ],
-                            "immortal": false
+                            ]
                         }
                     ]
                 }
             ]
         }
-    ],
-    "enableLog": true
+    ]
 }

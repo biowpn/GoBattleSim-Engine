@@ -5,7 +5,6 @@
     "players": [
         {
             "team": 0,
-            "strategy": "DEFENDER",
             "parties": [
                 {
                     "pokemon": [
@@ -16,6 +15,7 @@
                             "attack": 181.7700047492981,
                             "defense": 127.02000331878662,
                             "maxHP": 3600,
+                            "strategy": "DEFENDER",
                             "fmove": {
                                 "name": "Counter",
                                 "pokeType": "fighting",
@@ -41,7 +41,6 @@
         },
         {
             "team": 1,
-            "strategy": "ATTACKER_DODGE_CHARGED",
             "parties": [
                 {
                     "pokemon": [
@@ -52,6 +51,7 @@
                             "attack": 248.94450315,
                             "defense": 155.68910197000002,
                             "maxHP": 180,
+                            "strategy": "ATTACKER_DODGE_CHARGED",
                             "fmove": {
                                 "name": "Confusion",
                                 "pokeType": "psychic",
