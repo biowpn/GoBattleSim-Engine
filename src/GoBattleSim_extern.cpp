@@ -3,6 +3,8 @@
 #include "GoBattleSim.h"
 #include "json_converter.hpp"
 
+#include "config.h"
+
 #include <stdlib.h>
 
 using namespace GoBattleSim;
@@ -43,7 +45,7 @@ MessageCenter MessageCenter::instance;
 
 const char *GBS_version()
 {
-	return "0.8.0";
+	return PROJECT_GIT_VERSION;
 }
 
 const char *GBS_error()

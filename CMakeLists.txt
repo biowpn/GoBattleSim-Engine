@@ -1,11 +1,17 @@
 
-cmake_minimum_required (VERSION 3.1)
-project (GoBattleSim)
+cmake_minimum_required(VERSION 3.14)
+project(GoBattleSim)
+
+include(${PROJECT_SOURCE_DIR}/get_version.cmake)
+message("gitversion = ${PROJECT_GIT_VERSION}")
+
+configure_file(${PROJECT_SOURCE_DIR}/config/config.h.in ${PROJECT_SOURCE_DIR}/config/config.h)
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(CMAKE_CXX_FLAGS "--std=c++11 -Wall")
+SET(CMAKE_CXX_FLAGS "-Wall")
 
 include_directories(
+    ${PROJECT_SOURCE_DIR}/config
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/thirdparty
