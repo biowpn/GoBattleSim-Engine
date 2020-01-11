@@ -302,14 +302,14 @@ void to_json(json &j, const GameMaster &gm)
     {
         pve_strategies.push_back(PVE_STRATEGIES[i].name);
     }
-    j["PvPStrategies"] = pve_strategies;
+    j["PvEStrategies"] = pve_strategies;
 
     std::vector<std::string> pvp_strategies;
     for (unsigned i = 0; i < NUM_PVP_STRATEGIES; ++i)
     {
         pvp_strategies.push_back(PVP_STRATEGIES[i].name);
     }
-    j["PvEStrategies"] = pvp_strategies;
+    j["PvPStrategies"] = pvp_strategies;
 }
 
 void from_json(const json &j, GameMaster &gm)
