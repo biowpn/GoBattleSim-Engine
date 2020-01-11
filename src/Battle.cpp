@@ -378,6 +378,10 @@ void Battle::register_action_fast(Player_Index_t player_idx, const Action &t_act
 {
 	auto &ps = m_player_states[player_idx];
 	int time_action_start = m_time + t_action.delay;
+	if (ps.player.team != 0)
+	{
+		time_action_start += GameMaster::get().fast_attack_lag;
+	}
 	auto move = &m_pokemon[ps.head_index]->fmove;
 	enqueue({time_action_start + move->dws,
 			 EventType::Fast,
@@ -403,6 +407,10 @@ void Battle::register_action_charged(Player_Index_t player_idx, const Action &t_
 	auto &pkm_st = m_pokemon_states[ps.head_index];
 	auto move = m_pokemon[ps.head_index]->get_cmove(t_action.value);
 	int time_action_start = m_time + t_action.delay;
+	if (ps.player.team != 0)
+	{
+		time_action_start += GameMaster::get().charged_attack_lag;
+	}
 	if (pkm_st.energy + move->energy < 0)
 	{
 		ps.time_free = time_action_start + 500;
