@@ -68,7 +68,7 @@ void GBS_prepare(const char *input_j)
 	}
 	else if (mode == BattleMode::PvP)
 	{
-		PvPSimInput input = j;
+		PvPSimpleSimInput input = j;
 		app.prepare(input);
 	}
 	else if (mode == BattleMode::BattleMatrix)

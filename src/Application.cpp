@@ -37,7 +37,7 @@ void GoBattleSimApp::prepare(const PvESimInput &input)
     m_pve_output.clear();
 }
 
-void GoBattleSimApp::prepare(const PvPSimInput &input)
+void GoBattleSimApp::prepare(const PvPSimpleSimInput &input)
 {
     battle_mode = BattleMode::PvP;
     aggregation_mode = input.aggregation;

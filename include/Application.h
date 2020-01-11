@@ -58,7 +58,7 @@ struct PvEAverageBattleOutcome
     std::vector<AveragePokemonState> pokemon_stats;
 };
 
-struct PvPSimInput
+struct PvPSimpleSimInput
 {
     std::array<PvPPokemon, 2> pokemon;
     std::array<int, 2> num_shields;
@@ -86,7 +86,7 @@ public:
      */
     void prepare(const PvESimInput &);
 
-    void prepare(const PvPSimInput &);
+    void prepare(const PvPSimpleSimInput &);
 
     void prepare(const BattleMatrixSimInput &);
 

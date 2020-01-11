@@ -589,7 +589,7 @@ void to_json(json &j, const PvEAverageBattleOutcome &outcome)
     j["numSims"] = outcome.num_sims;
 }
 
-void from_json(const json &j, PvPSimInput &input)
+void from_json(const json &j, PvPSimpleSimInput &input)
 {
     j["pokemon"].get_to(input.pokemon);
 
