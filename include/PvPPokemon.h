@@ -7,11 +7,6 @@
 namespace GoBattleSim
 {
 
-// Damage calculation for pvp as public functions
-int calc_damage_pvp_fmove(const Pokemon *, const Move *, const Pokemon *);
-
-int calc_damage_pvp_cmove(const Pokemon *, const Move *, const Pokemon *);
-
 class PvPPokemon : public Pokemon
 {
 public:

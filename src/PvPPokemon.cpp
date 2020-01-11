@@ -51,31 +51,4 @@ void PvPPokemon::buff(int t_attack_stage_delta, int t_defense_stage_delta)
 	defense = defense_init * GameMaster::get().def_stage_multiplier(defense_stage);
 }
 
-int calc_damage_pvp_fmove(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender)
-{
-
-	double multiplier = GameMaster::get().fast_attack_bonus_multiplier;
-	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
-	{
-		multiplier *= GameMaster::get().stab_multiplier;
-	}
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);
-
-	return 0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1;
-}
-
-int calc_damage_pvp_cmove(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender)
-{
-	double multiplier = GameMaster::get().charged_attack_bonus_multiplier;
-	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
-	{
-		multiplier *= GameMaster::get().stab_multiplier;
-	}
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);
-
-	return 0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1;
-}
-
 } // namespace GoBattleSim

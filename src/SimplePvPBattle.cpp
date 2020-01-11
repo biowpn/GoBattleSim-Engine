@@ -181,7 +181,7 @@ void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
 	{
 		m_pkm_states[i].energy = GameMaster::get().max_energy;
 	}
-	int damage = calc_damage_pvp_fmove(&m_pkm[i], move, &m_pkm[1 - i]);
+	int damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().fast_attack_bonus_multiplier);
 	m_pkm_states[1 - i].hp -= damage;
 	if (m_pkm_states[1 - i].hp <= 0)
 	{
@@ -215,7 +215,7 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	}
 	if (damage == 0)
 	{
-		damage = calc_damage_pvp_cmove(&m_pkm[i], move, &m_pkm[1 - i]);
+		damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().charged_attack_bonus_multiplier);
 	}
 	m_pkm_states[1 - i].hp -= damage;
 	if (m_pkm_states[1 - i].hp <= 0)
