@@ -138,10 +138,6 @@ void from_json(const json &j, Pokemon &pkm)
 
     std::string strategy_name;
     try_get_to(j, "strategy", strategy_name);
-    if (pkm.strategy == nullptr)
-    {
-        pkm.strategy = &STRATEGY_ATTACKER_DODGE_ALL;
-    }
     if (strategy_name.size() > 0)
     {
         for (unsigned i = 0; i < NUM_STRATEGIES; ++i)
@@ -153,7 +149,7 @@ void from_json(const json &j, Pokemon &pkm)
         }
         if (pkm.strategy == nullptr)
         {
-            sprintf(err_msg, "strategy not found: %s", strategy_name.c_str());
+            sprintf(err_msg, "unknown strategy: %s", strategy_name.c_str());
             throw std::runtime_error(err_msg);
         }
     }
