@@ -25,8 +25,8 @@ Player &Player::operator=(const Player &other)
 	m_party_head = m_parties + (other.m_party_head - other.m_parties);
 	team = other.team;
 	memcpy(&strategy, &other.strategy, sizeof(Strategy));
-	m_attack_multiplier = other.m_attack_multiplier;
-	m_clone_multiplier = other.m_clone_multiplier;
+	attack_multiplier = other.attack_multiplier;
+	clone_multiplier = other.clone_multiplier;
 	return *this;
 }
 
@@ -83,40 +83,6 @@ void Player::erase_parties()
 {
 	m_parties_count = 0;
 	m_party_head = nullptr;
-}
-
-void Player::set_attack_multiplier(double t_attack_multiplier)
-{
-	for (unsigned i = 0; i < m_parties_count; ++i)
-	{
-		for (unsigned j = 0; j < m_parties[i].get_pokemon_count(); ++j)
-		{
-			m_parties[i].get_pokemon(j)->attack_multiplier = t_attack_multiplier;
-		}
-	}
-	m_attack_multiplier = t_attack_multiplier;
-}
-
-double Player::get_attack_multiplier() const
-{
-	return m_attack_multiplier;
-}
-
-void Player::set_clone_multiplier(int t_clone_multiplier)
-{
-	for (unsigned i = 0; i < m_parties_count; ++i)
-	{
-		for (unsigned j = 0; j < m_parties[i].get_pokemon_count(); ++j)
-		{
-			m_parties[i].get_pokemon(j)->clone_multiplier = t_clone_multiplier;
-		}
-	}
-	m_clone_multiplier = t_clone_multiplier;
-}
-
-int Player::get_clone_multiplier() const
-{
-	return m_clone_multiplier;
 }
 
 void Player::set_strategy(const Strategy &t_strategy)

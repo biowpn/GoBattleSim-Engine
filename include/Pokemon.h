@@ -41,16 +41,14 @@ public:
 	Move *cmove{nullptr};
 	unsigned cmoves_count{0};
 
-	// These two could be put into PokemonState,
-	// but leaving them here would make codes a lot easier
-	double attack_multiplier{1};
-	int clone_multiplier{1};
-
 	const Strategy *strategy{nullptr};
 };
 
 // Damage calculation as a public function
-int calc_damage(const Pokemon *, const Move *, const Pokemon *, int);
+int calc_damage(const Pokemon *attacker,
+				const Move *move,
+				const Pokemon *defender,
+				double multiplier);
 
 } // namespace GoBattleSim
 

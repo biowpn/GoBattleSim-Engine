@@ -23,10 +23,6 @@ public:
 	unsigned get_parties_count() const;
 	void add(const Party *);
 	void erase_parties();
-	void set_attack_multiplier(double);
-	double get_attack_multiplier() const;
-	void set_clone_multiplier(int);
-	int get_clone_multiplier() const;
 	void set_strategy(const Strategy &);
 
 	Party *get_head_party();
@@ -50,15 +46,14 @@ public:
 
 	// Battle state variables
 	int team{0};
+	double attack_multiplier{1.0};
+	int clone_multiplier{1};
 	Strategy strategy{STRATEGY_ATTACKER_NO_DODGE};
 
 private:
 	unsigned m_parties_count{0};
 	Party m_parties[MAX_NUM_PARTIES];
 	Party *m_party_head{nullptr};
-
-	double m_attack_multiplier{1};
-	int m_clone_multiplier{1};
 };
 
 } // namespace GoBattleSim

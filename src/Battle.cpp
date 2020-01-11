@@ -563,6 +563,12 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 	}
 	subject_st.charge(move->energy);
 
+	double multiplier = ps.player.attack_multiplier;
+	if (GameMaster::get().boosted_weather(move->poketype) == m_weather)
+	{
+		multiplier *= GameMaster::get().wab_multiplier;
+	}
+
 	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		if (m_player_states[i].player.team == ps.player.team)
@@ -576,7 +582,7 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 		{
 			continue;
 		}
-		auto damage = calc_damage(subject, move, opponent, m_weather);
+		auto damage = calc_damage(subject, move, opponent, multiplier) * ps.player.clone_multiplier;
 		if (m_time < opponent_st.damage_reduction_expiry)
 		{
 			damage = (1 - GameMaster::get().dodge_damage_reduction_percent) * damage;

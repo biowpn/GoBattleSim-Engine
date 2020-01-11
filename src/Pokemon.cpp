@@ -10,21 +10,19 @@
 namespace GoBattleSim
 {
 
-int calc_damage(const Pokemon *t_attacker, const Move *t_move, const Pokemon *t_defender, int t_weather)
+int calc_damage(const Pokemon *attacker,
+				const Move *move,
+				const Pokemon *defender,
+				double multiplier)
 {
-	double multiplier = t_attacker->attack_multiplier;
-	if (t_move->poketype == t_attacker->poketype1 || t_move->poketype == t_attacker->poketype2)
+	if (move->poketype == attacker->poketype1 || move->poketype == attacker->poketype2)
 	{
 		multiplier *= GameMaster::get().stab_multiplier;
 	}
-	if (GameMaster::get().boosted_weather(t_move->poketype) == t_weather)
-	{
-		multiplier *= GameMaster::get().wab_multiplier;
-	}
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype1);
-	multiplier *= GameMaster::get().effectiveness(t_move->poketype, t_defender->poketype2);
+	multiplier *= GameMaster::get().effectiveness(move->poketype, defender->poketype1);
+	multiplier *= GameMaster::get().effectiveness(move->poketype, defender->poketype2);
 
-	return (int)(0.5 * t_attacker->attack / t_defender->defense * t_move->power * multiplier + 1) * t_attacker->clone_multiplier;
+	return 0.5 * attacker->attack / defender->defense * move->power * multiplier + 1;
 }
 
 Pokemon::Pokemon(int t_poketype1, int t_poketype2, double t_attack, double t_defense, int t_max_hp)

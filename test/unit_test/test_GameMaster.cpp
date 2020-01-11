@@ -37,7 +37,6 @@ int main()
     attacker.poketype1 = 0;
     attacker.poketype2 = -1;
     attacker.attack = 200;
-    attacker.attack_multiplier = 1.0;
 
     defender.poketype1 = 1;
     defender.poketype2 = 2;
@@ -54,38 +53,26 @@ int main()
 
     std::cout << "testing STAB ... ";
     attacker.fmove.poketype = attacker.poketype1;
-    int dmg2 = calc_damage(&attacker, &attacker.fmove, &defender, 0);
+    int dmg2 = calc_damage(&attacker, &attacker.fmove, &defender, 1.0);
     assert(dmg2 > dmg1);
     std::cout << "success" << std::endl;
 
     std::cout << "testing 1x super effectiveness ... ";
     gm.effectiveness(attacker.fmove.poketype, defender.poketype1, 1.6);
-    int dmg3 = calc_damage(&attacker, &attacker.fmove, &defender, 0);
+    int dmg3 = calc_damage(&attacker, &attacker.fmove, &defender, 1.0);
     assert(dmg3 > dmg2);
     std::cout << "success" << std::endl;
 
     std::cout << "testing 2x super effectiveness ... ";
     gm.effectiveness(attacker.fmove.poketype, defender.poketype2, 1.6);
-    int dmg4 = calc_damage(&attacker, &attacker.fmove, &defender, 0);
+    int dmg4 = calc_damage(&attacker, &attacker.fmove, &defender, 1.0);
     assert(dmg4 > dmg3);
     std::cout << "success" << std::endl;
 
-    std::cout << "testing weather boost ... ";
+    std::cout << "testing multiplier ... ";
     gm.boosted_weather(attacker.fmove.poketype, 7);
-    int dmg5 = calc_damage(&attacker, &attacker.fmove, &defender, 7);
+    int dmg5 = calc_damage(&attacker, &attacker.fmove, &defender, 1.3);
     assert(dmg5 > dmg4);
-    std::cout << "success" << std::endl;
-
-    std::cout << "testing attack_multiplier ... ";
-    attacker.attack_multiplier = 1.3;
-    int dmg6 = calc_damage(&attacker, &attacker.fmove, &defender, 7);
-    assert(dmg6 > dmg5);
-    std::cout << "success" << std::endl;
-
-    std::cout << "testing clone_multiplier ... ";
-    attacker.clone_multiplier = 2;
-    int dmg7 = calc_damage(&attacker, &attacker.fmove, &defender, 7);
-    assert(dmg7 == 2 * dmg6);
     std::cout << "success" << std::endl;
 
     return 0;
