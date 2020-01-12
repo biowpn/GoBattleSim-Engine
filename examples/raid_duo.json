@@ -10,6 +10,7 @@
             "name": "Player 1",
             "team": 1,
             "attack_multiplier": 1.07,
+            "clone_multiplier": 2,
             "parties": [
                 {
                     "revive": true,
@@ -50,48 +51,6 @@
         },
         {
             "name": "Player 2",
-            "team": 1,
-            "attack_multiplier": 1.07,
-            "parties": [
-                {
-                    "revive": true,
-                    "delay": 0,
-                    "pokemon": [
-                        {
-                            "name": "tyranitar",
-                            "pokeType1": "dark",
-                            "pokeType2": "rock",
-                            "copies": 6,
-                            "immortal": false,
-                            "attack": 210.2198,
-                            "defense": 175.4466,
-                            "maxHP": 189,
-                            "strategy": "ATTACKER_NO_DODGE",
-                            "fmove": {
-                                "name": "smack down",
-                                "pokeType": "rock",
-                                "power": 16,
-                                "energy": 8,
-                                "duration": 1200,
-                                "dws": 500
-                            },
-                            "cmoves": [
-                                {
-                                    "name": "stone edge",
-                                    "pokeType": "rock",
-                                    "power": 100,
-                                    "energy": -100,
-                                    "duration": 2300,
-                                    "dws": 700
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "Player 3",
             "team": 0,
             "attack_multiplier": 1,
             "parties": [

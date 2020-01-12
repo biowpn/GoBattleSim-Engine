@@ -4,42 +4,6 @@
     "enableLog": true,
     "players": [
         {
-            "team": 0,
-            "parties": [
-                {
-                    "pokemon": [
-                        {
-                            "name": "Machamp",
-                            "pokeType1": "fighting",
-                            "pokeType2": "none",
-                            "attack": 181.7700047492981,
-                            "defense": 127.02000331878662,
-                            "maxHP": 3600,
-                            "strategy": "DEFENDER",
-                            "fmove": {
-                                "name": "Counter",
-                                "pokeType": "fighting",
-                                "power": 12,
-                                "energy": 8,
-                                "duration": 900,
-                                "dws": 700
-                            },
-                            "cmoves": [
-                                {
-                                    "name": "Dynamic Punch",
-                                    "pokeType": "fighting",
-                                    "power": 90,
-                                    "energy": -50,
-                                    "duration": 2700,
-                                    "dws": 1200
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "team": 1,
             "parties": [
                 {
@@ -68,6 +32,42 @@
                                     "energy": -100,
                                     "duration": 2800,
                                     "dws": 1300
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "team": 0,
+            "parties": [
+                {
+                    "pokemon": [
+                        {
+                            "name": "Machamp",
+                            "pokeType1": "fighting",
+                            "pokeType2": "none",
+                            "attack": 181.7700047492981,
+                            "defense": 127.02000331878662,
+                            "maxHP": 3600,
+                            "strategy": "DEFENDER",
+                            "fmove": {
+                                "name": "Counter",
+                                "pokeType": "fighting",
+                                "power": 12,
+                                "energy": 8,
+                                "duration": 900,
+                                "dws": 700
+                            },
+                            "cmoves": [
+                                {
+                                    "name": "Dynamic Punch",
+                                    "pokeType": "fighting",
+                                    "power": 90,
+                                    "energy": -50,
+                                    "duration": 2700,
+                                    "dws": 1200
                                 }
                             ]
                         }
