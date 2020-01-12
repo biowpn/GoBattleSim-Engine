@@ -88,6 +88,13 @@ void Player::erase_parties()
 void Player::set_strategy(const Strategy &t_strategy)
 {
 	strategy = t_strategy;
+	for (unsigned i = 0; i < m_parties_count; ++i)
+	{
+		for (unsigned j = 0; j < m_parties[i].get_pokemon_count(); ++j)
+		{
+			m_parties[i].get_pokemon(j)->strategy = &t_strategy;
+		}
+	}
 }
 
 unsigned Player::get_pokemon_count() const
