@@ -145,7 +145,7 @@ void from_json(const json &j, Pokemon &pkm)
         }
         if (pkm.strategy == nullptr)
         {
-            sprintf(err_msg, "unknown strategy: %s", strategy_name.c_str());
+            sprintf(err_msg, "unknown PVE strategy: %s", strategy_name.c_str());
             throw std::runtime_error(err_msg);
         }
     }
@@ -226,7 +226,7 @@ void from_json(const json &j, PvPStrategy &strategy)
             return;
         }
     }
-    sprintf(err_msg, "unknown strategy: %s", strategy_name.c_str());
+    sprintf(err_msg, "unknown PVP strategy: %s", strategy_name.c_str());
     throw std::runtime_error(err_msg);
 }
 
@@ -502,7 +502,30 @@ void from_json(const json &j, BattleMode &mode)
     }
     else
     {
-        sprintf(err_msg, "unknown battle mode '%s'", mode_str.c_str());
+        sprintf(err_msg, "unknown battle mode: %s", mode_str.c_str());
+        throw std::runtime_error(err_msg);
+    }
+}
+
+void from_json(const json &j, AggregationMode &agg)
+{
+    auto agg_str = j.get<std::string>();
+    std::for_each(agg_str.begin(), agg_str.end(), ::tolower);
+    if (agg_str == "none" || agg_str == "enum")
+    {
+        agg = AggregationMode::None;
+    }
+    else if (agg_str == "average" || agg_str == "avrg")
+    {
+        agg = AggregationMode::Average;
+    }
+    else if (agg_str == "branching" || agg_str == "tree")
+    {
+        agg = AggregationMode::Branching;
+    }
+    else
+    {
+        sprintf(err_msg, "unknown aggregation: %s", agg_str.c_str());
         throw std::runtime_error(err_msg);
     }
 }
@@ -520,30 +543,7 @@ void from_json(const json &j, PvESimInput &input)
 
     try_get_to(j, "numSims", 1u, input.num_sims);
     try_get_to(j, "enableLog", false, input.enable_log);
-
-    input.aggregation = AggregationMode::None;
-    if (j.find("aggregation") != j.end())
-    {
-        auto agg_str = j.at("aggregation").get<std::string>();
-        std::for_each(agg_str.begin(), agg_str.end(), ::tolower);
-        if (agg_str == "none" || agg_str == "enum")
-        {
-            input.aggregation = AggregationMode::None;
-        }
-        else if (agg_str == "average" || agg_str == "avrg")
-        {
-            input.aggregation = AggregationMode::Average;
-        }
-        else if (agg_str == "branching" || agg_str == "tree")
-        {
-            input.aggregation = AggregationMode::Branching;
-        }
-        else
-        {
-            sprintf(err_msg, "unknown aggregation ('%s')", agg_str.c_str());
-            throw std::runtime_error(err_msg);
-        }
-    }
+    try_get_to(j, "aggregation", AggregationMode::None, input.aggregation);
 }
 
 void to_json(json &j, const PokemonState &pkm_st)

@@ -104,7 +104,7 @@ void GoBattleSimApp::run()
     }
     else
     {
-        sprintf(err_msg, "unknown battle mode (%d)", (int)battle_mode);
+        sprintf(err_msg, "unknown battle mode: %d", (int)battle_mode);
         throw std::runtime_error(err_msg);
     }
 }

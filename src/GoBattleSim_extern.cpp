@@ -50,9 +50,7 @@ const char *GBS_version()
 
 const char *GBS_error()
 {
-	MessageCenter::get().set_msg(err_msg);
-	strcpy(err_msg, "");
-	return MessageCenter::get().get_msg();
+	return err_msg;
 }
 
 void GBS_prepare(const char *input_j)

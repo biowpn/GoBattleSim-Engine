@@ -1,0 +1,89 @@
+{
+    "battleMode": "pvp",
+    "timelimit": 480,
+    "numSims": 1,
+    "aggregation": "enum",
+    "enableLog": true,
+    "pokemon": [
+        {
+            "name": "latios",
+            "pokeType1": "dragon",
+            "pokeType2": "psychic",
+            "copies": 1,
+            "immortal": false,
+            "attack": 223.6549,
+            "defense": 179.3981,
+            "maxHP": 162,
+            "fmove": {
+                "name": "dragon breath",
+                "pokeType": "dragon",
+                "power": 4,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "dragon claw",
+                    "pokeType": "dragon",
+                    "power": 50,
+                    "energy": -35,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "solar beam",
+                    "pokeType": "grass",
+                    "power": 150,
+                    "energy": -80,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        },
+        {
+            "name": "latias",
+            "pokeType1": "dragon",
+            "pokeType2": "psychic",
+            "copies": 1,
+            "immortal": false,
+            "attack": 192.0429,
+            "defense": 206.2683,
+            "maxHP": 162,
+            "fmove": {
+                "name": "dragon breath",
+                "pokeType": "dragon",
+                "power": 4,
+                "energy": 3,
+                "duration": 1,
+                "dws": 0
+            },
+            "cmoves": [
+                {
+                    "name": "outrage",
+                    "pokeType": "dragon",
+                    "power": 110,
+                    "energy": -60,
+                    "duration": 0,
+                    "dws": 0
+                },
+                {
+                    "name": "thunder",
+                    "pokeType": "electric",
+                    "power": 100,
+                    "energy": -60,
+                    "duration": 0,
+                    "dws": 0
+                }
+            ]
+        }
+    ],
+    "strategies": [
+        "PVP_ADVANCE",
+        "PVP_ADVANCE"
+    ],
+    "numShields": [
+        0,
+        0
+    ]
+}
