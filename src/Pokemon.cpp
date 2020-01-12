@@ -45,6 +45,7 @@ Pokemon &Pokemon::operator=(const Pokemon &other)
 	immortal = other.immortal;
 
 	fmove = other.fmove;
+	cmoves_count = other.cmoves_count;
 	for (unsigned i = 0; i < other.cmoves_count; ++i)
 	{
 		cmoves[i] = other.cmoves[i];
