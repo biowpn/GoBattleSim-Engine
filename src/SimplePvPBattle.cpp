@@ -91,6 +91,7 @@ void SimplePvPBattle::init()
 		m_pkm_states[i].shields = m_num_shields_max[i];
 		m_pkm_states[i].decision.type = ActionType::None;
 	}
+	m_turn = 0;
 	m_ended = false;
 	erase_log();
 }

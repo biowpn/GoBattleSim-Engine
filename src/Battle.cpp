@@ -237,8 +237,7 @@ const std::vector<TimelineEvent> &Battle::get_log()
 void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 {
 	auto &ps = m_player_states[player_idx];
-	auto old_head_idx = ps.head_index;
-	auto &pkm_st = m_pokemon_states[old_head_idx];
+	auto &pkm_st = m_pokemon_states[ps.head_index];
 	auto party = ps.player.get_head_party();
 	++pkm_st.num_deaths;
 	pkm_st.duration = m_time - pkm_st.duration;
@@ -268,14 +267,6 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 	else if (is_defeated(ps.player.team)) // Player is out of play. Check if his team is defeated
 	{
 		m_defeated_team = ps.player.team;
-	}
-
-	if (m_enable_log)
-	{
-		append_log({m_time,
-					EventType::Exit,
-					player_idx,
-					static_cast<short>(old_head_idx)});
 	}
 }
 
@@ -610,6 +601,13 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 		if (!opponent_st.is_alive())
 		{
 			handle_fainted_pokemon(i);
+			if (m_enable_log)
+			{
+				append_log({m_time,
+							EventType::Exit,
+							i,
+							static_cast<short>(opponent_idx)});
+			}
 		}
 	}
 }
