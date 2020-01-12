@@ -100,7 +100,7 @@ private:
 	PokemonState m_pokemon_states[MAX_NUM_PLAYERS * MAX_NUM_PARTIES * MAX_NUM_POKEMON];
 	unsigned short m_pokemon_count{0};
 
-	bool m_has_log{false};
+	bool m_enable_log{false};
 	int m_time_limit{0};
 	int m_time{0};
 	int m_weather{-1};

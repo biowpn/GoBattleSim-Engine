@@ -59,7 +59,7 @@ void Battle::set_weather(int t_weather)
 
 void Battle::set_enable_log(bool enable_log)
 {
-	m_has_log = enable_log;
+	m_enable_log = enable_log;
 }
 
 short Battle::search(const Pokemon *t_pokemon)
@@ -167,21 +167,21 @@ void Battle::next(const TimelineEvent &event)
 		break;
 	case EventType::Fast:
 	case EventType::Charged:
-		if (m_has_log)
+		if (m_enable_log)
 		{
 			append_log(event);
 		}
 		handle_event_attack(event);
 		break;
 	case EventType::Dodge:
-		if (m_has_log)
+		if (m_enable_log)
 		{
 			append_log(event);
 		}
 		handle_event_dodge(event);
 		break;
 	case EventType::Enter:
-		if (m_has_log)
+		if (m_enable_log)
 		{
 			append_log(event);
 		}
@@ -237,7 +237,8 @@ const std::vector<TimelineEvent> &Battle::get_log()
 void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 {
 	auto &ps = m_player_states[player_idx];
-	auto &pkm_st = m_pokemon_states[ps.head_index];
+	auto old_head_idx = ps.head_index;
+	auto &pkm_st = m_pokemon_states[old_head_idx];
 	auto party = ps.player.get_head_party();
 	++pkm_st.num_deaths;
 	pkm_st.duration = m_time - pkm_st.duration;
@@ -267,6 +268,14 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 	else if (is_defeated(ps.player.team)) // Player is out of play. Check if his team is defeated
 	{
 		m_defeated_team = ps.player.team;
+	}
+
+	if (m_enable_log)
+	{
+		append_log({m_time,
+					EventType::Exit,
+					player_idx,
+					static_cast<short>(old_head_idx)});
 	}
 }
 
@@ -591,7 +600,7 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 		subject_st.attribute_damage(damage, event.type == EventType::Fast);
 		opponent_st.hurt(damage);
 		opponent_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
-		if (m_has_log)
+		if (m_enable_log)
 		{
 			append_log({m_time,
 						EventType::Damage,
