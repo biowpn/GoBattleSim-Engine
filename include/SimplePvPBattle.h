@@ -25,6 +25,7 @@ struct SimplePvPBattleOutcome
 	double tdo_percent[2];
 
 	// only available for non-branching mode
+	int tdo[2];
 	int duration;
 	PvPPokemonState pokemon_states[2];
 	std::vector<TimelineEvent> battle_log;

@@ -354,11 +354,13 @@ SimplePvPBattleOutcome SimplePvPBattle::get_outcome()
 	}
 	else
 	{
-		double raw_tdos[2] = {
-			1 - (double)m_pkm_states[1].hp / m_pkm[1].max_hp,
-			1 - (double)m_pkm_states[0].hp / m_pkm[0].max_hp};
+		int tdo[2] = {m_pkm[1].max_hp - m_pkm_states[1].hp, m_pkm[0].max_hp - m_pkm_states[0].hp};
+		double percents[2] = {
+			(double)tdo[0] / m_pkm[1].max_hp,
+			(double)tdo[1] / m_pkm[0].max_hp};
 		return {
-			{std::min(raw_tdos[0], 1.0), std::min(raw_tdos[1], 1.0)},
+			{std::min(percents[0], 1.0), std::min(percents[1], 1.0)},
+			{tdo[0], tdo[1]},
 			m_turn,
 			{m_pkm_states[0], m_pkm_states[1]},
 			m_battle_log};

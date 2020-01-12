@@ -618,12 +618,33 @@ void from_json(const json &j, PvPSimpleSimInput &input)
     try_get_to(j, "enableLog", false, input.enable_log);
 }
 
-void to_json(json &j, const SimplePvPBattleOutcome &output)
+void to_json(json &j, const PvPPokemonState &pkm_st)
+{
+    j["hp"] = pkm_st.hp;
+    j["maxHP"] = 0;
+    j["energy"] = pkm_st.energy;
+    j["tdo"] = 0;
+    j["tdoFast"] = 0;
+    j["numDeaths"] = pkm_st.hp <= 0;
+    j["duration"] = 0;
+    j["dps"] = 0;
+    j["numFastAttacks"] = 0;
+    j["numChargedAttacks"] = 0;
+}
+
+void to_json(json &j, const SimplePvPBattleOutcome &outcome)
 {
     j["statistics"] = {};
-    j["statistics"]["tdoPercent"] = output.tdo_percent;
-    j["statistics"]["duration"] = output.duration;
-    j["battleLog"] = output.battle_log;
+    j["statistics"]["duration"] = outcome.duration;
+    j["statistics"]["win"] = ((outcome.tdo_percent[0] >= 1) - (outcome.tdo_percent[1] >= 1) + 1) * 0.5;
+    j["statistics"]["tdo"] = outcome.tdo;
+    j["statistics"]["tdoPercent"] = outcome.tdo_percent[0] * 100;
+    j["statistics"]["dps"] = 0;
+    j["statistics"]["numDeaths"] = (outcome.pokemon_states[0].hp <= 0) + (outcome.pokemon_states[0].hp <= 1);
+
+    j["pokemon"] = outcome.pokemon_states;
+
+    j["battleLog"] = outcome.battle_log;
 }
 
 void from_json(const json &j, BattleMatrixSimInput &input)
