@@ -16,7 +16,9 @@ enum class EventType : unsigned char
     Charged,
     Damage,
     Dodge,
-    Enter
+    Effect,
+    Enter,
+    Exit
 };
 
 struct TimelineEvent

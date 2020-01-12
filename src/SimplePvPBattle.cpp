@@ -92,13 +92,20 @@ void SimplePvPBattle::init()
 		m_pkm_states[i].decision.type = ActionType::None;
 	}
 	m_ended = false;
+	erase_log();
 }
 
 void SimplePvPBattle::start()
 {
+	if (m_enable_log)
+	{
+		append_log({0, EventType::Enter, 0, 0});
+		append_log({0, EventType::Enter, 1, 1});
+	}
+
 	while (!m_ended)
 	{
-		for (int i = 0; i < 2; ++i)
+		for (Player_Index_t i = 0; i < 2; ++i)
 		{
 			if (m_pkm_states[i].decision.type == ActionType::None && m_pkm_states[i].cooldown <= 0)
 			{
@@ -164,7 +171,7 @@ void SimplePvPBattle::start()
 			break;
 		}
 
-		for (int i = 0; i < 2; ++i)
+		for (Player_Index_t i = 0; i < 2; ++i)
 		{
 			--m_pkm_states[i].cooldown;
 		}
@@ -173,25 +180,31 @@ void SimplePvPBattle::start()
 	}
 }
 
-void SimplePvPBattle::register_action_fast(int i, const Action &t_action)
+void SimplePvPBattle::register_action_fast(Player_Index_t i, const Action &t_action)
 {
-	const Move *move = m_pkm[i].get_fmove(0);
+	auto move = m_pkm[i].get_fmove(0);
 	m_pkm_states[i].energy += move->energy;
 	if (m_pkm_states[i].energy > static_cast<int>(GameMaster::get().max_energy))
 	{
 		m_pkm_states[i].energy = GameMaster::get().max_energy;
 	}
-	int damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().fast_attack_bonus_multiplier);
+	auto damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().fast_attack_bonus_multiplier);
 	m_pkm_states[1 - i].hp -= damage;
 	if (m_pkm_states[1 - i].hp <= 0)
 	{
-		m_ended = true;
+		handle_fainted_pokemon(1 - i);
 	}
 	m_pkm_states[i].cooldown = move->duration;
 	m_pkm_states[i].decision.type = ActionType::None;
+
+	if (m_enable_log)
+	{
+		append_log({m_turn, EventType::Fast, i, 0});
+		append_log({m_turn, EventType::Damage, static_cast<Player_Index_t>(1 - i), static_cast<short>(damage)});
+	}
 }
 
-void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
+void SimplePvPBattle::register_action_charged(Player_Index_t i, const Action &t_action)
 {
 	int damage = 0;
 	auto move = m_pkm[i].get_cmove(t_action.value);
@@ -220,11 +233,17 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	m_pkm_states[1 - i].hp -= damage;
 	if (m_pkm_states[1 - i].hp <= 0)
 	{
-		m_ended = true;
+		handle_fainted_pokemon(1 - i);
 	}
 	m_pkm_states[i].cooldown = 0;
 	m_pkm_states[1 - i].cooldown = 0;
 	m_pkm_states[i].decision.type = ActionType::None;
+
+	if (m_enable_log)
+	{
+		append_log({m_turn, EventType::Charged, i, t_action.value});
+		append_log({m_turn, EventType::Damage, static_cast<Player_Index_t>(1 - i), static_cast<short>(damage)});
+	}
 
 	if (move->effect.activation_chance > 0)
 	{
@@ -232,7 +251,7 @@ void SimplePvPBattle::register_action_charged(int i, const Action &t_action)
 	}
 }
 
-void SimplePvPBattle::decide_branch_move_effect(int i, const MoveEffect &t_effect)
+void SimplePvPBattle::decide_branch_move_effect(Player_Index_t i, const MoveEffect &t_effect)
 {
 	if (t_effect.activation_chance >= 1)
 	{
@@ -262,15 +281,29 @@ void SimplePvPBattle::decide_branch_move_effect(int i, const MoveEffect &t_effec
 	}
 }
 
-void SimplePvPBattle::handle_move_effect(int i, const MoveEffect &t_effect)
+void SimplePvPBattle::handle_move_effect(Player_Index_t i, const MoveEffect &t_effect)
 {
 	m_pkm[i].buff(t_effect.self_atk_delta, t_effect.self_def_delta);
 	m_pkm[1 - i].buff(t_effect.target_atk_delta, t_effect.target_def_delta);
+
+	if (m_enable_log)
+	{
+		append_log({m_turn, EventType::Effect, i, i});
+	}
 }
 
-void SimplePvPBattle::append_log(const TimelineEvent &event)
+void SimplePvPBattle::handle_fainted_pokemon(Player_Index_t i)
 {
-	m_battle_log.push_back(event);
+	m_ended = true;
+	if (m_enable_log)
+	{
+		append_log({m_turn, EventType::Exit, i, i});
+	}
+}
+
+void SimplePvPBattle::append_log(TimelineEvent &&event)
+{
+	m_battle_log.emplace_back(std::move(event));
 }
 
 void SimplePvPBattle::erase_log()
@@ -278,7 +311,7 @@ void SimplePvPBattle::erase_log()
 	m_battle_log.clear();
 }
 
-PvPStrategyInput SimplePvPBattle::generate_strat_input(int i)
+PvPStrategyInput SimplePvPBattle::generate_strat_input(Player_Index_t i)
 {
 	return {
 		&m_pkm[i],

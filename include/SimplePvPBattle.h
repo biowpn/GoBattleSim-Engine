@@ -48,15 +48,16 @@ public:
 	SimplePvPBattleOutcome get_outcome();
 
 protected:
-	void register_action_fast(int, const Action &);
-	void register_action_charged(int, const Action &);
-	void decide_branch_move_effect(int, const MoveEffect &);
-	void handle_move_effect(int, const MoveEffect &);
+	void register_action_fast(Player_Index_t, const Action &);
+	void register_action_charged(Player_Index_t, const Action &);
+	void decide_branch_move_effect(Player_Index_t, const MoveEffect &);
+	void handle_move_effect(Player_Index_t, const MoveEffect &);
+	void handle_fainted_pokemon(Player_Index_t);
 
-	void append_log(const TimelineEvent &);
+	void append_log(TimelineEvent &&);
 	void erase_log();
 
-	PvPStrategyInput generate_strat_input(int);
+	PvPStrategyInput generate_strat_input(Player_Index_t);
 
 private:
 	PvPPokemon m_pkm[2];

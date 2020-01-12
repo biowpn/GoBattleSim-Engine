@@ -467,8 +467,14 @@ void to_json(json &j, const EventType &event_type)
     case EventType::Dodge:
         j = "Dodge";
         break;
+    case EventType::Effect:
+        j = "Effect";
+        break;
     case EventType::Enter:
         j = "Enter";
+        break;
+    case EventType::Exit:
+        j = "Exit";
         break;
     default:
         j = "Unknown";

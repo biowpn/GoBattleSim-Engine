@@ -37,8 +37,22 @@ Pokemon::Pokemon(const Pokemon &other)
 
 Pokemon &Pokemon::operator=(const Pokemon &other)
 {
-	memcpy(this, &other, sizeof(Pokemon));
+	poketype1 = other.poketype1;
+	poketype2 = other.poketype2;
+	attack = other.attack;
+	defense = other.defense;
+	max_hp = other.max_hp;
+	immortal = other.immortal;
+
+	fmove = other.fmove;
+	for (unsigned i = 0; i < other.cmoves_count; ++i)
+	{
+		cmoves[i] = other.cmoves[i];
+	}
 	cmove = cmoves + (other.cmove - other.cmoves);
+
+	strategy = other.strategy;
+
 	return *this;
 }
 
