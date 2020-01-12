@@ -85,6 +85,7 @@ void SimplePvPBattle::init()
 {
 	for (int i = 0; i < 2; ++i)
 	{
+		m_pkm[i].init();
 		m_pkm_states[i].hp = m_pkm[i].max_hp;
 		m_pkm_states[i].energy = 0;
 		m_pkm_states[i].cooldown = 0;

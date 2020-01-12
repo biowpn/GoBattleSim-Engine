@@ -159,6 +159,8 @@ void to_json(json &j, const PvPPokemon &pkm)
 void from_json(const json &j, PvPPokemon &pkm)
 {
     from_json(j, static_cast<Pokemon &>(pkm));
+    j.at("attack").get_to(pkm.attack_init);
+    j.at("defense").get_to(pkm.defense_init);
 }
 
 void to_json(json &j, const Party &party)

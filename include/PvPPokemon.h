@@ -18,12 +18,12 @@ public:
 	void init();
 	void buff(int, int);
 
-	double attack_init;
-	double defense_init;
-	int attack_stage;
-	int defense_stage;
+	double attack_init{0.0};
+	double defense_init{0.0};
+	int attack_stage{0};
+	int defense_stage{0};
 
-	int num_shields_max;
+	int num_shields_max{0};
 };
 
 } // namespace GoBattleSim
