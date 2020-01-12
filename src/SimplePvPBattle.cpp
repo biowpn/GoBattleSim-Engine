@@ -103,6 +103,22 @@ void SimplePvPBattle::start()
 		append_log({0, EventType::Enter, 1, 1});
 	}
 
+	go();
+
+	for (Player_Index_t i = 0; i < 2; ++i)
+	{
+		if (m_pkm_states[i].hp <= 0)
+		{
+			if (m_enable_log)
+			{
+				append_log({m_turn, EventType::Exit, i, i});
+			}
+		}
+	}
+}
+
+void SimplePvPBattle::go()
+{
 	while (!m_ended)
 	{
 		for (Player_Index_t i = 0; i < 2; ++i)
@@ -130,9 +146,12 @@ void SimplePvPBattle::start()
 			break;
 		case ActionType::Fast:
 			register_action_fast(0, m_pkm_states[0].decision);
+			// do not add if(m_ended){...} here
+			// want to support simultaneous knock out
 			switch (m_pkm_states[1].decision.type)
 			{
 			case ActionType::Fast:
+				// want to support simultaneous knock out
 				register_action_fast(1, m_pkm_states[1].decision);
 				break;
 			case ActionType::Charged:
@@ -190,10 +209,7 @@ void SimplePvPBattle::register_action_fast(Player_Index_t i, const Action &t_act
 	}
 	auto damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().fast_attack_bonus_multiplier);
 	m_pkm_states[1 - i].hp -= damage;
-	if (m_pkm_states[1 - i].hp <= 0)
-	{
-		handle_fainted_pokemon(1 - i);
-	}
+
 	m_pkm_states[i].cooldown = move->duration;
 	m_pkm_states[i].decision.type = ActionType::None;
 
@@ -201,6 +217,11 @@ void SimplePvPBattle::register_action_fast(Player_Index_t i, const Action &t_act
 	{
 		append_log({m_turn, EventType::Fast, i, 0});
 		append_log({m_turn, EventType::Damage, static_cast<Player_Index_t>(1 - i), static_cast<short>(damage)});
+	}
+
+	if (m_pkm_states[1 - i].hp <= 0)
+	{
+		handle_fainted_pokemon(1 - i);
 	}
 }
 
@@ -231,10 +252,6 @@ void SimplePvPBattle::register_action_charged(Player_Index_t i, const Action &t_
 		damage = calc_damage(&m_pkm[i], move, &m_pkm[1 - i], GameMaster::get().charged_attack_bonus_multiplier);
 	}
 	m_pkm_states[1 - i].hp -= damage;
-	if (m_pkm_states[1 - i].hp <= 0)
-	{
-		handle_fainted_pokemon(1 - i);
-	}
 	m_pkm_states[i].cooldown = 0;
 	m_pkm_states[1 - i].cooldown = 0;
 	m_pkm_states[i].decision.type = ActionType::None;
@@ -245,7 +262,11 @@ void SimplePvPBattle::register_action_charged(Player_Index_t i, const Action &t_
 		append_log({m_turn, EventType::Damage, static_cast<Player_Index_t>(1 - i), static_cast<short>(damage)});
 	}
 
-	if (move->effect.activation_chance > 0)
+	if (m_pkm_states[1 - i].hp <= 0)
+	{
+		handle_fainted_pokemon(1 - i);
+	}
+	else if (move->effect.activation_chance > 0)
 	{
 		decide_branch_move_effect(i, move->effect);
 	}
@@ -295,10 +316,6 @@ void SimplePvPBattle::handle_move_effect(Player_Index_t i, const MoveEffect &t_e
 void SimplePvPBattle::handle_fainted_pokemon(Player_Index_t i)
 {
 	m_ended = true;
-	if (m_enable_log)
-	{
-		append_log({m_turn, EventType::Exit, i, i});
-	}
 }
 
 void SimplePvPBattle::append_log(TimelineEvent &&event)

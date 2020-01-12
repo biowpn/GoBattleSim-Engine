@@ -48,6 +48,8 @@ public:
 	SimplePvPBattleOutcome get_outcome();
 
 protected:
+	void go();
+
 	void register_action_fast(Player_Index_t, const Action &);
 	void register_action_charged(Player_Index_t, const Action &);
 	void decide_branch_move_effect(Player_Index_t, const MoveEffect &);
