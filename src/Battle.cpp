@@ -628,14 +628,24 @@ void Battle::handle_event_enter(const TimelineEvent &event)
 	cur_head_st.active = false;
 	ps.player.set_head(m_pokemon[event.value]);
 	ps.head_index = event.value;
+	ps.current_action.time = m_time + 500;
 	ps.current_action.type = ActionType::None;
 	ps.buffer_action.type = ActionType::None;
 	new_head_st.active = true;
 	new_head_st.duration = m_time;
-	enqueue({m_time + 500,
+	if (ps.player.team != 0)
+	{
+		enqueue({m_time + 500,
 			 EventType::Free,
 			 player_index,
 			 event.value});
+	}
+	else{
+		enqueue({m_time + 2000,
+			 EventType::Free,
+			 player_index,
+			 event.value});
+	}
 }
 
 void Battle::append_log(const TimelineEvent &event)

@@ -53,20 +53,25 @@ void attacker_no_dodge_on_free(const StrategyInput &si, Action *r_action)
 void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
-	int time_of_damage = -1, time_of_enemy_cooldown = -1;
+	int time_of_damage = -1, time_of_enemy_cooldown = si.enemy_action.time;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
+		time_of_enemy_cooldown += si.enemy->get_fmove(0)->duration + 1500;
 	}
 	else if (si.enemy_action.type == ActionType::Charged)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
+		time_of_enemy_cooldown += si.enemy->cmove->duration + 1500;
+	}
+	else // enemy just enters battle
+	{
+		time_of_damage = si.enemy_action.time + 1500 + si.enemy->cmove->dws;
+		time_of_enemy_cooldown += 1500;
 	}
 	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expiry)
 	{
 		// Predict next time of damage
-		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->cmove->dws;
+		time_of_damage = time_of_enemy_cooldown + si.enemy->cmove->dws;
 		predicted_attack = true;
 	}
 	int time_till_damage = time_of_damage - si.time_free;
@@ -107,6 +112,12 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
 	}
+	if (time_of_damage < si.subject_state->damage_reduction_expiry)
+	{
+		// previous dodge still in effect
+		attacker_no_dodge_on_free(si, r_action);
+		return;
+	}
 	int time_till_damage = time_of_damage - si.time_free;
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
 	{
@@ -128,21 +139,26 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
-	int time_of_damage = -1, time_of_enemy_cooldown = -1;
+	int time_of_damage = -1, time_of_enemy_cooldown = si.enemy_action.time;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->get_fmove(0)->duration;
+		time_of_enemy_cooldown += si.enemy->get_fmove(0)->duration + 1500;
 	}
 	else if (si.enemy_action.type == ActionType::Charged)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
-		time_of_enemy_cooldown = si.enemy_action.time + si.enemy->cmove->duration;
+		time_of_enemy_cooldown += si.enemy->cmove->duration + 1500;
+	}
+	else // enemy just enters battle
+	{
+		time_of_damage = si.enemy_action.time + 1500 + si.enemy->get_fmove(0)->dws;
+		time_of_enemy_cooldown += 1500;
 	}
 	if (time_of_damage < si.time_free || time_of_damage < si.subject_state->damage_reduction_expiry)
 	{
 		// Predict next time of damage
-		time_of_damage = time_of_enemy_cooldown + 1500 + si.enemy->get_fmove(0)->dws;
+		time_of_damage = time_of_enemy_cooldown + si.enemy->get_fmove(0)->dws;
 		predicted_attack = true;
 	}
 	int time_till_damage = time_of_damage - si.time_free;
@@ -180,6 +196,13 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 	else
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->cmove->dws;
+	}
+	if (time_of_damage < si.subject_state->damage_reduction_expiry)
+	{
+		// previous dodge still in effect
+		// to play if safe, use fast move
+		r_action->type = ActionType::Fast;
+		return;
 	}
 	int time_till_damage = time_of_damage - si.time_free;
 	if (time_till_damage > si.subject->cmove->duration && si.subject_state->energy + si.subject->cmove->energy >= 0) // Can squeeze in one charge
