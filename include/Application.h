@@ -29,6 +29,7 @@ struct PvESimInput
     std::vector<Player> players;
     int weather{-1};
     int time_limit{0};
+    unsigned background_dps{0};
     unsigned num_sims{0};
     AggregationMode aggregation{AggregationMode::None};
     bool enable_log{false};

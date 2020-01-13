@@ -553,6 +553,7 @@ void from_json(const json &j, PvESimInput &input)
     std::string weather_name{""};
     try_get_to(j, "weather", weather_name);
     input.weather = weathermap.to_idx(weather_name);
+    try_get_to(j, "backgroundDPS", input.background_dps);
 
     try_get_to(j, "numSims", 1u, input.num_sims);
     try_get_to(j, "enableLog", false, input.enable_log);

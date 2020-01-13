@@ -32,6 +32,7 @@ void GoBattleSimApp::prepare(const PvESimInput &input)
     }
     m_pve_battle.set_time_limit(input.time_limit);
     m_pve_battle.set_weather(input.weather);
+    m_pve_battle.set_background_dps(input.background_dps);
     m_pve_battle.set_enable_log(input.enable_log);
 
     m_pve_output.clear();
