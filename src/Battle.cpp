@@ -47,7 +47,7 @@ void Battle::fetch_pokemon(Player &player)
 	m_pokemon_count = out_first - m_pokemon;
 }
 
-void Battle::set_time_limit(int time_limit)
+void Battle::set_time_limit(unsigned time_limit)
 {
 	m_time_limit = time_limit;
 }
@@ -276,7 +276,7 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 					static_cast<short>(ps.head_index)});
 	}
 
-	int time_new_enter = -1;
+	unsigned time_new_enter = 0;
 	if (select_next_pokemon(ps)) // Select next Pokemon from current party
 	{
 		time_new_enter = m_time + GameMaster::get().swap_duration;
@@ -363,7 +363,7 @@ bool Battle::select_next_party(PlayerState &ps)
 
 bool Battle::is_defeated(int team)
 {
-	for (unsigned i = 0; i < m_players_count; ++i)
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		const auto &ps = m_player_states[i];
 		const auto &pkm_st = m_pokemon_states[ps.head_index];
@@ -410,7 +410,7 @@ void Battle::register_action(Player_Index_t player_idx, const Action &t_action)
 void Battle::register_action_fast(Player_Index_t player_idx, const Action &t_action)
 {
 	auto &ps = m_player_states[player_idx];
-	int time_action_start = m_time + t_action.delay;
+	auto time_action_start = m_time + t_action.delay;
 	if (ps.player.team != 0)
 	{
 		time_action_start += GameMaster::get().fast_attack_lag;
@@ -439,7 +439,7 @@ void Battle::register_action_charged(Player_Index_t player_idx, const Action &t_
 	auto &ps = m_player_states[player_idx];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
 	auto move = m_pokemon[ps.head_index]->get_cmove(t_action.value);
-	int time_action_start = m_time + t_action.delay;
+	auto time_action_start = m_time + t_action.delay;
 	if (ps.player.team != 0)
 	{
 		time_action_start += GameMaster::get().charged_attack_lag;
@@ -470,7 +470,7 @@ void Battle::register_action_charged(Player_Index_t player_idx, const Action &t_
 void Battle::register_action_dodge(Player_Index_t player_idx, const Action &t_action)
 {
 	auto &ps = m_player_states[player_idx];
-	int time_action_start = m_time + t_action.delay;
+	auto time_action_start = m_time + t_action.delay;
 	enqueue({time_action_start,
 			 EventType::Dodge,
 			 player_idx});
@@ -483,7 +483,7 @@ void Battle::register_action_dodge(Player_Index_t player_idx, const Action &t_ac
 void Battle::register_action_switch(Player_Index_t player_idx, const Action &t_action)
 {
 	auto &ps = m_player_states[player_idx];
-	int time_action_start = m_time + t_action.delay;
+	auto time_action_start = m_time + t_action.delay;
 	enqueue({time_action_start,
 			 EventType::Enter,
 			 player_idx,
@@ -553,11 +553,13 @@ void Battle::handle_event_free(const TimelineEvent &event)
 void Battle::handle_event_announce(const TimelineEvent &event)
 {
 	int team = m_player_states[event.player].player.team;
-	for (unsigned i = 0; i < m_players_count; ++i)
+	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		auto &ps = m_player_states[i];
 		if (ps.player.team == team)
+		{
 			continue;
+		}
 		if (ps.player.strategy.on_attack)
 		{
 			if (ps.current_action.type == ActionType::None || ps.current_action.type == ActionType::Wait)

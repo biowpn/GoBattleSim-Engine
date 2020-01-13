@@ -29,7 +29,7 @@ public:
 	void add_player(const Player *);
 	Player *get_player(Player_Index_t idx);
 	void erase_players();
-	void set_time_limit(int);
+	void set_time_limit(unsigned);
 	void set_weather(int);
 	void set_background_dps(unsigned);
 	void set_enable_log(bool);
@@ -43,7 +43,7 @@ protected:
 	{
 		Player player;
 		unsigned short head_index;
-		int time_free;
+		unsigned time_free;
 		Action current_action;
 		Action buffer_action;
 	};
@@ -103,8 +103,8 @@ private:
 	unsigned short m_pokemon_count{0};
 
 	bool m_enable_log{false};
-	int m_time_limit{0};
-	int m_time{0};
+	unsigned m_time_limit{0};
+	unsigned m_time{0};
 	int m_weather{-1};
 	int m_defeated_team{-1};
 	unsigned m_background_dps{0};

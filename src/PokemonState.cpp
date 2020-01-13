@@ -45,7 +45,7 @@ void PokemonState::hurt(int t_damage)
     hp -= t_damage;
 }
 
-void PokemonState::attribute_damage(int t_damage, bool t_is_fmove)
+void PokemonState::attribute_damage(unsigned t_damage, bool t_is_fmove)
 {
     tdo += t_damage;
     if (t_is_fmove)

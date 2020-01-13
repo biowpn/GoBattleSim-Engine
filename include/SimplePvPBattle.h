@@ -26,7 +26,7 @@ struct SimplePvPBattleOutcome
 
 	// only available for non-branching mode
 	int tdo[2];
-	int duration;
+	unsigned duration;
 	PvPPokemonState pokemon_states[2];
 	std::vector<TimelineEvent> battle_log;
 };
@@ -68,7 +68,7 @@ private:
 	PvPStrategy m_strategies[2];
 	PvPPokemonState m_pkm_states[2];
 	bool m_ended{false};
-	int m_turn{0};
+	unsigned m_turn{0};
 
 	bool m_enable_log{false};
 	std::vector<TimelineEvent> m_battle_log;

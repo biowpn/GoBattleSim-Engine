@@ -25,7 +25,7 @@ void defender_on_clear(const StrategyInput &si, Action *r_action)
 {
 	r_action->type = ActionType::Fast;
 	r_action->value = 0;
-	int projected_energy = get_projected_energy(si);
+	auto projected_energy = get_projected_energy(si);
 	for (unsigned char i = 0; i < si.subject->cmoves_count; ++i)
 	{
 		auto cmove = si.subject->get_cmove(i);
@@ -53,7 +53,7 @@ void attacker_no_dodge_on_free(const StrategyInput &si, Action *r_action)
 void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
-	int time_of_damage = -1, time_of_enemy_cooldown = si.enemy_action.time;
+	auto time_of_damage = 0u, time_of_enemy_cooldown = si.enemy_action.time;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_enemy_cooldown += si.enemy->get_fmove(0)->duration + 1500;
@@ -101,7 +101,7 @@ void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 
 void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 {
-	int time_of_damage;
+	unsigned time_of_damage;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
 		// Ignore the coming enemy fast attack
@@ -139,7 +139,7 @@ void attacker_dodge_charged_on_attack(const StrategyInput &si, Action *r_action)
 void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
-	int time_of_damage = -1, time_of_enemy_cooldown = si.enemy_action.time;
+	auto time_of_damage = 0u, time_of_enemy_cooldown = si.enemy_action.time;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
@@ -188,7 +188,7 @@ void attacker_dodge_all_on_free(const StrategyInput &si, Action *r_action)
 
 void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 {
-	int time_of_damage;
+	unsigned time_of_damage;
 	if (si.enemy_action.type == ActionType::Fast)
 	{
 		time_of_damage = si.enemy_action.time + si.enemy->get_fmove(0)->dws;
