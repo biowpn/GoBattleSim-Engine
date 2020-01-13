@@ -471,6 +471,9 @@ void to_json(json &j, const EventType &event_type)
     case EventType::Dodge:
         j = "Dodge";
         break;
+    case EventType::BackGroundDPS:
+        j = "BackGroundDPS";
+        break;
     case EventType::Effect:
         j = "Effect";
         break;

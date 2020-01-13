@@ -47,19 +47,24 @@ void Battle::fetch_pokemon(Player &player)
 	m_pokemon_count = out_first - m_pokemon;
 }
 
-void Battle::set_time_limit(int t_time_limit)
+void Battle::set_time_limit(int time_limit)
 {
-	m_time_limit = t_time_limit;
+	m_time_limit = time_limit;
 }
 
-void Battle::set_weather(int t_weather)
+void Battle::set_weather(int weather)
 {
-	m_weather = t_weather;
+	m_weather = weather;
 }
 
 void Battle::set_enable_log(bool enable_log)
 {
 	m_enable_log = enable_log;
+}
+
+void Battle::set_background_dps(unsigned background_dps)
+{
+	m_background_dps = background_dps;
 }
 
 short Battle::search(const Pokemon *t_pokemon)
@@ -128,6 +133,7 @@ void Battle::init()
 
 void Battle::start()
 {
+	// Initial Enter events & Background DPS (if > 0)
 	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		auto &ps = m_player_states[i];
@@ -135,8 +141,19 @@ void Battle::start()
 				 EventType::Enter,
 				 i,
 				 static_cast<short>(ps.head_index)});
+		if (ps.player.team == 0 && m_background_dps > 0)
+		{
+			enqueue({m_time + 1500,
+					 EventType::BackGroundDPS,
+					 i,
+					 static_cast<short>(m_background_dps)});
+		}
 	}
+
+	// main loop
 	go();
+
+	// battle ends, record final duration
 	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
 		auto &pkm_st = m_pokemon_states[m_player_states[i].head_index];
@@ -180,6 +197,13 @@ void Battle::next(const TimelineEvent &event)
 			append_log(event);
 		}
 		handle_event_dodge(event);
+		break;
+	case EventType::BackGroundDPS:
+		if (m_enable_log)
+		{
+			append_log(event);
+		}
+		handle_event_background_dps(event);
 		break;
 	case EventType::Enter:
 		if (m_enable_log)
@@ -243,6 +267,14 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 	++pkm_st.num_deaths;
 	pkm_st.duration = m_time - pkm_st.duration;
 	pkm_st.active = false;
+
+	if (m_enable_log)
+	{
+		append_log({m_time,
+					EventType::Exit,
+					player_idx,
+					static_cast<short>(ps.head_index)});
+	}
 
 	int time_new_enter = -1;
 	if (select_next_pokemon(ps)) // Select next Pokemon from current party
@@ -602,13 +634,6 @@ void Battle::handle_event_attack(const TimelineEvent &event)
 		if (!opponent_st.is_alive())
 		{
 			handle_fainted_pokemon(i);
-			if (m_enable_log)
-			{
-				append_log({m_time,
-							EventType::Exit,
-							i,
-							static_cast<short>(opponent_idx)});
-			}
 		}
 	}
 }
@@ -618,6 +643,23 @@ void Battle::handle_event_dodge(const TimelineEvent &event)
 	auto &ps = m_player_states[event.player];
 	auto &pkm_st = m_pokemon_states[ps.head_index];
 	pkm_st.damage_reduction_expiry = m_time + GameMaster::get().dodge_window + 1;
+}
+
+void Battle::handle_event_background_dps(const TimelineEvent &event)
+{
+	auto &ps = m_player_states[event.player];
+	auto &pkm_st = m_pokemon_states[ps.head_index];
+	auto damage = event.value;
+	pkm_st.hurt(damage);
+	pkm_st.charge(ceil(GameMaster::get().energy_delta_per_health_lost * damage));
+	if (!pkm_st.is_alive())
+	{
+		handle_fainted_pokemon(event.player);
+	}
+	enqueue({m_time + 1000,
+			 EventType::BackGroundDPS,
+			 event.player,
+			 event.value});
 }
 
 void Battle::handle_event_enter(const TimelineEvent &event)

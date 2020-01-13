@@ -31,6 +31,7 @@ public:
 	void erase_players();
 	void set_time_limit(int);
 	void set_weather(int);
+	void set_background_dps(unsigned);
 	void set_enable_log(bool);
 	void init();
 	void start();
@@ -84,6 +85,7 @@ protected:
 	void handle_event_announce(const TimelineEvent &);
 	void handle_event_attack(const TimelineEvent &); // Fast and Charged
 	void handle_event_dodge(const TimelineEvent &);
+	void handle_event_background_dps(const TimelineEvent &);
 	void handle_event_enter(const TimelineEvent &);
 
 	inline void append_log(const TimelineEvent &);
@@ -105,6 +107,7 @@ private:
 	int m_time{0};
 	int m_weather{-1};
 	int m_defeated_team{-1};
+	unsigned m_background_dps{0};
 };
 
 } // namespace GoBattleSim

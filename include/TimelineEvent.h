@@ -17,6 +17,7 @@ enum class EventType : unsigned char
     Damage,
     Dodge,
     Effect,
+    BackGroundDPS,
     Enter,
     Exit
 };
