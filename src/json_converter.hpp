@@ -171,7 +171,7 @@ void to_json(json &j, const Party &party)
         pkm.push_back(*party.get_pokemon(i));
     }
     j["pokemon"] = pkm;
-    j["revive"] = party.revive_policy();
+    j["revive"] = party.revive_policy;
 }
 
 void from_json(const json &j, Party &party)
@@ -187,7 +187,7 @@ void from_json(const json &j, Party &party)
             party.add(&pkm);
         }
     }
-    party.revive_policy(try_get(j, "revive", false));
+    try_get_to(j, "revive", party.revive_policy);
 }
 
 void to_json(json &j, const Player &player)

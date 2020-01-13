@@ -10,11 +10,6 @@
 namespace GoBattleSim
 {
 
-Party::Party()
-{
-	m_revive_policy = false;
-}
-
 Party::Party(const Party &other)
 {
 	*this = other;
@@ -28,7 +23,7 @@ Party &Party::operator=(const Party &other)
 		m_pokemon[i] = other.m_pokemon[i];
 	}
 	m_pokemon_head = m_pokemon + (other.m_pokemon_head - other.m_pokemon);
-	m_revive_policy = other.m_revive_policy;
+	revive_policy = other.revive_policy;
 	return *this;
 }
 
@@ -50,16 +45,6 @@ void Party::add(const Pokemon *t_pokemon)
 		m_pokemon_head = m_pokemon + m_pokemon_count;
 	}
 	++m_pokemon_count;
-}
-
-bool Party::revive_policy(bool t_policy)
-{
-	return m_revive_policy = t_policy;
-}
-
-bool Party::revive_policy() const
-{
-	return m_revive_policy;
 }
 
 void Party::erase_pokemon()

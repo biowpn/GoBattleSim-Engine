@@ -142,7 +142,7 @@ int main()
 		Party attacker_party;
 		attacker_party.add(&pokemon_latios);
 		attacker_party.add(&pokemon_latios);
-		attacker_party.revive_policy(true);
+		attacker_party.revive_policy = true;
 
 		Party raid_boss_party;
 		raid_boss_party.add(&pokemon_machamp);
@@ -183,9 +183,9 @@ int main()
 	{
 		Party attacker_party_1, attacker_party_2;
 		attacker_party_1.add(&pokemon_lugia);
-		attacker_party_1.revive_policy(true);
+		attacker_party_1.revive_policy = true;
 		attacker_party_2.add(&pokemon_mewtwo);
-		attacker_party_2.revive_policy(true);
+		attacker_party_2.revive_policy = true;
 
 		Party raid_boss_party;
 		raid_boss_party.add(&pokemon_machamp);

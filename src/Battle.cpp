@@ -297,7 +297,7 @@ bool Battle::select_next_pokemon(PlayerState &ps)
 
 bool Battle::revive_current_party(PlayerState &ps)
 {
-	if (ps.player.get_head_party()->revive_policy())
+	if (ps.player.get_head_party()->revive_policy)
 	{
 		auto party = ps.player.get_head_party();
 		auto first_index = search(party->get_pokemon(0));

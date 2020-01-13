@@ -187,7 +187,7 @@ bool Player::revive_current_party()
 	}
 	else
 	{
-		return m_party_head->revive_policy();
+		return m_party_head->revive_policy;
 	}
 }
 

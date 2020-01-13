@@ -12,7 +12,7 @@ constexpr unsigned MAX_NUM_POKEMON = 6;
 class Party
 {
 public:
-	Party();
+	Party() = default;
 	Party &operator=(const Party &);
 	Party(const Party &);
 	~Party();
@@ -32,12 +32,11 @@ public:
 	void init();
 
 	// whether to revive or not
-	bool revive_policy(bool);
-	bool revive_policy() const;
+	bool revive_policy{false}; 
+	// delay before entering battle
+	unsigned enter_delay{0};
 
 private:
-	bool m_revive_policy{false};
-
 	Pokemon *m_pokemon_head{nullptr};
 	Pokemon m_pokemon[MAX_NUM_POKEMON];
 	unsigned m_pokemon_count{0};
