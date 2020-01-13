@@ -56,6 +56,7 @@ int main()
 	srand(1000);
 
 	// 1 x Mewtwo VS T3 Machamp
+	// 1 x Mewtwo VS T3 Machamp with BackgroundDPS
 	{
 		Party attacker_party;
 		attacker_party.add(&pokemon_mewtwo);
@@ -92,6 +93,20 @@ int main()
 		assert(battle_outcome.duration > 120000);
 		assert(battle_outcome.duration < 160000);
 		assert(battle_outcome.num_deaths == 1);
+
+		// now apply some background DPS, should be able to do it
+		battle.set_background_dps(15);
+		battle.init();
+		battle.start();
+		battle_outcome = battle.get_outcome(1);
+
+		std::cout << "test#1.5 Duration: " << battle_outcome.duration << std::endl;
+		std::cout << "test#1.5 TDO%: " << battle_outcome.tdo_percent << std::endl;
+
+		// a win
+		assert(battle_outcome.win);
+		// but not all the attacker's work
+		assert(battle_outcome.tdo_percent < 1);
 	}
 
 	// 6 x Latios VS T3 Machamp, no rejoin
