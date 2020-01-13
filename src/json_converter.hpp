@@ -172,6 +172,7 @@ void to_json(json &j, const Party &party)
     }
     j["pokemon"] = pkm;
     j["revive"] = party.revive_policy;
+    j["enterDelay"] = party.enter_delay;
 }
 
 void from_json(const json &j, Party &party)
@@ -188,6 +189,7 @@ void from_json(const json &j, Party &party)
         }
     }
     try_get_to(j, "revive", party.revive_policy);
+    try_get_to(j, "enterDelay", party.enter_delay);
 }
 
 void to_json(json &j, const Player &player)

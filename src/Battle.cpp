@@ -130,10 +130,11 @@ void Battle::start()
 {
 	for (Player_Index_t i = 0; i < m_players_count; ++i)
 	{
-		enqueue({m_time,
+		auto &ps = m_player_states[i];
+		enqueue({m_time + ps.player.get_head_party()->enter_delay,
 				 EventType::Enter,
 				 i,
-				 static_cast<short>(m_player_states[i].head_index)});
+				 static_cast<short>(ps.head_index)});
 	}
 	go();
 	for (Player_Index_t i = 0; i < m_players_count; ++i)
@@ -254,7 +255,7 @@ void Battle::handle_fainted_pokemon(Player_Index_t player_idx)
 	}
 	else if (select_next_party(ps)) // Select next Party and re-lobby
 	{
-		time_new_enter = m_time + GameMaster::get().rejoin_duration;
+		time_new_enter = m_time + GameMaster::get().rejoin_duration + ps.player.get_head_party()->enter_delay;
 	}
 
 	if (time_new_enter > 0) // Player chose a new head Pokemon
@@ -636,15 +637,16 @@ void Battle::handle_event_enter(const TimelineEvent &event)
 	if (ps.player.team != 0)
 	{
 		enqueue({m_time + 500,
-			 EventType::Free,
-			 player_index,
-			 event.value});
+				 EventType::Free,
+				 player_index,
+				 event.value});
 	}
-	else{
+	else
+	{
 		enqueue({m_time + 2000,
-			 EventType::Free,
-			 player_index,
-			 event.value});
+				 EventType::Free,
+				 player_index,
+				 event.value});
 	}
 }
 
