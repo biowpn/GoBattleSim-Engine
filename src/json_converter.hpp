@@ -201,8 +201,8 @@ void to_json(json &j, const Player &player)
     }
     j["parties"] = parties;
     j["team"] = player.team;
-    j["attack_multiplier"] = player.attack_multiplier;
-    j["clone_multiplier"] = player.clone_multiplier;
+    j["attackMultiplier"] = player.attack_multiplier;
+    j["cloneMultiplier"] = player.clone_multiplier;
 }
 
 void from_json(const json &j, Player &player)
@@ -215,8 +215,8 @@ void from_json(const json &j, Player &player)
     }
     player.team = j.at("team");
 
-    try_get_to(j, "attack_multiplier", player.attack_multiplier);
-    try_get_to(j, "clone_multiplier", player.clone_multiplier);
+    try_get_to(j, "attackMultiplier", player.attack_multiplier);
+    try_get_to(j, "cloneMultiplier", player.clone_multiplier);
 }
 
 void from_json(const json &j, PvPStrategy &strategy)

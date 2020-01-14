@@ -9,8 +9,8 @@
         {
             "name": "Player 1",
             "team": 1,
-            "attack_multiplier": 1.07,
-            "clone_multiplier": 2,
+            "attackMultiplier": 1.07,
+            "cloneMultiplier": 2,
             "parties": [
                 {
                     "revive": true,
@@ -52,7 +52,7 @@
         {
             "name": "Player 2",
             "team": 0,
-            "attack_multiplier": 1,
+            "attackMultiplier": 1,
             "parties": [
                 {
                     "revive": false,

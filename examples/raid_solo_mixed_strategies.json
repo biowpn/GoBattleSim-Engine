@@ -9,7 +9,7 @@
         {
             "name": "Player 1",
             "team": 1,
-            "attack_multiplier": 1,
+            "attackMultiplier": 1,
             "parties": [
                 {
                     "revive": false,
@@ -109,7 +109,7 @@
         {
             "name": "Player 2",
             "team": 0,
-            "attack_multiplier": 1,
+            "attackMultiplier": 1,
             "parties": [
                 {
                     "revive": false,
