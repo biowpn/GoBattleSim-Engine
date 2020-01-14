@@ -247,6 +247,13 @@ void SimplePvPBattle::register_action_charged(Player_Index_t i, const Action &t_
 		{
 			damage = 1;
 			--m_pkm_states[1 - i].shields;
+			if (m_enable_log)
+			{
+				append_log({m_turn,
+							EventType::Dodge,
+							static_cast<Player_Index_t>(1 - i),
+							static_cast<short>(1 - i)});
+			}
 		}
 	}
 	if (damage == 0)
