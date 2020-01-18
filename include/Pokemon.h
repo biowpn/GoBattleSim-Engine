@@ -21,9 +21,9 @@ public:
 	Pokemon &operator=(const Pokemon &);
 	~Pokemon();
 
-	const Move *get_fmove(int) const;
+	const Move *get_fmove(unsigned) const;
 	void add_fmove(const Move *);
-	const Move *get_cmove(int) const;
+	const Move *get_cmove(unsigned) const;
 	unsigned get_cmoves_count() const;
 	void add_cmove(const Move *);
 	void erase_cmoves();
