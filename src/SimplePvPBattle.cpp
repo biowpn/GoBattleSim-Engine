@@ -294,7 +294,7 @@ void SimplePvPBattle::decide_branch_charged_move_priority()
 
 		m_branch[1] = new SimplePvPBattle(*this);
 		m_branch_weight[1] = 0.5;
-		m_branch[0]->handle_simultaneous_charged_attacks(1);
+		m_branch[1]->handle_simultaneous_charged_attacks(1);
 
 		m_branch[0]->start();
 		m_branch[1]->start();
