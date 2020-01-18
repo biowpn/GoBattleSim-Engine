@@ -255,7 +255,6 @@ void attacker_dodge_all_on_attack(const StrategyInput &si, Action *r_action)
 
 inline double calc_cycle_dps(const Pokemon *subj, const Move *fmove, const Move *cmove, const Pokemon *enemy, int weather)
 {
-	const auto &gm = GameMaster::get();
 	auto fdmg = calc_damage_weather(subj, fmove, enemy, weather);
 	auto cdmg = calc_damage_weather(subj, cmove, enemy, weather);
 	double fdps = static_cast<double>(fdmg) / fmove->duration;
@@ -285,6 +284,12 @@ void attacker_combo_no_dodge_on_free(const StrategyInput &si, Action *action)
 			cheaper = cmove;
 			cheaper_energy = -cmove->energy;
 		}
+	}
+
+	if (better == nullptr)
+	{
+		action->type = ActionType::Fast;
+		return;
 	}
 
 	if (better == cheaper)

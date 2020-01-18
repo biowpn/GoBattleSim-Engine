@@ -57,7 +57,7 @@ typedef void (*EventResponder)(const StrategyInput &, Action *);
 struct Strategy
 {
 	// A name for the strategy
-	char name[32];
+	char name[48];
 
 	// Called when the subject is free.
 	// The returned Action will be executed immediately.
@@ -103,18 +103,6 @@ const Strategy STRATEGY_ATTACKER_NO_DODGE{
 	nullptr,
 	nullptr};
 
-const Strategy STRATEGY_ATTACKER_FAST_ONLY_NO_DODGE{
-	"ATTACKER_FAST_ONLY_NO_DODGE",
-	attacker_fast_only_no_dodge_on_free,
-	nullptr,
-	nullptr};
-
-const Strategy STRATEGY_ATTACKER_BURST_NO_DODGE{
-	"ATTACKER_BURST_NO_DODGE",
-	attacker_burst_no_dodge_on_free,
-	nullptr,
-	nullptr};
-
 const Strategy STRATEGY_ATTACKER_DODGE_CHARGED{
 	"ATTACKER_DODGE_CHARGED",
 	attacker_dodge_charged_on_free,
@@ -127,20 +115,46 @@ const Strategy STRATEGY_ATTACKER_DODGE_ALL{
 	nullptr,
 	attacker_dodge_all_on_attack};
 
+const Strategy STRATEGY_ATTACKER_FAST_ONLY_NO_DODGE{
+	"ATTACKER_FAST_ONLY_NO_DODGE",
+	attacker_fast_only_no_dodge_on_free,
+	nullptr,
+	nullptr};
+
+const Strategy STRATEGY_ATTACKER_BURST_NO_DODGE{
+	"ATTACKER_BURST_NO_DODGE",
+	attacker_burst_no_dodge_on_free,
+	nullptr,
+	nullptr};
+
+const Strategy STRATEGY_ATTACKER_BURST_DODGE_CHARGED{
+	"ATTACKER_BURST_DODGE_CHARGED",
+	attacker_burst_no_dodge_on_free,
+	nullptr,
+	attacker_dodge_charged_on_attack};
+
 const Strategy STRATEGY_ATTACKER_COMBO_NO_DODGE{
 	"ATTACKER_COMBO_NO_DODGE",
 	attacker_combo_no_dodge_on_free,
 	nullptr,
 	nullptr};
 
+const Strategy STRATEGY_ATTACKER_COMBO_DODGE_CHARGED{
+	"ATTACKER_COMBO_DODGE_CHARGED",
+	attacker_combo_no_dodge_on_free,
+	nullptr,
+	attacker_dodge_charged_on_attack};
+
 const Strategy PVE_STRATEGIES[] = {
 	STRATEGY_DEFENDER,
 	STRATEGY_ATTACKER_NO_DODGE,
+	STRATEGY_ATTACKER_DODGE_CHARGED,
+	STRATEGY_ATTACKER_DODGE_ALL,
 	STRATEGY_ATTACKER_FAST_ONLY_NO_DODGE,
 	STRATEGY_ATTACKER_BURST_NO_DODGE,
+	STRATEGY_ATTACKER_BURST_DODGE_CHARGED,
 	STRATEGY_ATTACKER_COMBO_NO_DODGE,
-	STRATEGY_ATTACKER_DODGE_CHARGED,
-	STRATEGY_ATTACKER_DODGE_ALL};
+	STRATEGY_ATTACKER_COMBO_DODGE_CHARGED};
 
 const unsigned NUM_PVE_STRATEGIES = sizeof(PVE_STRATEGIES) / sizeof(PVE_STRATEGIES[0]);
 
