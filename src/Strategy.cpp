@@ -50,6 +50,27 @@ void attacker_no_dodge_on_free(const StrategyInput &si, Action *r_action)
 	}
 }
 
+void attacker_fast_only_no_dodge_on_free(const StrategyInput &si, Action *r_action)
+{
+	r_action->type = ActionType::Fast;
+}
+
+void attacker_burst_no_dodge_on_free(const StrategyInput &si, Action *r_action)
+{
+	if (si.subject_state->energy >= GameMaster::get().max_energy)
+	{
+		r_action->type = ActionType::Charged;
+	}
+	else if (si.subject_action.type == ActionType::Charged)
+	{
+		attacker_no_dodge_on_free(si, r_action);
+	}
+	else
+	{
+		r_action->type = ActionType::Fast;
+	}
+}
+
 void attacker_dodge_charged_on_free(const StrategyInput &si, Action *r_action)
 {
 	bool predicted_attack = false;
