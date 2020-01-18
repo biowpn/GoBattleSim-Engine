@@ -53,6 +53,8 @@ protected:
 
 	void register_action_fast(Player_Index_t, const Action &);
 	void register_action_charged(Player_Index_t, const Action &);
+	void decide_branch_charged_move_priority();
+	void handle_simultaneous_charged_attacks(Player_Index_t);
 	void decide_branch_move_effect(Player_Index_t, const MoveEffect &);
 	void handle_move_effect(Player_Index_t, const MoveEffect &);
 	void handle_fainted_pokemon(Player_Index_t);

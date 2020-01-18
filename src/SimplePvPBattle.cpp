@@ -107,11 +107,11 @@ void SimplePvPBattle::start()
 
 	go();
 
-	for (Player_Index_t i = 0; i < 2; ++i)
+	if (m_enable_log)
 	{
-		if (m_pkm_states[i].hp <= 0)
+		for (Player_Index_t i = 0; i < 2; ++i)
 		{
-			if (m_enable_log)
+			if (m_pkm_states[i].hp <= 0)
 			{
 				append_log({m_turn, EventType::Exit, i, i});
 			}
@@ -177,11 +177,7 @@ void SimplePvPBattle::go()
 				}
 				break;
 			case ActionType::Charged:
-				register_action_charged(0, m_pkm_states[0].decision);
-				if (!m_ended)
-				{
-					register_action_charged(1, m_pkm_states[1].decision);
-				}
+				decide_branch_charged_move_priority();
 				break;
 			default:
 				register_action_charged(0, m_pkm_states[0].decision);
@@ -278,6 +274,46 @@ void SimplePvPBattle::register_action_charged(Player_Index_t i, const Action &t_
 	else if (move->effect.activation_chance > 0)
 	{
 		decide_branch_move_effect(i, move->effect);
+	}
+}
+
+void SimplePvPBattle::decide_branch_charged_move_priority()
+{
+	if (m_pkm[0].attack != m_pkm[1].attack)
+	{
+		Player_Index_t first = m_pkm[0].attack > m_pkm[1].attack ? 0 : 1;
+		handle_simultaneous_charged_attacks(first);
+		return;
+	}
+
+	if (m_enable_branching)
+	{
+		m_branch[0] = new SimplePvPBattle(*this);
+		m_branch_weight[0] = 0.5;
+		m_branch[0]->handle_simultaneous_charged_attacks(0);
+
+		m_branch[1] = new SimplePvPBattle(*this);
+		m_branch_weight[1] = 0.5;
+		m_branch[0]->handle_simultaneous_charged_attacks(1);
+
+		m_branch[0]->start();
+		m_branch[1]->start();
+		m_ended = true;
+	}
+	else
+	{
+		Player_Index_t first = rand() % 2u;
+		handle_simultaneous_charged_attacks(first);
+	}
+}
+
+void SimplePvPBattle::handle_simultaneous_charged_attacks(Player_Index_t first)
+{
+	Player_Index_t second = (Player_Index_t)1 - first;
+	register_action_charged(first, m_pkm_states[first].decision);
+	if (!m_ended)
+	{
+		register_action_charged(second, m_pkm_states[second].decision);
 	}
 }
 
