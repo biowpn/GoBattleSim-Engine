@@ -89,6 +89,8 @@ void attacker_dodge_charged_on_attack(const StrategyInput &, Action *);
 void attacker_dodge_all_on_free(const StrategyInput &, Action *);
 void attacker_dodge_all_on_attack(const StrategyInput &, Action *);
 
+void attacker_combo_no_dodge_on_free(const StrategyInput &, Action *);
+
 const Strategy STRATEGY_DEFENDER{
 	"DEFENDER",
 	attacker_no_dodge_on_free,
@@ -125,11 +127,18 @@ const Strategy STRATEGY_ATTACKER_DODGE_ALL{
 	nullptr,
 	attacker_dodge_all_on_attack};
 
+const Strategy STRATEGY_ATTACKER_COMBO_NO_DODGE{
+	"ATTACKER_COMBO_NO_DODGE",
+	attacker_combo_no_dodge_on_free,
+	nullptr,
+	nullptr};
+
 const Strategy PVE_STRATEGIES[] = {
 	STRATEGY_DEFENDER,
 	STRATEGY_ATTACKER_NO_DODGE,
 	STRATEGY_ATTACKER_FAST_ONLY_NO_DODGE,
 	STRATEGY_ATTACKER_BURST_NO_DODGE,
+	STRATEGY_ATTACKER_COMBO_NO_DODGE,
 	STRATEGY_ATTACKER_DODGE_CHARGED,
 	STRATEGY_ATTACKER_DODGE_ALL};
 
