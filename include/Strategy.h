@@ -127,11 +127,11 @@ const Strategy STRATEGY_ATTACKER_BURST_NO_DODGE{
 	nullptr,
 	nullptr};
 
-const Strategy STRATEGY_ATTACKER_BURST_DODGE_CHARGED{
-	"ATTACKER_BURST_DODGE_CHARGED",
-	attacker_burst_no_dodge_on_free,
-	nullptr,
-	attacker_dodge_charged_on_attack};
+// const Strategy STRATEGY_ATTACKER_BURST_DODGE_CHARGED{
+// 	"ATTACKER_BURST_DODGE_CHARGED",
+// 	attacker_burst_no_dodge_on_free,
+// 	nullptr,
+// 	attacker_dodge_charged_on_attack};
 
 const Strategy STRATEGY_ATTACKER_COMBO_NO_DODGE{
 	"ATTACKER_COMBO_NO_DODGE",
@@ -139,11 +139,11 @@ const Strategy STRATEGY_ATTACKER_COMBO_NO_DODGE{
 	nullptr,
 	nullptr};
 
-const Strategy STRATEGY_ATTACKER_COMBO_DODGE_CHARGED{
-	"ATTACKER_COMBO_DODGE_CHARGED",
-	attacker_combo_no_dodge_on_free,
-	nullptr,
-	attacker_dodge_charged_on_attack};
+// const Strategy STRATEGY_ATTACKER_COMBO_DODGE_CHARGED{
+// 	"ATTACKER_COMBO_DODGE_CHARGED",
+// 	attacker_combo_no_dodge_on_free,
+// 	nullptr,
+// 	attacker_dodge_charged_on_attack};
 
 const Strategy PVE_STRATEGIES[] = {
 	STRATEGY_DEFENDER,
@@ -152,9 +152,7 @@ const Strategy PVE_STRATEGIES[] = {
 	STRATEGY_ATTACKER_DODGE_ALL,
 	STRATEGY_ATTACKER_FAST_ONLY_NO_DODGE,
 	STRATEGY_ATTACKER_BURST_NO_DODGE,
-	STRATEGY_ATTACKER_BURST_DODGE_CHARGED,
-	STRATEGY_ATTACKER_COMBO_NO_DODGE,
-	STRATEGY_ATTACKER_COMBO_DODGE_CHARGED};
+	STRATEGY_ATTACKER_COMBO_NO_DODGE};
 
 const unsigned NUM_PVE_STRATEGIES = sizeof(PVE_STRATEGIES) / sizeof(PVE_STRATEGIES[0]);
 

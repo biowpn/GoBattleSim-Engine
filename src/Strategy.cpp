@@ -286,9 +286,11 @@ void attacker_combo_no_dodge_on_free(const StrategyInput &si, Action *action)
 		}
 	}
 
+	// default is Fast move
+	action->type = ActionType::Fast;
+
 	if (better == nullptr)
 	{
-		action->type = ActionType::Fast;
 		return;
 	}
 
@@ -298,10 +300,6 @@ void attacker_combo_no_dodge_on_free(const StrategyInput &si, Action *action)
 		{
 			action->type = ActionType::Charged;
 			action->value = better - si.subject->cmoves;
-		}
-		else
-		{
-			action->type = ActionType::Fast;
 		}
 		return;
 	}
@@ -326,8 +324,6 @@ void attacker_combo_no_dodge_on_free(const StrategyInput &si, Action *action)
 		}
 		return;
 	}
-
-	action->type = ActionType::Fast;
 }
 
 } // namespace GoBattleSim
