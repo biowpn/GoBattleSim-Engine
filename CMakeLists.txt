@@ -8,7 +8,7 @@ message("gitversion = ${PROJECT_GIT_VERSION}")
 configure_file(${PROJECT_SOURCE_DIR}/config/config.h.in ${PROJECT_SOURCE_DIR}/config/config.h)
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(CMAKE_CXX_FLAGS "-Wall")
+SET(CMAKE_CXX_FLAGS "-Wall -pthread")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/config
